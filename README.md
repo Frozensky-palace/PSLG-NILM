@@ -3,6 +3,10 @@
 > 新手入口：**[docs/TUTORIAL.md](docs/TUTORIAL.md)** —— 从部署到出图的完整教程
 > （含 UK-DALE washing machine 冒烟测试）。
 
+> 当前生成式 NILM 研究入口：
+> **[完整研究路线与 AI 交接](docs/AI_HANDOFF_COMPLETE_RESEARCH_ROADMAP.md)**；
+> 仓库整理规则见 **[Git 文件追踪政策](docs/GIT_TRACKING_POLICY.md)**。
+
 PSLG-NILM 的重构版：单一线性流水线引擎、内容寻址特征缓存、聚类全候选 k、
 出图与流程完全解耦。相对旧版（`PSLG-NILM`）的四个核心改动：
 

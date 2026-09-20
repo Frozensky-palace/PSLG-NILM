@@ -9,8 +9,31 @@ log_det_test/
 # ── 输出（图表 + fewshot 导出等）───────────────────────
 output/
 
+# ── 研究报告目录 ──────────────────────────────────────
+# reports/.gitignore 采用白名单：只跟踪人工整理的 Markdown，
+# NPZ/NPY/CSV/JSON/PNG 等可再生产物全部保留在本机或外部存储。
+
 # ── 特征提取内容寻址缓存 ───────────────────────────────
 .cache/
+
+# ── 深度学习运行产物 ──────────────────────────────────
+checkpoints/
+runs/
+wandb/
+tensorboard/
+lightning_logs/
+
+# 即使产物误放到其他目录，也避免把大型数组、数据集或权重加入 Git。
+*.h5
+*.hdf5
+*.npz
+*.npy
+*.pt
+*.pth
+*.ckpt
+*.keras
+*.onnx
+*.joblib
 
 # ── slurm 日志 ───────────────────────────────────────
 slurm/slurm_log/
@@ -21,8 +44,24 @@ __pycache__/
 *.egg-info/
 .venv/
 venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
 
 # ── 工具/系统 ─────────────────────────────────────────
 .ipynb_checkpoints/
+.idea/
+.vscode/
+.env
+.env.*
+*.log
+*.tmp
+*.bak
 .DS_Store
 Thumbs.db
+
+# 旧的本地 HTML 汇总快照与当前冻结协议不一致；保留本地供审计，不作为事实来源。
+docs/server.html

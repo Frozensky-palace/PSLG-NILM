@@ -70,8 +70,23 @@ class DatasetSplitStep(Step):
             data = np.load(path)
         elif ext == ".dat":
             data = np.loadtxt(path)
+        elif ext == ".csv":
+            # Data preparation and extract_active_data both use the canonical
+            # timestamp,power CSV schema, so the final split must accept it as
+            # well.  Named columns are preferred; otherwise use the first two.
+            import pandas as pd
+
+            frame = pd.read_csv(path)
+            if {"timestamp", "power"}.issubset(frame.columns):
+                data = frame[["timestamp", "power"]].to_numpy()
+            elif {"datetime", "power"}.issubset(frame.columns):
+                data = frame[["datetime", "power"]].to_numpy()
+            else:
+                data = frame.iloc[:, :2].to_numpy()
         else:
-            raise ValueError(f"[dataset_split] unsupported {name} format: {ext} (.dat/.npy only)")
+            raise ValueError(
+                f"[dataset_split] unsupported {name} format: {ext} "
+                "(.csv/.dat/.npy only)")
         data = np.asarray(data)
         if data.ndim != 2 or data.shape[1] < 2:
             raise ValueError(f"[dataset_split] {name} must be (len, >=2) [timestamp, power], "
@@ -126,7 +141,10 @@ class DatasetSplitStep(Step):
     def _apply_knockout(self, raw_branch, raw_mains, drop_mask):
         branch = raw_branch.copy()
         mains = raw_mains.copy()
-        delta = raw_branch[:, 1] * drop_mask.astype(np.float64)
+        # A long recording gap may be represented as NaN in the branch.  NaN
+        # multiplied by a false mask is still NaN, which would otherwise
+        # contaminate a perfectly valid mains sample outside a dropped event.
+        delta = np.where(drop_mask, np.nan_to_num(raw_branch[:, 1], nan=0.0), 0.0)
         branch[drop_mask, 1] = 0.0
         mains[:, 1] -= delta
         quality = {

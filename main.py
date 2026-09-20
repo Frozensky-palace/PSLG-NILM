@@ -104,6 +104,7 @@ def _build_segment(cfg, sel):
         clasp_n_jobs=c.get("clasp_n_jobs", -1),
         clasp_n_segments=c.get("clasp_n_segments", "learn"),
         max_seg_len=c.get("max_seg_len", 0),
+        input_dir=(cfg.get("paths", {}) or {}).get("segments_dir", ""),
     )
 
 
@@ -200,7 +201,9 @@ def _build_split(cfg, sel):
     from src.steps.dataset_split_step import DatasetSplitStep
     c = cfg.get("dataset_split", {})
     return DatasetSplitStep(
-        raw_series_path=(cfg.get("paths", {}) or {}).get("raw_series"),
+        # Keep the final split on the exact same branch series selected for
+        # extraction.  In particular, honour a CLI --raw-series override.
+        raw_series_path=sel["raw_series"],
         mains_series_path=c.get("mains_series"),
         few_train_ratio=c.get("few_train_ratio", 0.5),
         non_few_train_ratio=c.get("non_few_train_ratio", 0.8),
@@ -278,7 +281,7 @@ def main():
     p.add_argument("--segment-method", default=None,
                    help="clasp | fluss | espresso | clasp-origin | none (default: clasp)")
     p.add_argument("--feature-model", default=None,
-                   help="detsec | detsec_pc | bilstm_ae | lstm_ae | cnn_ae | bilstm_ae_attention | autoencoder | dtw (default: detsec)")
+                   help="detsec | detsec_pc | physical_stats | bilstm_ae | lstm_ae | cnn_ae | bilstm_ae_attention | autoencoder | dtw (default: detsec)")
     p.add_argument("--cluster-method", default=None,
                    help="kmeans | kmeans-scan | dpc-kmeans | dpc-kmeans-scan | dbscan | hdbscan (default: kmeans)")
     p.add_argument("--n-clusters", default=None,

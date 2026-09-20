@@ -31,7 +31,7 @@ class TimeSegmentationStep(Step):
     def __init__(self, segment_method: str = "clasp", appliance_name: str = "",
                  window_size: int = 100, n_regimes: int = 3, excl_factor: int = 5,
                  clasp_n_jobs: int = 1, clasp_n_segments: str = "learn",
-                 max_seg_len: int = 0):
+                 max_seg_len: int = 0, input_dir: str = ""):
         super().__init__(variant=segment_method)
         self.segment_method = segment_method
         self.appliance_name = appliance_name
@@ -41,11 +41,14 @@ class TimeSegmentationStep(Step):
         self.clasp_n_jobs = int(clasp_n_jobs)
         self.clasp_n_segments = str(clasp_n_segments)
         self.max_seg_len = int(max_seg_len or 0)
+        self.input_dir = str(input_dir or "")
 
     # ── input resolution ─────────────────────────────────────────
 
     def _resolve_input_dir(self, context: dict):
         candidates = []
+        if self.input_dir:
+            candidates.append(self.input_dir)
         if context.get("input_root"):
             candidates.append(context["input_root"])
         seg_dir = self.resolve(context, "extract_active_data", "segments_dir")
@@ -181,7 +184,15 @@ class TimeSegmentationStep(Step):
             print(f"[time_segmentation] no input dir found for segments; skipping.")
             return context
 
-        target_files = sorted(f for f in os.listdir(input_dir) if f.lower().endswith(".csv"))
+        candidate_files = sorted(
+            f for f in os.listdir(input_dir) if f.lower().endswith(".csv"))
+        # A cycle directory may also contain provenance CSVs.  Exclude them
+        # before assigning csv_idx so indices remain aligned with the source map.
+        target_files = []
+        for file_name in candidate_files:
+            columns = pd.read_csv(os.path.join(input_dir, file_name), nrows=0).columns
+            if "power" in columns:
+                target_files.append(file_name)
         print(f"[time_segmentation] {len(target_files)} CSV files, method={self.segment_method}")
 
         all_samples, all_lengths, all_indices = [], [], []
