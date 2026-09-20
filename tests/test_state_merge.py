@@ -178,9 +178,15 @@ class StateMergeStepTest(unittest.TestCase):
                 base = os.path.join(tmp, "log", "test_state_merge", res["subdir"])
                 seg_labels = np.load(os.path.join(base, "cluster_labels.npy"))
                 btb = np.load(os.path.join(base, "segment_to_block.npy"))
-                blocks = json.load(open(os.path.join(base, "blocks.json")))
-                ss = json.load(open(os.path.join(base, "state_sequences.json")))
-                metrics = json.load(open(os.path.join(base, "metrics.json")))
+                with open(os.path.join(base, "blocks.json"),
+                          encoding="utf-8") as stream:
+                    blocks = json.load(stream)
+                with open(os.path.join(base, "state_sequences.json"),
+                          encoding="utf-8") as stream:
+                    ss = json.load(stream)
+                with open(os.path.join(base, "metrics.json"),
+                          encoding="utf-8") as stream:
+                    metrics = json.load(stream)
 
                 # activity 0: A,B,B,C -> blocks A,B,C (labels 0,1,2)
                 seq0 = ss["0"]

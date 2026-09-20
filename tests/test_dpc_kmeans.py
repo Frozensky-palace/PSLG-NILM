@@ -16,7 +16,11 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.framework.workflow import Workflow
 from src.steps.time_clustering_step import TimeClusteringStep
-from tests.test_m3_clustering import FeatureStub, make_blobs
+
+try:
+    from tests.test_m3_clustering import FeatureStub, make_blobs
+except ImportError:  # discovery without package context inserts tests/ itself
+    from test_m3_clustering import FeatureStub, make_blobs
 
 CFG = {"paths": {"cache_dir": ".cache"}}
 
@@ -61,7 +65,7 @@ class TestDpcKmeansBlobs(unittest.TestCase):
                     "log", "rdsc",
                     "TimeClustering_dpc-kmeans-scan_on_detsec_on_clasp",
                     "dpc_scan.json")
-                with open(scan_path) as f:
+                with open(scan_path, encoding="utf-8") as f:
                     scan = json.load(f)
                 self.assertEqual(scan["scan_method"], "dpc-kmeans-scan")
                 self.assertEqual([r["n_clusters"] for r in scan["records"]], [2, 3, 4])
