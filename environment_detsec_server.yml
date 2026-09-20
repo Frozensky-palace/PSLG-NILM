@@ -1,0 +1,27 @@
+# pslg-detsec: C2 DETSEC-PC environment with TensorFlow GPU (guide §4.5).
+# STATUS: 初版参考 — 只有在服务器上完成 GPU 枚举与冒烟后才可标为冻结。
+# Create on the server (Linux; module versions must be confirmed with
+# `module avail` first, guide §7.7):
+#   conda env create -f environment_detsec_server.yml
+#   conda activate pslg-detsec
+#   python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
+# tensorflow[and-cuda] installs the pip CUDA/cuDNN libraries matching the
+# wheel; the system driver only needs to be new enough (guide §7.8: pass only
+# when TensorFlow itself lists the GPU, not when nvidia-smi alone works).
+# numpy<2 is a repo-wide constraint; TF 2.18.x is the newest series that
+# keeps it (2.19+ pulls numpy>=2).
+name: pslg-detsec
+channels:
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - --extra-index-url=https://pypi.org/simple
+      - numpy<2
+      - pandas>=2.2
+      - scipy>=1.11
+      - scikit-learn>=1.5
+      - matplotlib>=3.9
+      - pyyaml>=6.0
+      - tensorflow[and-cuda]==2.18.1

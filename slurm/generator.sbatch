@@ -5,9 +5,13 @@
 #SBATCH -c 8
 #SBATCH --mem=32G
 #SBATCH -t 3-00:00:00
-#SBATCH -o /home/<user>/pslg_logs/%x-%j.out
-#SBATCH -e /home/<user>/pslg_logs/%x-%j.err
+#SBATCH -o /home/%u/pslg_logs/%x-%j.out
+#SBATCH -e /home/%u/pslg_logs/%x-%j.err
 
+# STATUS: TEMPLATE ONLY — Phase D/E entry scripts do not exist yet.
+# Do not submit. Per guide §5.5, per-route sbatch files (b3_transform,
+# b3_cvae, b3_wgan, b3_diffusion, b4_primitive_cvae, b5_hsmm) are added only
+# after their Python entries exist and passed the local smoke.
 # B3/B4 CVAE generator template (doc D/E). The generator training script lands
 # with Phase D; until then this file only documents resources and environment.
 # Never submit before the script exists and passed the local smoke.
@@ -25,7 +29,7 @@ module list
 source "$(conda info --base)/bin/activate"
 conda activate pslg-nilm
 
-cd /home/<user>/projects/PSLG-NILM
+cd "$HOME/projects/PSLG-NILM"
 git rev-parse HEAD
 nvidia-smi
 

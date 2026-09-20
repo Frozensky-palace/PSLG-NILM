@@ -1,4 +1,9 @@
 #!/bin/bash
+# ============================================================================
+# LEGACY: 旧项目时期的脚本，包含旧用户目录与旧仓库名，禁止在新集群使用。
+# Formal C1/C2/C3 jobs use slurm/c1_gpu_smoke.sbatch, c2_detsec_pc.sbatch and
+# c3_seq2point.sbatch instead (guide §4.6 / §5.5).
+# ============================================================================
 #SBATCH -J PSLG-PIPELINE
 #SBATCH -p RTX3090
 #SBATCH --gres=gpu:1

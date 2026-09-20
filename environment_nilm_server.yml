@@ -1,0 +1,27 @@
+# pslg-nilm: C3 Seq2Point and generator environment with CUDA PyTorch
+# (guide §4.5). STATUS: 初版参考 — 服务器上完成 torch.cuda 冒烟后才可冻结。
+# Create on the server (module versions per live `module avail`):
+#   conda env create -f environment_nilm_server.yml
+#   conda activate pslg-nilm
+#   python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+# If the conda pip section rejects the --index-url option on your conda
+# version, create the env without the torch line and install manually:
+#   pip install torch>=2.4 --index-url https://download.pytorch.org/whl/cu121
+# cu121 matches the module cuda-toolkit/12.1.1 recorded in the lab guide;
+# re-check against `nvidia-smi` on the allocated node and record any change.
+name: pslg-nilm
+channels:
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - numpy<2
+      - pandas>=2.2
+      - scipy>=1.11
+      - scikit-learn>=1.5
+      - matplotlib>=3.9
+      - pyyaml>=6.0
+      - --index-url=https://download.pytorch.org/whl/cu121
+      - --extra-index-url=https://pypi.org/simple
+      - torch>=2.4
