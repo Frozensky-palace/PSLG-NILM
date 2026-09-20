@@ -29,8 +29,19 @@ def build_state_library_from_manifest(*, run_manifest_path: Path,
                                       cycle_library_dir: Path,
                                       segment_map_path: Path,
                                       output_dir: Path, run_id: str,
-                                      sample_seconds: int = 6) -> dict:
-    """Build one state library from a completed clustering run manifest."""
+                                      sample_seconds: int = 6,
+                                      status: str = "pilot_physical_stats_not_final",
+                                      feature_model: str | None = None,
+                                      segment_method: str | None = None,
+                                      config_hash: str | None = None,
+                                      git_commit: str | None = None) -> dict:
+    """Build one state library from a completed clustering run manifest.
+
+    ``status`` must describe the feature model and maturity honestly — for
+    example ``smoke_detsec_pc``, ``formal_candidate_detsec_pc`` or
+    ``frozen_detsec_pc_v1``; the historical default only fits the original
+    physical-stats pilot libraries.
+    """
     log_root = run_manifest_path.parent
     cycle_library_dir = Path(cycle_library_dir)
     segment_map_path = Path(segment_map_path)
@@ -177,9 +188,13 @@ def build_state_library_from_manifest(*, run_manifest_path: Path,
 
     summary = {
         "protocol": "state_library_v1",
-        "status": "pilot_physical_stats_not_final",
+        "status": status,
         "run_id": run_id,
         "cluster_tag": cluster_tag,
+        "feature_model": feature_model,
+        "segment_method": segment_method,
+        "config_hash": config_hash,
+        "git_commit": git_commit,
         "source_partition": "train",
         "state_blocks": int(len(inventory)),
         "cycles": int(inventory["cycle_id"].nunique()),
@@ -213,6 +228,10 @@ def main() -> None:
     ap.add_argument("--segment-map", required=True)
     ap.add_argument("--output-dir", required=True)
     ap.add_argument("--sample-seconds", type=int, default=6)
+    ap.add_argument("--status", default="pilot_physical_stats_not_final",
+                    help="library maturity tag, e.g. formal_candidate_detsec_pc")
+    ap.add_argument("--feature-model", default=None)
+    ap.add_argument("--segment-method", default=None)
     args = ap.parse_args()
     build_state_library_from_manifest(
         run_manifest_path=Path("log") / args.run_id / "run_manifest.json",
@@ -222,6 +241,9 @@ def main() -> None:
         output_dir=Path(args.output_dir),
         run_id=args.run_id,
         sample_seconds=args.sample_seconds,
+        status=args.status,
+        feature_model=args.feature_model,
+        segment_method=args.segment_method,
     )
 
 

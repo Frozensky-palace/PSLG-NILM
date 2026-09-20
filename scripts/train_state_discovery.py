@@ -154,6 +154,11 @@ def main() -> None:
     cfg.setdefault("time_clustering", {}).setdefault(
         "method_specific", {}).setdefault("kmeans", {})["random_state"] = seed
 
+    status = (f"smoke_{feature_model}" if smoke
+              else f"formal_candidate_{feature_model}")
+    head_commit = git_commit(PROJECT_ROOT) or "unknown"
+    config_hash = canonical_config_hash(cfg)
+
     # Reuse main.py's step builders so the formal pipeline cannot drift from
     # the workflow definition used everywhere else.
     from main import _build_cluster, _build_feature, _build_segment, \
@@ -194,6 +199,11 @@ def main() -> None:
             output_dir=output_root / f"state_library_k{k}",
             run_id=args.run_id,
             sample_seconds=sample_seconds,
+            status=status,
+            feature_model=feature_model,
+            segment_method=segment_method,
+            config_hash=config_hash,
+            git_commit=head_commit,
         )
         if summary["state_blocks"] == 0:
             raise RuntimeError(f"{tag} produced zero state blocks; "
@@ -203,8 +213,9 @@ def main() -> None:
     provenance = {
         "protocol": "state_discovery_v1",
         "status": "smoke" if smoke else "formal_candidate",
+        "library_status": status,
         "run_id": args.run_id,
-        "git_commit": git_commit(PROJECT_ROOT) or "unknown",
+        "git_commit": head_commit,
         "seed": seed,
         "feature_model": feature_model,
         "segment_method": segment_method,
@@ -214,7 +225,7 @@ def main() -> None:
         "train_only": True,
         "test_accessed": False,
         "config": cfg,
-        "config_hash": canonical_config_hash(cfg),
+        "config_hash": config_hash,
         "input_hashes": {
             "segment_source_map_sha256": sha256_of_file(map_path),
             "segment_export_manifest_sha256": (
