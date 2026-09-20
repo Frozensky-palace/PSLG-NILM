@@ -1,14 +1,16 @@
 # PSLG-NILM 基元状态生成与拼接研究：完整后续执行计划与 AI 交接说明
 
-> 文档版本：v1.2  
+> 文档版本：v1.3
 > 整理日期：2026-09-20  
 > 仓库：`D:\zhj\vscode\PSLG-NILM`  
 > 第一研究对象：UK-DALE House 1 washing machine  
 > 主要用途：供后续 AI 模型、开发者和服务器实验直接接手执行  
 > 当前状态：Phase A 与 Phase B 本机部分已完成（B2 策略与粒度候选已冻结、Seq2Point
 > 训练器已实现且本机冒烟跑通、全套 106 项测试通过）；服务器 DETSEC-PC、正式
-> Seq2Point 多 seed 网格与 B3–B5 生成模型尚未开始。B2 冻结策略见
-> `docs/state_and_b2_policy_freeze_v1.md`
+> Seq2Point 多 seed 网格与 B3–B5 生成模型尚未开始。B3 已冻结为四条完整周期路线，
+> B4 为基元生成，B5 为基于 HSMM 的受约束拼接。B2 冻结策略见
+> `docs/state_and_b2_policy_freeze_v1.md`；进入 C1 前的本机准备、服务器操作和验收标准见
+> `docs/C1_LOCAL_PREPARATION_AND_SERVER_EXECUTION_GUIDE.md`。
 
 ---
 
@@ -480,7 +482,7 @@ k=4 的 MAE 最好，k=5 的 F1、误报和边界最好。差异不足以让树�
 
 - GPU 版 DETSEC-PC 特征训练；
 - 正式 Seq2Point B0–B5 多 seed、多比例训练；
-- B3/B4/B5 生成模型训练；
+- B3 四路线、B4 基元生成器训练和 B5 HSMM 约束拼接；
 - 大规模生成采样和质量评估；
 - 多状态数、多超参数的受控网格；
 - 多电器或跨住宅扩展；
@@ -496,7 +498,8 @@ k=4 的 MAE 最好，k=5 的 F1、误报和边界最好。差异不足以让树�
 4. 服务器产物先写独立 run 目录，再同步回本机报告目录；
 5. 禁止只复制最终指标而丢失配置、日志、检查点和 provenance。
 
-当前 B2-matched 最小服务器包约278 MiB，不需要上传约5.9 GiB原始 HDF。
+当前无 test 的 B2-matched 开发包约251.6 MiB，不需要上传约5.9 GiB原始 HDF；正式
+DETSEC-PC 另需较小的 train-only 状态发现包。
 
 ### 6.4 指南记录的集群资源
 
@@ -519,7 +522,10 @@ k=4 的 MAE 最好，k=5 的 F1、误报和边界最好。差异不足以让树�
 - DETSEC-PC 单次正式训练：优先1张 A6000；若24GB足够，也应在 RTX3090 做一次
   可运行性验证；
 - Seq2Point 单组训练：1张 RTX3090、8 CPU、32GB内存；
-- B3/B4/B5 第一版 CVAE：先用1张 RTX3090，显存不足再切换 A6000；
+- B3-T 真实周期变换不训练神经网络，可优先用 CPU；B3-V CVAE 和 B3-G GAN 先用
+  1张 RTX3090；B3-D 扩散模型优先 A6000，显存够时再回测 RTX3090；
+- B4 第一版共享条件 CVAE 先用1张 RTX3090，只有核心结果有希望时才扩展 GAN/扩散；
+- B5 的 HSMM 拟合与拼接通常可用 CPU，批量生成或联合神经边界模型再申请 GPU；
 - 不要用多 GPU 作为默认方案；只有单 GPU 基线稳定后再考虑分布式训练；
 - 多 seed 通过 Slurm 独立作业并行，不在一个进程里争抢多张 GPU。
 
@@ -564,12 +570,13 @@ ssh -p 2222 "<jumpserver_user>@<system_user>@172.28.255.242@lab.networkctl.cn"
 1. **开发包**：只包含 train、validation、配置、索引和 SHA-256；
 2. **最终 test 包**：协议冻结后再单独传输或解锁。
 
-当前 `build_server_transfer_manifest.py` 生成的包仍包含 test shard。它可用于最终服务器
-环境，但在开发阶段应新增 `--exclude-test` 或构建独立 dev manifest，减少误访问 test
-的风险。完成该改造前，不得把“代码没有主动评价 test”等同于“test 在服务器上物理
-隔离”。
+`build_server_transfer_manifest.py` 已支持 `--exclude-test`。2026-09-20 的复核结果是：
+开发包可只包含 train、validation、配置、索引和 SHA-256，不包含 test 路径。但是这个
+B0/B1/B2 包并不自动包含 DETSEC-PC 所需的 train-only 周期片段、状态发现配置和映射表，
+所以 C1 前还必须建立独立的 state-discovery 包，不能把现有 NILM 包直接当作 C2 输入。
 
-约278 MiB的候选包可以通过 JumpServer SFTP，但手册建议更大的数据使用实验室认可的
+当前无 test 的 B0/B1/B2 候选包约263.8 MB（251.6 MiB）。它可以通过 JumpServer SFTP，
+但手册建议更大的数据使用实验室认可的
 HTTP/对象存储中转，再在集群用 `curl`/`wget` 获取，避免网页 SFTP 波动。任何方式都
 必须在服务器复算 SHA-256；密码、令牌和对象存储密钥不得写入 Git、Slurm 脚本或日志。
 
@@ -935,55 +942,85 @@ echo "finished=$(date --iso-8601=seconds)"
 
 ---
 
-## Phase D：B3 普通完整周期生成
+## Phase D：B3 普通完整周期生成（四条路线）
 
-### 目标
+### 目标和角色
 
-建立一个公平、足够强但成本可控的直接整段生成基线。
+B3 的共同点是“一次得到一条完整洗衣机周期”，不先拆成基元再拼接。它不是单个模型，
+而是四种强弱和成本不同的普通生成对照。这样可以避免只挑一个较弱基线，从而夸大
+基元方案的优势。
 
-### D1. 第一版模型建议
+| 编号 | 方法 | 通俗解释 | 研究角色 |
+|---|---|---|---|
+| B3-T | 真实周期变换与重新叠加 | 从 train 周期库抽真实曲线，做受限时间/功率缩放和启动错位 | 最低成本、最稳的普通生成基线 |
+| B3-V | 条件完整周期 CVAE | 压缩真实周期后，从潜在空间采样一条新周期 | 稳定的神经生成基线 |
+| B3-G | TraceGAN/SGAN 思路的条件 1D WGAN | 生成器造周期，判别器逼其接近真实；训练时隔离有效 signature | 成熟的对抗生成基线 |
+| B3-D | 条件扩散模型 | 从噪声逐步还原完整周期 | 更强但训练和采样成本更高的前沿基线 |
 
-优先使用 conditional VAE，原因是实现稳定、训练成本低、条件控制直接。不要一开始
-同时开发 GAN、Diffusion 和 Transformer。只有在 CVAE 明显失败且问题明确时，才
-增加第二种模型。
+这里的 T/V/G/D 是本项目内部简称，不声称代码等同于论文官方实现。论文方法只作为
+架构和实验设计参考；若不是复现官方代码，应明确写成 “TraceGAN-style” 或
+“SGAN-inspired”。
 
-可能的条件：
+当前路线依据的文献入口：真实周期变换/重叠基线
+[`10.1109/TII.2023.3301026`](https://doi.org/10.1109/TII.2023.3301026)，TraceGAN
+[`10.1109/TSG.2021.3078695`](https://doi.org/10.1109/TSG.2021.3078695)，SGAN
+[`10.1007/978-3-031-62269-4_23`](https://doi.org/10.1007/978-3-031-62269-4_23)，
+NILM 扩散增强
+[`10.1016/j.energy.2025.135423`](https://doi.org/10.1016/j.energy.2025.135423)。正式实现前
+需要再核对论文输入、预处理、训练目标和评价设置，不能只按方法名称猜实现细节。
 
-- cycle 长度或长度桶；
-- 总能量桶；
-- 峰值功率桶；
-- 可选运行模式代理变量。
+### D1. B3-T：真实周期变换
 
-变长序列可先采用长度桶、mask 和插值到标准长度，采样后恢复目标长度。但任何变换
-必须同样接受真实性和能量检查。
+- 只能从 train cycle 库抽取 donor；validation 只能评价，test 完全不可访问；
+- 随机选择真实周期，做受限横向缩放、纵向缩放或二者组合；
+- 功率不得为负，能量、时长和峰值不得超过 train 合理分位范围；
+- 保存 donor id、缩放参数、随机种子和放置位置，便于追溯；
+- 必须做最近邻/复制审计，区分“合理真实变换”和“原样复制训练样本”；
+- 它不训练神经网络，所以也用于检查神经生成器是否真的带来额外价值。
 
-### D2. 训练与选择
+### D2. B3-V：条件完整周期 CVAE
 
-- 只使用493个 train cycle；
-- validation 只用于生成质量和下游效果选 checkpoint；
-- 模型规模、训练时长、调参次数需记录；
-- 生成数量、时长分布和放置时间表与 B4/B5 对齐；
-- 生成 cycle 先通过物理和复制检查，再进入 NILM。
+第一版神经基线仍优先 CVAE。条件包含周期长度桶、总能量桶、峰值桶和可选运行模式；
+变长周期采用 mask/长度桶或统一长度后再恢复。checkpoint 只由 validation 生成质量和
+下游 NILM 结果选择。
 
-### D3. 必须的生成质量检查
+### D3. B3-G：条件 WGAN
 
-- 非负功率、最大功率范围、总能量、持续时间；
-- 起止功率是否合理；
-- 自相关、频谱、功率分布；
-- 与最近 train cycle 的距离；
-- 完全相同片段或高相似复制检测；
-- 多样性和 mode collapse；
-- 合法放入背景后的总表恒等关系。
+- 采用 1D 卷积、条件输入和 Wasserstein 类训练目标；
+- 借鉴 SGAN 的 signature isolation，只让模型学习有效工作周期，避免大量 OFF 点淹没
+  训练；
+- 先在固定或分桶长度上验证稳定性，再扩展变长生成；
+- 必须记录判别器/生成器损失、梯度异常、mode collapse 和生成多样性；
+- 不因 GAN 训练困难而增加更多 validation 调参次数，四条路线共享调参预算规则。
 
-### D4. 输出
+### D4. B3-D：条件扩散
+
+- 以完整周期或长度桶后的周期为生成对象；
+- 条件和 B3-V 尽量一致，避免输入信息不公平；
+- 第一轮只做小模型和短扩散步数验证，确认能生成合法波形再扩大；
+- 同时报告训练时间、采样时间和显存，因为“效果更好但成本高很多”也是重要结论；
+- 若 B3-D 在 validation 下游效果没有明显超过 B3-V/B3-G，不继续无上限调参。
+
+### D5. 四路线共同公平协议
+
+- 只使用 train cycle；
+- 生成相同数量、近似总时长和相同条件分布；
+- 使用同一 background 与预先冻结的 placement schedule；
+- 使用同一 NILM 训练预算、seed、ratio 和 checkpoint 规则；
+- B3-T 无参数，因此同时报告墙钟时间；神经方法报告参数量、GPU 小时和采样速度；
+- 全部生成周期都先经过物理合法性、复制、最近邻、多样性和能量检查。
+
+输出：
 
 ```text
-checkpoints/full_cycle_generator/<run_id>/
-reports/generation_quality/B3_<run_id>/
-reports/synthetic_cycles/B3_<run_id>/
+checkpoints/full_cycle_generator/<method>/<run_id>/
+reports/generation_quality/B3_<method>_<run_id>/
+reports/synthetic_cycles/B3_<method>_<run_id>/
 ```
 
-预计：服务器3–7天，代码准备在本机完成。
+执行顺序为 B3-T → B3-V → B3-G → B3-D。前两项先建立地板线和稳定神经基线，
+后两项补齐成熟对抗路线和前沿路线。预计服务器约7–20天，代码均先在本机完成单测与
+极小样本冒烟。
 
 ---
 
@@ -991,94 +1028,75 @@ reports/synthetic_cycles/B3_<run_id>/
 
 ### 目标
 
-对冻结状态库中的每个状态分别建模，生成新的状态波形，再按真实模板路径做基础拼接。
+对冻结状态库中的短状态波形进行生成，再按基础规则拼成完整周期。它回答的是：
+“把学习对象从完整周期改为更短、更可复用的基元，本身有没有价值？”
 
-### E1. 训练单元
+### E1. 核心模型
 
-第一版建议共享编码器并以 `state_label` 为条件，避免为每个状态训练完全独立的大模型
-导致预算不公平。也可训练每状态小模型，但必须报告总参数量和总训练成本。
+第一版只把共享条件 CVAE 作为 B4 核心模型：共享编码器/解码器，以 `state_label`、目标
+持续时间或长度桶、均值/能量条件作为输入。这样能减少每个状态单独训练造成的小样本
+不稳定，也更容易与 B3-V 做公平比较。
 
-条件建议包括：
+如果 B4-CVAE 在 validation 上已经接近或超过最强 B3，再增加 B4-GAN 或 B4-Diffusion
+作为扩展；如果核心方案明显失败，优先检查状态定义、状态样本量和拼接，而不是立刻堆
+更多模型。
 
-- state label；
-- 目标持续时间或长度桶；
-- 能量/均值功率条件；
-- 可选前驱和后继状态。
+### E2. B4 基础拼接
 
-### E2. B4 基础拼接定义
+- 状态路径只从 train 的真实路径分布采样；
+- 逐段生成状态并恢复目标长度；
+- 只做最基本连接，不加入 HSMM、复杂边界修复和困难样本策略；
+- 保存每个基元的状态、条件、随机种子、生成器 checkpoint 和周期内位置；
+- 与 B5 保持足够差异，确保 B5−B4 能测出约束模型的贡献。
 
-- 状态路径从 train 的真实路径分布中采样，或复用与 B3 相同模板条件；
-- 生成每个状态；
-- 只做最基本的长度恢复和连接；
-- 不加入完整 B5 边界优化；
-- 保留足够差异，使 B5 vs B4 能回答“约束是否有效”。
+### E3. 与 B3 的公平比较
 
-### E3. 公平性
+B3 与 B4/B5 使用相同 train 数据、合成数量、总时长、背景、放置时间表、NILM 训练预算、
+seed 和 validation 选择次数。除下游 MAE/F1/SAE 外，还要报告生成器总参数、训练 GPU
+小时、单周期采样时间和存储成本。
 
-B3 和 B4 必须：
-
-- 使用相同 train cycle；
-- 生成相同数量和近似总时长；
-- 使用相同背景和放置时间表；
-- 使用相同 NILM 训练预算；
-- 尽量匹配生成模型总参数或总 GPU 时间；
-- 使用相同 validation 选择次数。
-
-预计：服务器4–10天。
+预计服务器4–10天；若仅核心 CVAE，先按4–6天预算。
 
 ---
 
-## Phase F：B5 受约束生成与消融
+## Phase F：B5 HSMM 受约束基元生成与消融
 
 ### 目标
 
-将 B2-matched 得到的经验正式用于“生成基元拼接”，并逐项证明每种约束的价值。
+B5 不再把 Markov 当作与 GAN/扩散并列的“波形生成器”。Markov 类方法最合适的位置是
+控制基元的顺序和持续时间。因此 B5 使用 HSMM（Hidden Semi-Markov Model，通俗地说：
+同时学习“下一状态是谁”和“这个状态通常持续多久”）组织 B4 生成的状态波形。
 
-### F1. 状态顺序约束
+### F1. HSMM 顺序与持续时间
 
-- 从 train transition graph 学习合法转移；
-- 禁止 train 中完全未出现且缺少物理依据的跳转；
-- 对稀有但合法的路径使用平滑概率，避免完全消失；
-- 保存每条合成路径的概率和来源统计。
+- 只从 train 状态序列拟合初始状态、转移概率和状态持续时间分布；
+- 显式禁止无物理依据且 train 未出现的跳转；
+- 对稀有但合法路径做预先冻结的平滑，不能看 validation 后临时改规则；
+- 记录每条合成路径、转移概率、持续时间概率和随机种子；
+- 与简单一阶 Markov 做小型消融，以证明显式持续时间建模是否必要。
 
-### F2. 持续时间约束
+### F2. 边界和上下文约束
 
-- 按状态学习经验分布或参数分布；
-- 可按前驱/后继条件建模；
-- 限制极端缩放；
-- 报告生成时长分布与真实 train/validation 的差异。
+- 首先使用 B2 冻结结论：默认不启用已经验证为负收益的通用 cross-fade 和端点偏移；
+- 可采用端点功率/斜率匹配来选择生成基元，但需单独消融；
+- 可加入前驱/后继状态、周期总时长和总能量条件；
+- 背景负载、时间、温度等外部条件只有在数据完整且各组都可公平使用时才加入；
+- 所有约束只从 train 学习，不得使用 validation/test 波形拟合。
 
-### F3. 边界约束
-
-- donor/生成状态选择时匹配端点功率和斜率；
-- 使用短窗 cross-fade 或可学习 transition；
-- 控制边界跳变、能量改变和局部频谱异常；
-- 任何平滑不得泄漏 validation/test 波形。
-
-### F4. 上下文约束
-
-可选条件：
-
-- 前驱和后继状态；
-- cycle 总能量/总时长；
-- 背景负载区间；
-- 温度、时间等外部条件仅在数据完整且公平时加入。
-
-### F5. 逐级消融
-
-建议服务器正式组：
+### F3. 逐级消融
 
 ```text
-B4                  generated primitive + basic composition
-B4 + transition     只加顺序
-B4 + duration       顺序 + 时长
-B4 + boundary       顺序 + 时长 + 边界
-B5                  再加最终上下文/困难样本策略
+B4-basic             generated primitive + 基础拼接
+B4 + Markov          只控制状态顺序，不显式建模持续时间
+B4 + HSMM            同时控制顺序和持续时间
+B4 + HSMM + endpoint 再加端点/斜率匹配
+B5-final             冻结后的最佳约束组合
 ```
 
-一次只增加一个约束，才能判断贡献来源。
+一次只增加一项，且所有组复用同一随机种子和目标条件表。只有这样，结果才能回答“提升来自
+基元生成，还是来自 HSMM/边界约束”。
 
-预计：服务器5–12天。
+预计服务器5–12天；HSMM 拟合本身成本较低，主要时间来自 B4 生成和后续 NILM 重训。
 
 ---
 
@@ -1188,6 +1206,11 @@ F1 绝对提高至少0.02且另一主指标不明显退化”，但这只是建�
 13. [x] 增加并冻结 `environment_server.yml`；
 14. [x] 为 DETSEC-PC、Seq2Point 和生成器分别增加 Slurm 模板（`slurm/*.sbatch`）。
 
+上述第13、14项表示“已有初版文件”，不表示可以不检查就提交服务器。2026-09-20
+复核发现：当前环境文件使用 `tensorflow-cpu`，正式 DETSEC-PC 需要另行验证 Linux
+TensorFlow GPU 环境；部分旧 Slurm 文件仍含 `/home/<user>` 或旧项目路径。进入 C1 前
+必须按 `docs/C1_LOCAL_PREPARATION_AND_SERVER_EXECUTION_GUIDE.md` 完成现场化和 GPU 冒烟。
+
 ### 随后做（服务器）
 
 1. 校验传输文件和环境；
@@ -1198,8 +1221,8 @@ F1 绝对提高至少0.02且另一主指标不明显退化”，但这只是建�
 6. 跑 B0/B1/B2 候选的3 seed、ratio=0.5 Seq2Point validation；
 7. 冻结真实基元拼接策略；
 8. 扩展 ratio=1和2；
-9. 开始 B3/B4 生成器；
-10. 完成 B5 约束消融；
+9. 依次运行 B3-T 真实周期变换、B3-V CVAE、B3-G 条件 WGAN、B3-D 条件扩散；
+10. 运行 B4 共享条件基元 CVAE，并完成 B5 Markov/HSMM/端点约束消融；
 11. 冻结全部协议并形成签名记录；
 12. 最后传输/解锁 test，并只运行一次最终评价。
 
@@ -1215,12 +1238,16 @@ src/
 │  ├─ schema.py
 │  ├─ provenance.py
 │  ├─ base_generator.py
+│  ├─ full_cycle_transform.py
 │  ├─ full_cycle_cvae.py
+│  ├─ full_cycle_wgan.py
+│  ├─ full_cycle_diffusion.py
 │  └─ primitive_cvae.py
 ├─ composition/
 │  ├─ donor_matching.py
 │  ├─ transition_model.py
 │  ├─ duration_model.py
+│  ├─ hsmm_sequence.py
 │  ├─ boundary_handler.py
 │  └─ constrained_composer.py
 ├─ nilm/
@@ -1241,10 +1268,18 @@ scripts/
 ├─ run_b2_ablation.py
 ├─ train_nilm.py
 ├─ predict_nilm.py
+├─ build_c1_server_bundle.py
+├─ server_preflight.py
+├─ gpu_framework_smoke.py
 ├─ train_full_cycle_generator.py
+├─ generate_full_cycles.py
 ├─ train_primitive_generator.py
+├─ generate_primitive_cycles.py
 ├─ compose_generated_cycles.py
+├─ fit_hsmm_composer.py
 ├─ evaluate_synthetic_quality.py
+├─ audit_generation_memorization.py
+├─ build_shared_placement_schedule.py
 └─ freeze_protocol_before_test.py
 
 config/
@@ -1663,9 +1698,9 @@ nvidia-smi
 模型与预测：artifact 目录，不回写 Git
 ```
 
-当前候选包约278 MiB，可以使用 JumpServer SFTP。更大的数据按手册建议使用获批对象
-存储或 HTTP 中转。传输完成后必须执行项目校验脚本；在该脚本实现前，至少对照 JSON
-manifest 逐文件复算 SHA-256。
+当前无 test 候选包约251.6 MiB，可以使用 JumpServer SFTP。更大的数据按手册建议使用
+获批对象存储或 HTTP 中转。传输完成后必须使用 `scripts/verify_server_manifest.py` 对照
+JSON manifest 逐文件复算 SHA-256。
 
 不要上传：
 
@@ -1718,8 +1753,11 @@ run_summary.md
 | GPU 单 batch 冒烟 | RTX3090 | 1 | 4 | 16GB | 30分钟 | 验证环境 |
 | DETSEC-PC | A6000 | 1 | 8 | 32–64GB | 1–2天 | 显存优先，稳定后再网格 |
 | Seq2Point 单组 | RTX3090 | 1 | 8 | 32GB | 1–2天 | seed 独立任务 |
-| B3/B4 CVAE | RTX3090 | 1 | 8 | 32GB | 1–3天 | 显存不足转 A6000 |
-| B5 采样/拼接 | RTX3090或CPU | 0–1 | 8 | 32GB | 1天 | 视生成器推理而定 |
+| B3-T 真实周期变换 | CPU | 0 | 4–8 | 16GB | 数小时 | 不训练神经网络 |
+| B3-V/B4 CVAE | RTX3090 | 1 | 8 | 32GB | 1–3天 | 显存不足转 A6000 |
+| B3-G 条件 WGAN | RTX3090 | 1 | 8 | 32GB | 1–3天 | 先验证稳定性和 mode collapse |
+| B3-D 条件扩散 | A6000 | 1 | 8 | 32–64GB | 2–5天 | 先小模型、短采样步数 |
+| B5 HSMM/拼接 | CPU 或 RTX3090 | 0–1 | 8 | 32GB | 数小时–1天 | HSMM 可用 CPU，生成器推理可用 GPU |
 
 这是保守起点，不是固定配额。根据第一轮日志中的显存、CPU、I/O和耗时再调整，避免
 一开始过度申请资源。所有任务不得超过指南记录的7天上限。

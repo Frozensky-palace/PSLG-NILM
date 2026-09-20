@@ -1,0 +1,376 @@
+{
+  "protocol": "c1_nilm_b0_b2_trainval_bundle_v1",
+  "project_relative_paths": true,
+  "file_count": 73,
+  "total_bytes": 263425541,
+  "files": [
+    {
+      "path": "config/experiments/nilm_b0_b2_pilot.yaml",
+      "bytes": 984,
+      "sha256": "b42c251d2b5deaf45c671f9814b7ebdc88a66d766cce5d63250559c9a4150b4a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_000_1363876806_1366555206.npz",
+      "bytes": 4505782,
+      "sha256": "d120ab1dba2eeda34befe7709f34bae16a675f2c06c53f497daf1e2639cf8875"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_001_1366555206_1369233606.npz",
+      "bytes": 4701672,
+      "sha256": "f4f637a6a5ba59f50a61c6db902a94e6ccddd13ed5125c48a564840d9f3dcee2"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_002_1369233606_1371912006.npz",
+      "bytes": 3394693,
+      "sha256": "4f4bf8740c9f4ba8f540ca5beec913b29b7dbe0e7a2d9926544c82cb7f701551"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_003_1371912006_1374590406.npz",
+      "bytes": 4573730,
+      "sha256": "91f139e3e9b374c65d743983172e91cf05665131b043c5310f434b1889e776be"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_004_1374590406_1377268806.npz",
+      "bytes": 4621491,
+      "sha256": "00ef60a91ee630f9d63fea4243e43f77db1b5c4d7c45ebabdc542686bc7f68ee"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_005_1377268806_1379947206.npz",
+      "bytes": 4704412,
+      "sha256": "9c117896d6d6ed5077f9cf01f3cc005919f6f322215730072dea4678583111b3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_006_1379947206_1382625606.npz",
+      "bytes": 4782260,
+      "sha256": "418119dc1346cb22af5145717a123ef59c850ec973085d7b697176c95c2c3b53"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_007_1382625606_1385304006.npz",
+      "bytes": 4753191,
+      "sha256": "75a8ddb8e1d28cc74fa8a0a6fae5a0babf161d4e9a9fe596dffe90f494469d2f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_008_1385304006_1387982406.npz",
+      "bytes": 4779823,
+      "sha256": "5c7c765c1881c735944bd01aa0c0a43acb880e0824ebd95f872a1404a3784148"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_009_1387982406_1390660806.npz",
+      "bytes": 4725115,
+      "sha256": "9d37e3ae880be5f6f064862dd718ad9dfd98d961738009b031d4116017125524"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_010_1390660806_1393339206.npz",
+      "bytes": 4760156,
+      "sha256": "427065f2b106ea34889e185b3b6af41b35ba09c6d60f93d8777c9a0ebbb8b30d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_011_1393339206_1396017606.npz",
+      "bytes": 4759779,
+      "sha256": "3a069981d4885652238b0479e6bcdbde7e27cad70f6dccaa827a58b3eb986a74"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_012_1396017606_1398696006.npz",
+      "bytes": 4757689,
+      "sha256": "51b06caca765a2b2aeeee5ff25e7a2c06cda8c470f69a6d944fb5bd3534eca69"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_013_1398696006_1401374406.npz",
+      "bytes": 4770422,
+      "sha256": "8d04bf5c2ff081b52e022e980d82481fd60167ed9dc60366a64524833dd8383e"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_014_1401374406_1404052806.npz",
+      "bytes": 4678770,
+      "sha256": "0027b91e278a2fbad78e61a36db1dc6d7f675c798a459d2cad68e69038241d0f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_015_1404052806_1406731206.npz",
+      "bytes": 4646568,
+      "sha256": "08b946be8449948016ece5a17a9496e66036ee94fa1ea1d2a9b1a40ef36f4353"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_016_1406731206_1409409606.npz",
+      "bytes": 4677598,
+      "sha256": "dbde1b3c189db541532ac5b81e68475b35a665ae61fd381019ea59b388cf2092"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_017_1409409606_1412088006.npz",
+      "bytes": 4797461,
+      "sha256": "6e51be9ea3ea224bae75a386cddee0177bf693cf90219bc91324d70b358d8351"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/train/shard_018_1412088006_1412274228.npz",
+      "bytes": 336558,
+      "sha256": "82f4a42cc045fae71e47070b1c968d53f26ad0b8a4b9f558a592e8c810dbd3b6"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/validation/shard_000_1412274228_1414952628.npz",
+      "bytes": 4767266,
+      "sha256": "f6c44a32347197ba14894f4e09df444dd577c5c5b5c11f4351786c3a2c819931"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/validation/shard_001_1414952628_1417631028.npz",
+      "bytes": 4899876,
+      "sha256": "060ef656c76e31e0ed9461c1888ecbe53f598761212f35f71fea66cf57f9c006"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/validation/shard_002_1417631028_1420309428.npz",
+      "bytes": 4829784,
+      "sha256": "d1211eeb5ba4e638f97edf50dc7548c4d2c20e09aebe2b75a0d1bc4532781dac"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/validation/shard_003_1420309428_1422987828.npz",
+      "bytes": 4893339,
+      "sha256": "440ad4bbc422a328b4a67e8a3b250439188e5d1d7168d672fa52089a62bd8437"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2/validation/shard_004_1422987828_1425401040.npz",
+      "bytes": 4407369,
+      "sha256": "b4cbcfd40b110916beb05630eb0f2d9d6b6d43d4530b5682067879fe9999c7ff"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/inputs/b0_train_active_indices.npy",
+      "bytes": 480304,
+      "sha256": "9c759a105a5ed1aab4dceb2841aff8764a46a61e22d8481bc65a9950d32e94e3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/inputs/b0_train_inactive_indices.npy",
+      "bytes": 9995216,
+      "sha256": "274a4578592b556a0237307bc10857a5ba63421077984c83e5ae2a09273b3211"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/inputs/b1_train_active_indices.npy",
+      "bytes": 720712,
+      "sha256": "30c2ce0b96df9e41c15d3b9853842aff4d24857056f4c758aae955d19aa58d00"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/inputs/b1_train_inactive_indices.npy",
+      "bytes": 9754808,
+      "sha256": "e406110214bb36075b48bedb2681e849ce2ac52c1b594517b88bfb8273740ae2"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/inputs/b2_train_active_indices.npy",
+      "bytes": 725672,
+      "sha256": "f6ebdce704b49cef23a0ff2db9c1831b03f5840df2a16058902e32a6869cc5b7"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/inputs/b2_train_inactive_indices.npy",
+      "bytes": 9749848,
+      "sha256": "7dba7c471e9b800a501f0ab6b9512d19d13c5b6eba1ec234dc44c2408da1f02b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/inputs/dataset_manifest.json",
+      "bytes": 29599,
+      "sha256": "ae7f8b9bca2fde73b944e67266770e85e9c0ae78743365f54e4b622a5b0084cf"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/inputs/normalization.json",
+      "bytes": 350,
+      "sha256": "53bac86826d596f9ea28fff127d41f92fbdb05fc62199dfe0de79f9e23fc66fd"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/inputs/validation_monitor_indices.npy",
+      "bytes": 800128,
+      "sha256": "1f1fcd0469622a85bc6970f53d08d3f6f939af68f4ea140704ae710e62094d7e"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/inputs/window_ranges.csv",
+      "bytes": 3143,
+      "sha256": "6425cebd5be072789f393543359c4cfacdc81682cc312a828532e838b4d38b05"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_000.npz",
+      "bytes": 3324170,
+      "sha256": "3b6a5fa53f2ce8b0fa6e10b1b014b98904c896f283a0d1a7967599c0fb4d9fb9"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_001.npz",
+      "bytes": 3439200,
+      "sha256": "67e22b80dba02e45b8ce9b68b84c777a84de5ee4a5ce2c766776ae7248e568cd"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_002.npz",
+      "bytes": 2494373,
+      "sha256": "81c1a3f440c89a124aad624a4b27b299bbd120d2cf132f2b2cd342cf26ced585"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_003.npz",
+      "bytes": 3366759,
+      "sha256": "23bf3984b25e4ef68cab3ee88b79dcc306cc7e4ddf1e66941a6856fe53ecdc61"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_004.npz",
+      "bytes": 3398522,
+      "sha256": "701bd1bfbe38bde9962114abbb1d29f37563ce2db93657b5cc8f1464aa83ad2a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_005.npz",
+      "bytes": 3470946,
+      "sha256": "b87d6b390df49c7e4c62df3991f991fa9b5ab3de51b7d99753f4ee0a0193177d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_006.npz",
+      "bytes": 3554130,
+      "sha256": "5cfb288eea8bcae50ee51bccdda0ee3015f8da10016d3e811f311ca69a8433c7"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_007.npz",
+      "bytes": 3517500,
+      "sha256": "874bd7bc97d48c49d18356c06e29e93308f39cc1ae27afea96b8ea5973fe4070"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_008.npz",
+      "bytes": 3506599,
+      "sha256": "d148c47bc6242bc7526cd4df6cf3e06ba00dcb81770b7a3a5897b945c36236ed"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_009.npz",
+      "bytes": 3475008,
+      "sha256": "c8e607fad64969d0b5d0f1f981fc81078f7df019f869139a53345aaa6f9d5c52"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_010.npz",
+      "bytes": 3526456,
+      "sha256": "8f32394151d2902cf1d4cb427da2c32a7ad7d3e4660246f22c4b0c1c4de901e5"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_011.npz",
+      "bytes": 3530171,
+      "sha256": "9bd57c842d319e6d8c5c8f53e64e8d6e6161c5a9880a91811ff2982b569d6b89"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_012.npz",
+      "bytes": 3525313,
+      "sha256": "6dce5d596641ff4ff8ba60a4d5345e53324a64e26f276287ef526eab358b6851"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_013.npz",
+      "bytes": 3516430,
+      "sha256": "e5788d341f19684bff24a74b9592bcd5b9551fb8badf43c6b9d1bf4256b6469e"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_014.npz",
+      "bytes": 3440855,
+      "sha256": "abf03e527fda8ca60b107d74babf20326206fe6facb0c2f6256e51f1d92ef581"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_015.npz",
+      "bytes": 3420847,
+      "sha256": "a02dc81a49f74eeb06c08435ff7d6ba0a67de75b7dad4e336281539a518428cc"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_016.npz",
+      "bytes": 3431939,
+      "sha256": "114c093c9e9e2367cc071a9ddc94b9ffb1d8c40e0db527078088fb006c9f34fe"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_017.npz",
+      "bytes": 3515453,
+      "sha256": "022f31f726a8cf4aa4883ccc37e5b1aeb66013d6908f755b58a038936b1e6d3d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B1/shards/shard_018.npz",
+      "bytes": 244742,
+      "sha256": "6fd4ef8b4366cb8854271612b5defc48170b7c819f5472508ae05da40ace9675"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_000.npz",
+      "bytes": 3332539,
+      "sha256": "2144e86b5f8e5f3e3376816751b90fbd165504d727d446c279916726ade6cedb"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_001.npz",
+      "bytes": 3454912,
+      "sha256": "950dc234af7a628f60aa7b151d3844b0129b9ffc64ab6bfe7326317cc3fceb74"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_002.npz",
+      "bytes": 2500622,
+      "sha256": "52729d9f385c2839cd08caab3ee0811407861694193d46124eadf490509e71a5"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_003.npz",
+      "bytes": 3381539,
+      "sha256": "cec87de29c133616b62e3070b36faa6586ed45bff7324f62706e985adaeec284"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_004.npz",
+      "bytes": 3415022,
+      "sha256": "bf1f21192190f0d35eb9bf9fcb8fbd88eace525be6f158ae104e5f6cd3797d3f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_005.npz",
+      "bytes": 3481446,
+      "sha256": "8871df6601ecc79f68ad8e48cc01ae4dd354f7bce99cba666a9bf6f07c74c72e"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_006.npz",
+      "bytes": 3568512,
+      "sha256": "c86697cac15317da721a8730bb544a26131f63ef661075e8b3e60d06fcfd2ea9"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_007.npz",
+      "bytes": 3542854,
+      "sha256": "c9aff45f750a2bd1937d8da71fba576afc768bc1bbe4ddf1fe6fc762c4754e2b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_008.npz",
+      "bytes": 3513569,
+      "sha256": "3e53f363300c5171fbf2c2e4eadbff6e2c976a4ec71501efb60719ddcc4c81cc"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_009.npz",
+      "bytes": 3485235,
+      "sha256": "4814591bf77073d049c2503c5cbd74750c7086ffa0d031f1346378023ada5000"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_010.npz",
+      "bytes": 3545141,
+      "sha256": "f2c2aab84e80e4dd85d2784ae364dbe3d4bcacf1c56b56e37a942ae40ba52db5"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_011.npz",
+      "bytes": 3544946,
+      "sha256": "2c1920c957dac19cf51a4e2490976d5d9ec764d99da2bf43c175f170573ea6b4"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_012.npz",
+      "bytes": 3538566,
+      "sha256": "a4e0d446c22b3cd04c076ab522dc98d1d798483bf2a4682990f1355cec14e41a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_013.npz",
+      "bytes": 3529942,
+      "sha256": "5d4dc52341e4866c8c28fcba419e8545b014077673ecab47c9efe1428318f310"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_014.npz",
+      "bytes": 3452522,
+      "sha256": "74eada48d831fd504c1974f666bd2f28a5fc1b79983e6fee63c437b2c65105bf"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_015.npz",
+      "bytes": 3437196,
+      "sha256": "c1ab4c90c7c8ac5f1247425ebb2d99fab7e88a471252ef0760172bcc593afcd7"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_016.npz",
+      "bytes": 3451241,
+      "sha256": "8668ac8530d224674a807897b223be37a711a6a46836381eb5b6223b1b87d9ab"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_017.npz",
+      "bytes": 3520014,
+      "sha256": "a3d246513ba33ddfa9d2760730d52cab2da94b76d23509aec1d2c9cf13068199"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed/B2/shards/shard_018.npz",
+      "bytes": 244742,
+      "sha256": "6fd4ef8b4366cb8854271612b5defc48170b7c819f5472508ae05da40ace9675"
+    }
+  ],
+  "test_path_count": 0,
+  "skipped_test_shards": 21,
+  "exclude_test": true
+}
