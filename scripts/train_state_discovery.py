@@ -36,6 +36,19 @@ for _path in (str(PROJECT_ROOT), str(MODELS_DIR),
 import pandas as pd  # noqa: E402
 import yaml  # noqa: E402
 
+
+def _enable_tf_determinism() -> None:
+    """Best-effort TF op determinism; unavailable backends are skipped."""
+    try:
+        import tensorflow as tf
+
+        tf.config.experimental.enable_op_determinism()
+        print("[state-discovery] TF op determinism enabled", flush=True)
+    except Exception as error:  # pragma: no cover - backend dependent
+        print(f"[state-discovery] TF determinism unavailable: {error}",
+              flush=True)
+
+
 from scripts.build_state_library import (  # noqa: E402
     build_state_library_from_manifest,
 )
@@ -113,6 +126,10 @@ def main() -> None:
                     help="override feature_extract.epochs (smoke runs)")
     ap.add_argument("--smoke-cycles", type=int, default=0,
                     help="use only the first N train cycles (0 = formal run)")
+    ap.add_argument("--deterministic-tf", action="store_true",
+                    help="enable TF op determinism; two runs with the same "
+                         "seed then produce identical features (slower, and "
+                         "unsupported ops raise)")
     ap.add_argument("--cycle-library-dir", default=None,
                     help="override config/state_discovery cycle_library_dir")
     args = ap.parse_args()
@@ -138,6 +155,8 @@ def main() -> None:
     if output_root.exists():
         raise SystemExit(
             f"refusing to overwrite an existing output directory: {output_root}")
+    if args.deterministic_tf:
+        _enable_tf_determinism()
 
     mapping, map_path = load_segment_map(segments_dir, None)
     smoke = args.smoke_cycles > 0
