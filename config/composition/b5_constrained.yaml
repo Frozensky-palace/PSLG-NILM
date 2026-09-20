@@ -1,0 +1,28 @@
+# Planned B5 constrained composition (Phase F). Values marked "planned" are
+# not frozen; they inherit the A4/A5 negative results recorded in
+# docs/state_and_b2_policy_freeze_v1.md and must be re-validated per stage.
+protocol: b5_constrained_composition_v1
+status: planned_not_implemented
+inherits: config/composition/b2_matched.yaml
+constraints:
+  transition:
+    source: train_transition_graph
+    smoothing: laplace              # rare-but-legal paths survive
+    forbid_unseen_jumps: true
+  duration:
+    distribution: empirical_per_state
+    conditional_on_neighbors: true
+    extreme_scale_limit: [0.67, 1.5]
+  boundary:
+    method: donor_endpoint_matching # NOT waveform smoothing (A4 negative result)
+    smoothing_forbidden_unless: validation_improvement_documented
+  context:
+    predecessor_successor: true
+    cycle_energy_bucket: true
+    background_load_bucket: planned
+ablation_ladder:
+  - B4_basic
+  - B4_plus_transition
+  - B4_plus_transition_duration
+  - B4_plus_transition_duration_boundary
+  - B5_full

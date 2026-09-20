@@ -1,0 +1,41 @@
+protocol:
+  name: nilm_b0_b2_pilot
+  version: 1
+  status: frozen_before_model_training
+
+data:
+  experiment_dir: reports/core_validation/ukdale_b1_washing_machine/nilm_inputs_seed17_r0p5_v1
+  sample_seconds: 6
+  window_length: 599
+  train_stride: 6
+  eval_stride: 1
+  arms: [B0, B1, B2]
+  train_source_by_arm: true
+  validation_source: real_only
+  test_source: real_only
+  shared_normalization: B0_real_train_only
+
+model:
+  family: seq2point
+  output: center_point
+  loss: mse
+  optimizer: adam
+  learning_rate: 0.001
+  batch_size: 512
+  max_epochs: 50
+  early_stopping_patience: 7
+  selection_metric: validation_mae
+
+training_sampler:
+  active_threshold_w: 20
+  active_fraction_per_batch: 0.5
+  steps_per_epoch: 1000
+  same_steps_for_all_arms: true
+  validation_monitor_windows: 100000
+  final_validation_uses_full_partition: true
+
+evaluation:
+  threshold_w: 20
+  metrics: [mae, sae, f1, precision, recall]
+  final_test_once_after_validation_freeze: true
+  random_seeds: [17, 42, 73]

@@ -1,0 +1,40 @@
+# Unified B0-B5 experiment protocol v2 (roadmap Phase B3).
+# This file freezes the shared comparison budget; per-arm data directories are
+# recorded in reports/experiment_registry.csv by the training entry point.
+protocol: b0_b5_protocol_v2
+status: local_validation_ready
+frozen_inputs:
+  aligned_dir: reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2
+  cycle_library: reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1
+  state_library_primary: reports/core_validation/ukdale_b1_washing_machine/state_library_pilot_k4_v1
+  state_library_secondary: reports/core_validation/ukdale_b1_washing_machine/state_library_pilot_k5_v1
+  b2_policy_freeze: docs/state_and_b2_policy_freeze_v1.md
+window:
+  length: 599
+  sample_seconds: 6
+  train_stride: 6
+  eval_stride: 1
+seq2point:
+  architecture: src/nilm/seq2point.py::Seq2PointCNN
+  parameter_count: 192225
+  batch_size: 128
+  steps_per_epoch: 200
+  max_epochs: 30
+  patience: 5
+  learning_rate: 0.001
+  optimizer: adam
+  loss: mse
+  sampling: active_inactive_balanced_50_50
+  validation_monitor_count: 20000
+  seeds: [17, 42, 73]
+  synthetic_ratios: [0.5, 1.0, 2.0]
+metrics:
+  primary: mae_w
+  key_secondary: [f1, sae]
+  explanatory: [rmse_w, precision, recall, tp, fp, fn]
+  threshold_w: 20.0
+  statistics: paired_bootstrap_95ci
+discipline:
+  test_access_policy: frozen_until_protocol_freeze_before_test
+  validation_use: model_and_hyperparameter_selection_only
+  normalization_source: b0_real_train_only

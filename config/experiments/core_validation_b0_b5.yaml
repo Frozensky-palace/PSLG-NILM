@@ -1,0 +1,117 @@
+# 核心验证协议 v1：在看到最终测试结果前固定这些规则。
+protocol:
+  name: core_validation_b0_b5
+  version: "1.1"
+  status: frozen_after_alignment_qc
+  created_at: 2026-09-20
+  amended_at: 2026-09-20
+  amendment_reason: >-
+    对齐质检发现一个测试周期缺少超过一半的家庭总表数据；在任何模型训练和
+    测试之前，增加只基于传感器可用性的完整覆盖规则。
+
+scope:
+  dataset: UK-DALE
+  building: 1
+  appliance: washing_machine
+  device_instance: 1
+  cross_device_holdout_instance: 2
+  sample_seconds: 6
+  purpose: >-
+    公平比较完整真实周期、真实基元拼接、完整周期生成、生成基元拼接
+    和受约束生成基元拼接对真实 NILM 测试性能的影响。
+
+activity_detection:
+  threshold_w: 20
+  max_inactive_seconds: 150
+  min_duration_seconds: 1800
+
+research_split:
+  method: chronological_cycle
+  train_ratio: 0.60
+  validation_ratio: 0.20
+  test_ratio: 0.20
+  split_unit: complete_cycle
+  first_pilot_uses_one_physical_device: true
+  test_is_real_only: true
+  forbid_test_in_state_library: true
+  forbid_test_in_generation: true
+
+alignment_quality:
+  grid: epoch_aligned_6_seconds
+  max_short_gap_interpolation_seconds: 150
+  require_branch_and_mains: true
+  require_complete_cycle_coverage: true
+  incomplete_cycle_action: retain_for_audit_but_exclude_from_analysis
+  signed_background: mains_minus_appliance
+  composition_background: clip_signed_background_at_zero
+  continuous_windows_must_not_cross_segment_id: true
+
+experiment_groups:
+  B0:
+    name: real_only
+    simple_explanation: 只使用原始真实训练数据。
+  B1:
+    name: real_full_cycle_placement
+    simple_explanation: 完整真实洗衣周期不拆分，只改变它在训练时间线中的位置。
+  B2:
+    name: real_primitive_composition
+    simple_explanation: 保留真实状态顺序，从不同训练周期替换同类真实状态片段。
+  B3:
+    name: generated_full_cycle
+    simple_explanation: 生成模型一次生成完整洗衣周期。
+  B4:
+    name: generated_primitive_composition
+    simple_explanation: 分别生成各个状态，再按真实状态模板组成完整周期。
+  B5:
+    name: constrained_generated_primitive_composition
+    simple_explanation: 在 B4 基础上增加顺序、时长和边界约束。
+
+primary_comparisons:
+  - groups: [B2, B1]
+    question: 基元状态重组是否优于完整真实周期复用？
+  - groups: [B4, B3]
+    question: 生成基元再拼接是否优于直接生成完整周期？
+  - groups: [B4, B2]
+    question: 生成新基元是否优于只重组真实基元？
+  - groups: [B5, B4]
+    question: 顺序、时长和边界约束是否有额外价值？
+
+fairness_controls:
+  same_real_training_cycles: true
+  same_training_background: true
+  same_event_start_schedule: true
+  same_synthetic_cycle_count: true
+  match_synthetic_total_duration: true
+  same_nilm_model: true
+  same_nilm_training_budget: true
+  same_validation_rule: true
+  same_test_set: true
+  same_random_seeds: true
+
+pilot:
+  random_seeds: [17, 42, 73]
+  synthetic_to_real_ratios: [0.5, 1.0, 2.0]
+  generator_family: conditional_vae
+  nilm_baseline: seq2point
+
+evaluation:
+  primary_metrics: [mae, f1]
+  secondary_metrics: [sae, precision, recall, event_f1]
+  physical_checks:
+    - illegal_transition_rate
+    - duration_distribution_distance
+    - boundary_power_jump
+    - cycle_energy_distribution
+    - nearest_training_sample_distance
+  report_by_appliance: true
+  report_mean_std: true
+  report_confidence_interval_95: true
+
+stage_gates:
+  before_training_generators:
+    - research_split_leakage_check_passes
+    - B0_B1_B2_pipeline_runs_end_to_end
+    - real_primitive_composition_has_complete_provenance
+  before_final_test:
+    - model_and_hyperparameters_frozen_from_validation
+    - all_B0_B5_groups_use_equal_budget

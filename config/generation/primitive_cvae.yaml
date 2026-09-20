@@ -1,0 +1,18 @@
+# B4 primitive-state conditional VAE plan (Phase E). Status: planned; the
+# model code (src/generation/primitive_cvae.py) does not exist yet.
+protocol: b4_primitive_cvae_v1
+status: planned_not_implemented
+route: B4
+model:
+  family: cvae
+  shared_encoder: true
+  condition_on: [state_label, duration_bucket, energy_bucket]
+  optional_conditions: [previous_state, next_state]
+composition:
+  state_path: real_train_path_distribution
+  boundary_treatment: none      # basic composition only; B5 adds constraints
+  inherits_frozen_policy: config/composition/b2_matched.yaml
+training:
+  train_cycles_only: 493
+  selection: validation
+  budget_must_match: config/generation/full_cycle_cvae.yaml

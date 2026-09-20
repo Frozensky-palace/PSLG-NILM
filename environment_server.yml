@@ -1,0 +1,24 @@
+# Frozen server environment for PSLG-NILM (roadmap task 13, doc §6.7/§17.5).
+# Create with:
+#   module purge && module load miniconda3/25.5.1-0 && module load cuda-toolkit/12.1.1
+#   conda env create -f environment_server.yml && conda activate pslg-nilm
+# Verify after creation (doc §17.5):
+#   python -c "import numpy, torch; print(numpy.__version__, torch.__version__, torch.cuda.is_available())"
+# Local versions are the floor used during Phase B; adjust the CUDA-matched
+# torch build on the server if needed, but record every deviation in the run's
+# environment.txt.
+name: pslg-nilm
+channels:
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - numpy<2            # repo requirement: do not upgrade without full retest
+      - pandas>=2.2
+      - scipy>=1.11
+      - scikit-learn>=1.5
+      - matplotlib>=3.9
+      - torch>=2.4         # server: install the CUDA 12.1 build
+      - tensorflow-cpu>=2.18,<2.19  # 2.19+ pulls numpy>=2; keep numpy<2 stack
+      - pyyaml>=6.0
