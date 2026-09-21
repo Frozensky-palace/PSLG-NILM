@@ -15,13 +15,26 @@
 - 服务器运行目录：`~/pslg_artifacts/{b3t_s17, b3_cvae_s17, b4_s17,
   b3_wgan_s17, b3_diffusion_s17}_*`（各含 quality/memorization 报告）
 
+## 批次 4：B5/HSMM 组（✅ 本机完成 2026-09-22）
+
+- [x] `src/composition/`：transition_model / duration_model / hsmm_sequence /
+      boundary_handler / constrained_composer
+- [x] `scripts/fit_hsmm_composer.py` + `scripts/compose_b5_cycles.py`
+- [x] 18 项新测试；全套 194 项通过
+- [x] 真实 v1 库实战：HSMM 拟合 + B5 默认/endpoint 双消融 246 条过双门；
+      端点选择平均边界代价 807.5W → 537.5W（-33%）
+- [x] `slurm/b5_hsmm.sbatch`（CPU 双消融组）
+- [x] 手册 §13 同步实际接口
+- [x] 提交
+
 ## 待办（下一会话）
 
-- [ ] 五个 run 目录打包回传本机 `reports/server_de/2026-09-22/`
-- [ ] 共享放置表 + 四路线合成周期统一放置 + 同预算 Seq2Point 重训
-      （自动化脚本待本机补齐：schedule → place → prepare → train 串联）
-- [ ] B3-T/V/G/D/B4 五路线 + B0/B1 基准的 validation 对照表（D/E 结论）
-- [ ] 批次 4：B5/HSMM 组本机开发（Phase F）
+- [x] 五个 run 目录打包回传本机 `reports/server_de/2026-09-22/`
+- [x] 共享放置表 + 路由放置 + extra-arm 窗口输入 + 路由 arm 全链
+      （place_synthetics_on_background / prepare --extra-arm / validate_arm）
+- [ ] 服务器：de_inputs 构建 + 五路线（含 B5 两个消融组）下游重训
+      （等 C4 队列空出；c3 sbatch 换 ARM/EXPERIMENT_DIR 即可）
+- [ ] B0/B1/B2/B3-T/V/G/D/B4/B5(±endpoint) 对照表（D/E/F 最终结论）
 - [ ] C1 记录补账（pack_c1.sh）；B2-random 输入准备（协议诊断组）
 
 > 依据：路线图附录 A。本文件是**执行追踪器**，随进度更新勾选；
