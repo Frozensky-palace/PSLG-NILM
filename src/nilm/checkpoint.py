@@ -29,8 +29,9 @@ def save_checkpoint(path: Path, *, model: torch.nn.Module,
 
 
 def load_checkpoint(path: Path, *, model: torch.nn.Module,
-                    optimizer: torch.optim.Optimizer | None = None) -> dict:
-    payload = torch.load(path, map_location="cpu", weights_only=False)
+                    optimizer: torch.optim.Optimizer | None = None,
+                    map_location: str | torch.device = "cpu") -> dict:
+    payload = torch.load(path, map_location=map_location, weights_only=False)
     model.load_state_dict(payload["model_state"])
     if optimizer is not None:
         optimizer.load_state_dict(payload["optimizer_state"])
@@ -38,11 +39,14 @@ def load_checkpoint(path: Path, *, model: torch.nn.Module,
 
 
 def capture_rng_states() -> dict:
-    return {
+    states = {
         "python": random.getstate(),
         "numpy": np.random.get_state(),
         "torch": torch.get_rng_state(),
     }
+    if torch.cuda.is_available():
+        states["torch_cuda"] = torch.cuda.get_rng_state_all()
+    return states
 
 
 def restore_rng_states(states: dict) -> None:
@@ -52,3 +56,6 @@ def restore_rng_states(states: dict) -> None:
         np.random.set_state(states["numpy"])
     if "torch" in states:
         torch.set_rng_state(states["torch"].cpu())
+    if "torch_cuda" in states and torch.cuda.is_available():
+        torch.cuda.set_rng_state_all(
+            [state.cpu() for state in states["torch_cuda"]])

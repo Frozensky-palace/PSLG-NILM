@@ -30,6 +30,16 @@ ACTIVE_THRESHOLD_W = 20.0
 MODEL_HISTORY_LENGTHS = (2, 12, 50)
 
 
+def update_early_stopping(val_mae: float, best_val_mae: float,
+                          epochs_without_improvement: int
+                          ) -> tuple[bool, float, int]:
+    """Update early-stopping state without counting a new best as a miss."""
+    improved = val_mae < best_val_mae
+    if improved:
+        return True, val_mae, 0
+    return False, best_val_mae, epochs_without_improvement + 1
+
+
 def gather_windows(dataset: ShardedWindowDataset, indices: np.ndarray
                    ) -> tuple[np.ndarray, np.ndarray]:
     """Gather normalized (N, L) windows and normalized targets for indices."""
@@ -80,11 +90,13 @@ def evaluate_validation_mae(dataset: ShardedWindowDataset, indices: np.ndarray,
     model.eval()
     predictions = np.empty(len(indices), dtype=np.float32)
     targets = np.empty(len(indices), dtype=np.float32)
+    device = next(model.parameters()).device
     with torch.no_grad():
         for start in range(0, len(indices), batch_size):
             chunk = indices[start:start + batch_size]
             X, y = gather_windows(dataset, chunk)
-            pred = model(torch.from_numpy(X)).numpy().astype(np.float32)
+            pred = model(torch.from_numpy(X).to(device)).detach().cpu().numpy(
+            ).astype(np.float32)
             predictions[start:start + len(chunk)] = pred
             targets[start:start + len(chunk)] = y
     mae_w = float(np.mean(np.abs(
@@ -95,7 +107,8 @@ def evaluate_validation_mae(dataset: ShardedWindowDataset, indices: np.ndarray,
 def train_seq2point(experiment_dir: Path, output_dir: Path, arm: str,
                     seed: int, batch_size: int, steps_per_epoch: int,
                     max_epochs: int, patience: int, learning_rate: float,
-                    validation_count: int, resume: bool = False) -> dict:
+                    validation_count: int, resume: bool = False,
+                    device_name: str = "auto") -> dict:
     """Train one arm end to end; returns the summary dict written to disk."""
     experiment_dir = Path(experiment_dir)
     output_dir = Path(output_dir)
@@ -104,6 +117,12 @@ def train_seq2point(experiment_dir: Path, output_dir: Path, arm: str,
     torch.manual_seed(seed)
     torch.use_deterministic_algorithms(True)
     rng = np.random.default_rng(seed)
+    if device_name == "auto":
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    else:
+        device = torch.device(device_name)
+    if device.type == "cuda" and not torch.cuda.is_available():
+        raise RuntimeError("CUDA was requested but is not available")
 
     output_dir.mkdir(parents=True, exist_ok=True)
     config = {
@@ -113,6 +132,7 @@ def train_seq2point(experiment_dir: Path, output_dir: Path, arm: str,
         "validation_count": validation_count,
         "experiment_dir": experiment_dir.resolve().as_posix(),
         "active_threshold_w": ACTIVE_THRESHOLD_W,
+        "device": str(device),
     }
     (output_dir / "config.json").write_text(
         json.dumps(config, indent=2), encoding="utf-8")
@@ -125,7 +145,7 @@ def train_seq2point(experiment_dir: Path, output_dir: Path, arm: str,
     validation_indices = monitor[:min(validation_count, len(monitor))]
     app_norm = dataset.normalization["appliance_w"]
 
-    model = Seq2PointCNN(dataset.window_length)
+    model = Seq2PointCNN(dataset.window_length).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     loss_fn = nn.MSELoss()
 
@@ -135,7 +155,8 @@ def train_seq2point(experiment_dir: Path, output_dir: Path, arm: str,
     checkpoint_path = output_dir / "last_checkpoint.pt"
     if resume and checkpoint_path.exists():
         payload = load_checkpoint(checkpoint_path, model=model,
-                                  optimizer=optimizer)
+                                  optimizer=optimizer,
+                                  map_location=device)
         start_epoch = payload["epoch"] + 1
         best_val_mae = payload["best_val_mae"]
         history = payload["config"].get("_history", [])
@@ -154,6 +175,9 @@ def train_seq2point(experiment_dir: Path, output_dir: Path, arm: str,
         "torch": torch.__version__,
         "platform": platform.platform(),
         "deterministic_algorithms": True,
+        "device": str(device),
+        "cuda_device_name": torch.cuda.get_device_name(device)
+        if device.type == "cuda" else None,
     }
     started = time.time()
     for epoch in range(start_epoch, max_epochs + 1):
@@ -164,8 +188,8 @@ def train_seq2point(experiment_dir: Path, output_dir: Path, arm: str,
                                          batch_size, rng)
             X, y = gather_windows(dataset, batch)
             optimizer.zero_grad()
-            loss = loss_fn(model(torch.from_numpy(X)),
-                           torch.from_numpy(y))
+            loss = loss_fn(model(torch.from_numpy(X).to(device)),
+                           torch.from_numpy(y).to(device))
             loss.backward()
             optimizer.step()
             losses.append(float(loss.detach()))
@@ -174,8 +198,11 @@ def train_seq2point(experiment_dir: Path, output_dir: Path, arm: str,
         history.append({"epoch": epoch, "train_loss_mean": float(
             np.mean(losses)), "val_mae_w": val_mae})
         marker = ""
-        if val_mae < best_val_mae:
-            best_val_mae, best_epoch = val_mae, epoch
+        improved, new_best_val_mae, new_epochs_without_improvement = (
+            update_early_stopping(
+                val_mae, best_val_mae, epochs_without_improvement))
+        if improved:
+            best_val_mae, best_epoch = new_best_val_mae, epoch
             marker = " *best*"
             save_checkpoint(output_dir / "best_checkpoint.pt", model=model,
                             optimizer=optimizer, epoch=epoch,
@@ -190,14 +217,12 @@ def train_seq2point(experiment_dir: Path, output_dir: Path, arm: str,
             json.dumps(history, indent=2), encoding="utf-8")
         print(f"[train] epoch {epoch}: loss={np.mean(losses):.5f} "
               f"val_mae={val_mae:.3f}W{marker}", flush=True)
-        if val_mae >= best_val_mae:
-            epochs_without_improvement += 1
+        epochs_without_improvement = new_epochs_without_improvement
+        if not improved:
             if epochs_without_improvement >= patience:
                 print(f"[train] early stop: no improvement for {patience} "
                       "epochs", flush=True)
                 break
-        else:
-            epochs_without_improvement = 0
 
     summary = {
         "protocol": "seq2point_training_v1",

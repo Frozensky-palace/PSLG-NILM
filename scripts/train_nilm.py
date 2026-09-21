@@ -26,13 +26,18 @@ def main() -> None:
     ap.add_argument("--learning-rate", type=float, default=1e-3)
     ap.add_argument("--validation-count", type=int, default=20000)
     ap.add_argument("--resume", action="store_true")
+    ap.add_argument("--device", choices=("auto", "cpu", "cuda"),
+                    default="auto",
+                    help="auto uses CUDA when available; formal server jobs "
+                         "should pass --device cuda")
     args = ap.parse_args()
     summary = train_seq2point(
         Path(args.experiment_dir), Path(args.output_dir), arm=args.arm,
         seed=args.seed, batch_size=args.batch_size,
         steps_per_epoch=args.steps_per_epoch, max_epochs=args.max_epochs,
         patience=args.patience, learning_rate=args.learning_rate,
-        validation_count=args.validation_count, resume=args.resume)
+        validation_count=args.validation_count, resume=args.resume,
+        device_name=args.device)
     print(f"[train] best epoch={summary['best_epoch']} "
           f"val_mae={summary['best_val_mae_w']:.3f}W "
           f"params={summary['parameter_count']:,}")

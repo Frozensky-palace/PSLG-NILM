@@ -40,6 +40,8 @@ def main() -> None:
                     help="predict only the first N windows of the selected "
                          "sample set")
     ap.add_argument("--output", required=True)
+    ap.add_argument("--device", choices=("auto", "cpu", "cuda"),
+                    default="auto")
     ap.add_argument("--i-confirm-test-protocol-frozen", action="store_true",
                     help="required unlock flag when --partition test")
     args = ap.parse_args()
@@ -72,8 +74,14 @@ def main() -> None:
         indices = np.arange(len(dataset), dtype=np.int64)
     count = len(indices) if args.limit is None else min(args.limit, len(indices))
     indices = indices[:count]
-    model = Seq2PointCNN(dataset.window_length)
-    load_checkpoint(Path(args.checkpoint), model=model)
+    if args.device == "auto":
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    else:
+        device = torch.device(args.device)
+    if device.type == "cuda" and not torch.cuda.is_available():
+        raise SystemExit("CUDA was requested but is not available")
+    model = Seq2PointCNN(dataset.window_length).to(device)
+    load_checkpoint(Path(args.checkpoint), model=model, map_location=device)
     _, predictions, targets = evaluate_validation_mae(
         dataset, indices, model, app_norm)
     y_true = targets * app_norm["std"] + app_norm["mean"]
