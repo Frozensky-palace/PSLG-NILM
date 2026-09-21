@@ -29,7 +29,8 @@ def linear_beta_schedule(n_steps: int, beta_start: float = 1e-4,
 def sinusoidal_embedding(timesteps: torch.Tensor, dim: int) -> torch.Tensor:
     half = dim // 2
     frequencies = torch.exp(
-        -math.log(10000.0) * torch.arange(half, dtype=torch.float32) / half)
+        -math.log(10000.0) * torch.arange(half, dtype=torch.float32,
+                                          device=timesteps.device) / half)
     angles = timesteps.float()[:, None] * frequencies[None, :]
     return torch.cat([torch.sin(angles), torch.cos(angles)], dim=1)
 
