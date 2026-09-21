@@ -279,6 +279,21 @@ class SlurmProgressTests(unittest.TestCase):
             self.assertEqual(by_id["222"]["run_dir"], str(fresh))
             self.assertEqual(by_id["333"]["status"], "RUNNING")
 
+    def test_classify_matches_uppercase_run_dirs(self) -> None:
+        from scripts.slurm_progress import classify
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run = root / "s2p_B0_r0p5_s17_4121"     # sbatch uses upper arm
+            run.mkdir()
+            (run / "validation_metrics.json").write_text(
+                "{}", encoding="utf-8")
+            records = [{"job_id": "4121", "exports": {
+                "PSLG_ARM": "B0", "PSLG_SEED": "17", "PSLG_RATIO": "0p5"}}]
+            report = classify(records, {}, root,
+                              "s2p_{arm}_r{ratio}_s{seed}_{job_id}")
+            self.assertEqual(report[0]["status"], "DONE")
+
     def test_render_marks_all_done(self) -> None:
         from scripts.slurm_progress import render
 

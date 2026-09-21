@@ -59,16 +59,27 @@ def exports_of(record: dict) -> dict[str, str]:
 
 def find_run_dir(artifacts_root: Path, run_glob: str,
                  mapping: dict[str, str]) -> Path | None:
-    """Newest matching dir, preferring one that already has the done-file."""
-    pattern = run_glob.format(**mapping)
-    candidates = sorted(artifacts_root.glob(pattern),
-                        key=lambda p: p.stat().st_mtime)
-    if not candidates:
+    """Newest matching dir, preferring one that already has the done-file.
+
+    Arm case is ambiguous (sbatch used upper-case PSLG_ARM values in dir
+    names while reports lowercase): try every case variant of the arm and
+    merge candidates.
+    """
+    arm = mapping.get("arm", "")
+    candidates: list[Path] = []
+    for arm_variant in dict.fromkeys(
+            [arm, arm.upper(), arm.lower()] if arm else [arm]):
+        if not arm_variant and "{arm}" in run_glob:
+            continue
+        pattern = run_glob.format(**{**mapping, "arm": arm_variant})
+        candidates.extend(artifacts_root.glob(pattern))
+    unique = sorted(set(candidates), key=lambda p: (p.stat().st_mtime, p))
+    if not unique:
         return None
-    for candidate in candidates:
+    for candidate in unique:
         if (candidate / DONE_FILENAME).exists():
             return candidate
-    return candidates[-1]
+    return unique[-1]
 
 
 def classify(records: list[dict], states: dict[str, str],
