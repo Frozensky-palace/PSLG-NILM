@@ -108,7 +108,8 @@ class TransformGeneratorTests(unittest.TestCase):
                             route="cvae", real_library_dir=str(library),
                             sample_seconds=6, time_scale_min=0.85,
                             time_scale_max=1.2, power_scale_min=0.9,
-                            power_scale_max=1.1))
+                            power_scale_max=1.1, checkpoint_dir=None,
+                            device="cpu"))
 
     def test_cli_end_to_end_and_quality_gate(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
