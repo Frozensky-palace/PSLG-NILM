@@ -19,13 +19,13 @@ REQUIRED_ARTIFACTS = (
     "stdout.log",
     "stderr.log",
     "history.json",
-    "metrics.json",
     "run_summary.md",
 )
 
 CHECKPOINT_ALTERNATIVES = ("best_checkpoint.pt", "checkpoint_sha256.txt")
 PREDICTION_ALTERNATIVES = ("validation_predictions.npz",
                            "prediction_manifest.json")
+METRIC_ALTERNATIVES = ("validation_metrics.json", "metrics.json")
 
 
 def collect_missing(run_dir: Path) -> list[str]:
@@ -35,6 +35,8 @@ def collect_missing(run_dir: Path) -> list[str]:
         missing.append(f"one of {CHECKPOINT_ALTERNATIVES}")
     if not any((run_dir / name).exists() for name in PREDICTION_ALTERNATIVES):
         missing.append(f"one of {PREDICTION_ALTERNATIVES}")
+    if not any((run_dir / name).exists() for name in METRIC_ALTERNATIVES):
+        missing.append(f"one of {METRIC_ALTERNATIVES}")
     return missing
 
 

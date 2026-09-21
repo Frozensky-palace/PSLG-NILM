@@ -22,12 +22,14 @@ module load miniconda3/25.5.1-0
 module load cuda-toolkit/12.1.1
 module list
 
-ARTIFACT_ROOT="${HOME}/pslg_artifacts/c1_gpu_smoke_${SLURM_JOB_ID}"
+: "${PSLG_PROJECT_ROOT:?submit with PSLG_PROJECT_ROOT}"
+PSLG_ARTIFACT_ROOT="${PSLG_ARTIFACT_ROOT:-$HOME/pslg_artifacts}"
+ARTIFACT_ROOT="${PSLG_ARTIFACT_ROOT}/c1_gpu_smoke_${SLURM_JOB_ID}"
 mkdir -p "$ARTIFACT_ROOT"
 
 source "$(conda info --base)/bin/activate"
 conda activate pslg-detsec
-cd "$HOME/projects/PSLG-NILM"
+cd "$PSLG_PROJECT_ROOT"
 git rev-parse HEAD
 nvidia-smi
 

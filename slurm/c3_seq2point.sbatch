@@ -26,43 +26,57 @@ module list
 source "$(conda info --base)/bin/activate"
 conda activate pslg-nilm
 
-cd "$HOME/projects/PSLG-NILM"
+: "${PSLG_PROJECT_ROOT:?submit with PSLG_PROJECT_ROOT}"
+cd "$PSLG_PROJECT_ROOT"
 git rev-parse HEAD
 nvidia-smi
 
-# Fill in before submit: frozen commit, manifest, arm and seed for THIS job.
-FROZEN_COMMIT=<frozen-commit>
-MANIFEST="$HOME/pslg_manifests/c1_nilm_b0_b2_trainval_manifest.json"
-ARM=B2           # B0 | B1 | B2
-SEED=17          # 17 | 42 | 73
-RUN_ROOT="$HOME/pslg_artifacts"
-RUN_ID="s2p_${ARM}_r0p5_s${SEED}_${SLURM_JOB_ID}"
+: "${PSLG_FROZEN_COMMIT:?submit with PSLG_FROZEN_COMMIT}"
+: "${PSLG_MANIFEST:?submit with PSLG_MANIFEST}"
+: "${PSLG_EXPERIMENT_DIR:?submit with PSLG_EXPERIMENT_DIR}"
+: "${PSLG_ARM:?submit with PSLG_ARM=B0|B1|B2}"
+: "${PSLG_SEED:?submit with PSLG_SEED=17|42|73}"
+PSLG_RATIO="${PSLG_RATIO:-0p5}"
+PSLG_RUN_ROOT="${PSLG_RUN_ROOT:-$HOME/pslg_artifacts}"
+RUN_ID="s2p_${PSLG_ARM}_r${PSLG_RATIO}_s${PSLG_SEED}_${SLURM_JOB_ID}"
+RUN_DIR="$PSLG_RUN_ROOT/$RUN_ID"
+ENVIRONMENT="$RUN_DIR/environment.json"
+STDOUT_LOG="$HOME/pslg_logs/${SLURM_JOB_NAME}-${SLURM_JOB_ID}.out"
+STDERR_LOG="$HOME/pslg_logs/${SLURM_JOB_NAME}-${SLURM_JOB_ID}.err"
+mkdir -p "$RUN_DIR"
 
 python scripts/server_preflight.py \
-  --repo-root . --expected-commit "$FROZEN_COMMIT" \
-  --manifest "$MANIFEST" \
-  --output-root "$RUN_ROOT" --framework torch
+  --repo-root . --expected-commit "$PSLG_FROZEN_COMMIT" \
+  --manifest "$PSLG_MANIFEST" \
+  --output-root "$PSLG_RUN_ROOT" --framework torch
 
 python scripts/capture_server_environment.py \
-  --repo-root . --output "$RUN_ROOT/${RUN_ID}_environment.json"
+  --repo-root . --output "$ENVIRONMENT"
 
 python scripts/train_nilm.py \
-  --experiment-dir "$HOME/pslg_data/nilm_inputs_frozen_candidate" \
-  --arm "$ARM" --seed "$SEED" \
+  --experiment-dir "$PSLG_EXPERIMENT_DIR" \
+  --arm "$PSLG_ARM" --seed "$PSLG_SEED" \
+  --device cuda \
   --batch-size 128 --steps-per-epoch 200 --max-epochs 30 --patience 5 \
   --validation-count 20000 \
-  --output-dir "$RUN_ROOT/$RUN_ID"
+  --output-dir "$RUN_DIR"
 
 python scripts/predict_nilm.py \
-  --experiment-dir "$HOME/pslg_data/nilm_inputs_frozen_candidate" \
-  --checkpoint "$RUN_ROOT/$RUN_ID/best_checkpoint.pt" \
-  --arm "$ARM" --partition validation --limit 20000 \
-  --output "$RUN_ROOT/$RUN_ID/validation_predictions.npz"
+  --experiment-dir "$PSLG_EXPERIMENT_DIR" \
+  --checkpoint "$RUN_DIR/best_checkpoint.pt" \
+  --device cuda \
+  --arm "$PSLG_ARM" --partition validation --limit 20000 \
+  --output "$RUN_DIR/validation_predictions.npz"
 
 python scripts/evaluate_nilm_predictions.py \
-  --predictions "$RUN_ROOT/$RUN_ID/validation_predictions.npz" \
-  --output "$RUN_ROOT/$RUN_ID/validation_metrics.json"
+  --predictions "$RUN_DIR/validation_predictions.npz" \
+  --output "$RUN_DIR/validation_metrics.json"
 
-python scripts/collect_run_artifacts.py --run-dir "$RUN_ROOT/$RUN_ID"
+python scripts/finalize_server_run.py \
+  --run-dir "$RUN_DIR" --repo-root . --phase C3 \
+  --data-manifest "$PSLG_MANIFEST" --environment "$ENVIRONMENT" \
+  --stdout-log "$STDOUT_LOG" --stderr-log "$STDERR_LOG"
+
+python scripts/collect_run_artifacts.py --run-dir "$RUN_DIR"
 
 echo "finished=$(date --iso-8601=seconds)"

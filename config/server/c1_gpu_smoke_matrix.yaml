@@ -1,0 +1,6 @@
+template: ../../slurm/c1_gpu_smoke.sbatch
+common:
+  PSLG_PROJECT_ROOT: /home/CHANGE_ME/projects/PSLG-NILM-c1
+  PSLG_ARTIFACT_ROOT: /home/CHANGE_ME/pslg_artifacts
+jobs:
+  - {}

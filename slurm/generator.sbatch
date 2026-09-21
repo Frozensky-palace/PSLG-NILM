@@ -29,10 +29,11 @@ module list
 source "$(conda info --base)/bin/activate"
 conda activate pslg-nilm
 
-cd "$HOME/projects/PSLG-NILM"
+: "${PSLG_PROJECT_ROOT:?template only; PSLG_PROJECT_ROOT is required}"
+cd "$PSLG_PROJECT_ROOT"
 git rev-parse HEAD
 nvidia-smi
 
 # Placeholder: Phase D/E will provide scripts/train_full_cycle_generator.py
 echo "generator training script is not implemented yet (Phase D/E)."
-echo "finished=$(date --iso-8601=seconds)"
+exit 2

@@ -1,0 +1,29 @@
+# Submit with scripts/submit_slurm_matrix.py. Dry-run first; replace the two
+# CHANGE_ME values only in a server-local copy that is not committed.
+template: ../../slurm/c3_seq2point.sbatch
+common:
+  PSLG_PROJECT_ROOT: /home/CHANGE_ME/projects/PSLG-NILM-c1
+  PSLG_FROZEN_COMMIT: CHANGE_ME
+  PSLG_MANIFEST: /home/CHANGE_ME/pslg_manifests/c1_nilm_b0_b2_trainval_manifest.json
+  PSLG_EXPERIMENT_DIR: /home/CHANGE_ME/projects/PSLG-NILM/reports/core_validation/ukdale_b1_washing_machine/nilm_inputs_b2matched_k4_seed17_r0p5_v1
+  PSLG_RUN_ROOT: /home/CHANGE_ME/pslg_artifacts
+  PSLG_RATIO: 0p5
+jobs:
+  - PSLG_ARM: B0
+    PSLG_SEED: 17
+  - PSLG_ARM: B0
+    PSLG_SEED: 42
+  - PSLG_ARM: B0
+    PSLG_SEED: 73
+  - PSLG_ARM: B1
+    PSLG_SEED: 17
+  - PSLG_ARM: B1
+    PSLG_SEED: 42
+  - PSLG_ARM: B1
+    PSLG_SEED: 73
+  - PSLG_ARM: B2
+    PSLG_SEED: 17
+  - PSLG_ARM: B2
+    PSLG_SEED: 42
+  - PSLG_ARM: B2
+    PSLG_SEED: 73

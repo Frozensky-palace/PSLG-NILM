@@ -26,26 +26,38 @@ module list
 source "$(conda info --base)/bin/activate"
 conda activate pslg-detsec
 
-cd "$HOME/projects/PSLG-NILM"
+: "${PSLG_PROJECT_ROOT:?submit with PSLG_PROJECT_ROOT}"
+cd "$PSLG_PROJECT_ROOT"
 git rev-parse HEAD
 nvidia-smi
 
-FROZEN_COMMIT=<frozen-commit>
-MANIFEST="$HOME/pslg_manifests/c1_state_discovery_trainonly_manifest.json"
-RUN_ROOT="$HOME/pslg_artifacts"
+: "${PSLG_FROZEN_COMMIT:?submit with PSLG_FROZEN_COMMIT}"
+PSLG_MANIFEST="${PSLG_MANIFEST:-$HOME/pslg_manifests/c1_state_discovery_trainonly_manifest.json}"
+PSLG_RUN_ROOT="${PSLG_RUN_ROOT:-$HOME/pslg_artifacts}"
+RUN_ID="detsecpc_k345_trainonly_${SLURM_JOB_ID}"
+RUN_DIR="$PSLG_RUN_ROOT/$RUN_ID"
+ENVIRONMENT="$RUN_DIR/environment.json"
+STDOUT_LOG="$HOME/pslg_logs/${SLURM_JOB_NAME}-${SLURM_JOB_ID}.out"
+STDERR_LOG="$HOME/pslg_logs/${SLURM_JOB_NAME}-${SLURM_JOB_ID}.err"
+mkdir -p "$RUN_DIR"
 
 python scripts/server_preflight.py \
-  --repo-root . --expected-commit "$FROZEN_COMMIT" \
-  --manifest "$MANIFEST" \
-  --output-root "$RUN_ROOT" --framework tensorflow
+  --repo-root . --expected-commit "$PSLG_FROZEN_COMMIT" \
+  --manifest "$PSLG_MANIFEST" \
+  --output-root "$PSLG_RUN_ROOT" --framework tensorflow
 
 python scripts/capture_server_environment.py \
-  --repo-root . --output "$RUN_ROOT/c2_detsec_${SLURM_JOB_ID}_environment.json"
+  --repo-root . --output "$ENVIRONMENT"
 
 python scripts/train_state_discovery.py \
   --config config/experiments/core_wm_state_discovery_detsec_pc.yaml \
-  --output-root "$RUN_ROOT/state_discovery_detsec_pc_${SLURM_JOB_ID}" \
-  --run-id "detsecpc_k345_trainonly_${SLURM_JOB_ID}" \
+  --output-root "$RUN_DIR" \
+  --run-id "$RUN_ID" \
   --k 3,4,5 --deterministic-tf
+
+python scripts/finalize_server_run.py \
+  --run-dir "$RUN_DIR" --repo-root . --phase C2 \
+  --data-manifest "$PSLG_MANIFEST" --environment "$ENVIRONMENT" \
+  --stdout-log "$STDOUT_LOG" --stderr-log "$STDERR_LOG"
 
 echo "finished=$(date --iso-8601=seconds)"

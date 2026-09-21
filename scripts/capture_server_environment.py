@@ -19,7 +19,7 @@ SAFE_ENV_KEYS = (
     "CUDA_VISIBLE_DEVICES", "SLURM_JOB_ID", "SLURM_JOB_NAME",
     "SLURM_PARTITION", "SLURM_NODELIST", "SLURM_SUBMIT_DIR",
     "SLURM_CPUS_PER_TASK", "SLURM_MEM_PER_NODE", "CONDA_DEFAULT_ENV",
-    "CONDA_PREFIX",
+    "CONDA_PREFIX", "LOADEDMODULES", "MODULEPATH",
 )
 
 KEY_PACKAGES = ("numpy", "pandas", "scipy", "scikit-learn", "tensorflow",
@@ -55,7 +55,10 @@ def capture(repo_root: Path) -> dict:
         "git_tag_points_at_head": _run(
             ["git", "tag", "--points-at", "HEAD"], repo_root),
         "nvidia_smi": _run(["nvidia-smi"]),
-        "module_list": _run(["bash", "-lc", "module list 2>&1"]),
+        # Environment Modules is often a shell function and may not exist in
+        # a non-interactive subprocess. LOADEDMODULES is the reliable fallback.
+        "module_list": _run(["bash", "-lc", "module list 2>&1"])
+        or os.environ.get("LOADEDMODULES"),
         "slurm_job_json": _run(["scontrol", "show", "job",
                                 os.environ["SLURM_JOB_ID"]])
         if "SLURM_JOB_ID" in os.environ else None,
