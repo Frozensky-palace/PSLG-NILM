@@ -813,26 +813,12 @@ tar -xzf .\c2_c4_review_metadata.tar.gz -C .\c2_c4_review_metadata
 
 ## 11. Phase D：B3 四种完整周期生成
 
-### 11.1 进入 D 前的代码门槛
+> 2026-09-21 更新：§11.1 与 §11.2 所列代码已全部实现并通过本机冒烟
+> （176 项测试，见路线图附录 A），本节替换为实际可执行流程。
+> 实际接口与早先的规划略有差异：统一入口使用 `--route` 与显式参数，
+> 基元训练也走 `train_full_cycle_generator.py --route primitive`。
 
-本机必须先实现并测试：
-
-```text
-src/generation/full_cycle_transform.py
-src/generation/full_cycle_cvae.py
-src/generation/full_cycle_wgan.py
-src/generation/full_cycle_diffusion.py
-scripts/train_full_cycle_generator.py
-scripts/generate_full_cycles.py
-scripts/evaluate_synthetic_quality.py
-scripts/audit_generation_memorization.py
-scripts/build_shared_placement_schedule.py
-```
-
-每个入口先在8–20个 train cycle 上完成本机或短 GPU 冒烟，再写 sbatch。当前仓库尚未达到
-这一门槛，因此不能直接提交 D。
-
-可以立即执行以下门槛检查：
+### 11.1 进入 D 前的代码门槛（已满足，仍须现场复核）
 
 ```bash
 cd "$PSLG_PROJECT_ROOT"
@@ -841,8 +827,11 @@ for file in \
   src/generation/full_cycle_cvae.py \
   src/generation/full_cycle_wgan.py \
   src/generation/full_cycle_diffusion.py \
+  src/generation/primitive_cvae.py \
   scripts/train_full_cycle_generator.py \
   scripts/generate_full_cycles.py \
+  scripts/generate_primitive_cycles.py \
+  scripts/compose_generated_cycles.py \
   scripts/evaluate_synthetic_quality.py \
   scripts/audit_generation_memorization.py \
   scripts/build_shared_placement_schedule.py
@@ -851,76 +840,154 @@ do
 done
 ```
 
-只要出现 `MISSING`，就回本机实现和测试，不能在服务器创建空文件绕过检查。实现时建议冻结
-统一命令接口，后续服务器命令采用：
+出现 `MISSING` 说明仓库不在正确提交上，回到 `git checkout` 步骤；不要在服务器
+手工补文件。同时复核全套测试：
 
-```text
-python scripts/train_full_cycle_generator.py --method cvae|wgan|diffusion --config <yaml> --output-dir <run>
-python scripts/generate_full_cycles.py --method transform|cvae|wgan|diffusion --config <yaml> --output-dir <cycles>
-python scripts/evaluate_synthetic_quality.py --input-dir <cycles> --output-dir <report>
-python scripts/audit_generation_memorization.py --generated-dir <cycles> --train-library <train-only-library> --output <json>
+```bash
+python -m unittest discover -s tests 2>&1 | tail -3
 ```
 
-这些命令是后续实现必须遵守的接口约定；在相应脚本进入仓库前不能执行。
+### 11.2 服务器前置准备
 
-### 11.2 服务器执行顺序
+```bash
+# 1) 同步到 D/E 就绪标签（含全部生成器代码与本手册更新）
+timeout 60 git fetch origin --tags
+git checkout phase-de-ops-ready
+git rev-parse HEAD
 
-1. B3-T：真实周期变换，不训练网络；
-2. B3-V：条件 CVAE；
-3. B3-G：TraceGAN-style/SGAN-inspired 条件 WGAN；
-4. B3-D：条件扩散。
+# 2) 初始化路径变量
+source slurm/project_paths.sh
 
-每条路线都要：
+# 3) 两个数据引用（导出一次，后续所有提交共用）
+export PSLG_DONOR_LIBRARY="$PSLG_PROJECT_ROOT/reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1"
+export PSLG_STATE_LIBRARY="$PSLG_ARTIFACT_ROOT/detsecpc_k345_trainonly_4107/state_library_k4"
+test -f "$PSLG_STATE_LIBRARY/state_library_summary.json" && echo "v1 状态库就绪"
+test -f "$PSLG_DONOR_LIBRARY/cycles/cycle_0000.npz" && echo "donor 周期库就绪"
+```
 
-- 只用 train；
-- 使用同一目标周期数量和条件分布；
-- 输出 donor/条件/seed/checkpoint provenance；
-- 通过非负功率、峰值、能量、时长、复制、最近邻和多样性检查；
-- 使用同一 placement schedule；
-- 重新训练同预算 Seq2Point，并只看 validation。
+说明：C2 产物 `state_library_k4` 即已冻结的 state library v1；C3 作业运行期间
+checkout 新提交不影响它们（运行中的 Python 已加载代码，数据 shard 不在 Git
+跟踪范围内）。
 
-B3-T 可在 CPU；CVAE/WGAN 先用 RTX3090；扩散优先 A6000。不要四条路线同时开发、同时
-大跑，建议逐条通过门槛后再进入下一条。
+### 11.3 执行顺序与提交命令
+
+顺序：B3-T（CPU，最快）→ B3-V CVAE → B4 基元 → B3-G WGAN → B3-D 扩散。
+每条路线先 dry-run 看命令，再加 `--submit`。h103/h108 不可用期间一律加
+`--extra='-p RTX3090 -w h104-slurm-a'`。
+
+**① B3-T 真实周期变换（CPU 作业，约几分钟）**
+
+```bash
+sbatch --export=ALL,PSLG_PROJECT_ROOT="$PSLG_PROJECT_ROOT",PSLG_DONOR_LIBRARY="$PSLG_DONOR_LIBRARY",PSLG_COUNT=246,PSLG_SEED=17 \
+  -w h104-slurm-a slurm/b3_transform.sbatch
+```
+
+**② B3-V 条件 CVAE（GPU，建议 epochs=200）**
+
+```bash
+sbatch --export=ALL,PSLG_PROJECT_ROOT="$PSLG_PROJECT_ROOT",PSLG_DONOR_LIBRARY="$PSLG_DONOR_LIBRARY",PSLG_COUNT=246,PSLG_SEED=17,PSLG_EPOCHS=200 \
+  --gres=gpu:1 -w h104-slurm-a slurm/b3_cvae.sbatch
+```
+
+**③ B4 基元生成 + 基础拼接（GPU，使用 state library v1）**
+
+```bash
+sbatch --export=ALL,PSLG_PROJECT_ROOT="$PSLG_PROJECT_ROOT",PSLG_STATE_LIBRARY="$PSLG_STATE_LIBRARY",PSLG_DONOR_LIBRARY="$PSLG_DONOR_LIBRARY",PSLG_COUNT=246,PSLG_SEED=17,PSLG_EPOCHS=200 \
+  --gres=gpu:1 -w h104-slurm-a slurm/b4_primitive_cvae.sbatch
+```
+
+**④ B3-G 条件 WGAN（GPU，建议 epochs=150；对抗训练不稳就记录负面结果，不换参重跑）**
+
+```bash
+sbatch --export=ALL,PSLG_PROJECT_ROOT="$PSLG_PROJECT_ROOT",PSLG_DONOR_LIBRARY="$PSLG_DONOR_LIBRARY",PSLG_SEED=17,PSLG_EPOCHS=150,PSLG_COUNT=246 \
+  --gres=gpu:1 -w h104-slurm-a slurm/b3_wgan.sbatch
+```
+
+**⑤ B3-D 条件扩散（GPU，建议 epochs=300、500 步调度；单周期采样是全循环，较慢。
+注意模板默认 A6000 分区，钉 h104 必须同时覆盖分区）**
+
+```bash
+sbatch --export=ALL,PSLG_PROJECT_ROOT="$PSLG_PROJECT_ROOT",PSLG_DONOR_LIBRARY="$PSLG_DONOR_LIBRARY",PSLG_SEED=17,PSLG_EPOCHS=300,PSLG_COUNT=246 \
+  -p RTX3090 --gres=gpu:1 -w h104-slurm-a slurm/b3_diffusion.sbatch
+```
+
+每个作业内部自动执行：训练 → 生成 246 条 → 质量门 → 记忆审计。判据：
+
+- `quality_report.json` 的 `passed: true`（duration/energy WARN 可人工解释后接受；
+  `impossible_peak` FAIL 不得接受）；
+- `memorization_report.json`：神经路线 `replication_rate` 应接近 0；**B3-T 例外**，
+  近复制是其定义属性（sbatch 内已按路线口径放行），但 `exact_duplicate_count`
+  必须为 0。
+
+### 11.4 四路线门都过后：共享放置与下游重训
+
+四条路线的合成周期都过门后，用冻结放置表把它们放到同一背景、以同预算重训
+Seq2Point 并只看 validation（这是 B3 路线间的公平比较，接口与 C3 相同）：
+
+```bash
+python scripts/build_shared_placement_schedule.py \
+  --aligned-dir "$PSLG_PROJECT_ROOT/reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2" \
+  --count 246 --sample-seconds 6 --idle-threshold-w 20 --guard-seconds 300 \
+  --seed 17 --output-dir "$PSLG_ARTIFACT_ROOT/shared_placement_r0p5"
+```
+
+放置与下游重训的自动化脚本尚未实现——用 C3 的 `place → prepare → train` 链
+按共享 schedule 手动执行，或回本机开发统一脚本后再跑。不要在无共享 schedule
+的情况下只重训某一条路线。
 
 ---
 
 ## 12. Phase E：B4 基元生成
 
-进入 E 前实现：
+> 2026-09-21 更新：代码已实现（见路线图附录 A 批次 2）。实际接口：
+> 基元训练走统一入口 `train_full_cycle_generator.py --route primitive`，
+> 生成+基础拼接走 `generate_primitive_cycles.py`，从既有基元池重组走
+> `compose_generated_cycles.py`。
 
-```text
-src/generation/primitive_cvae.py
-scripts/train_primitive_generator.py
-scripts/generate_primitive_cycles.py
-config/composition/b4_basic.yaml
-```
+第一版只做共享条件 CVAE；条件包含 state label（one-hot）与段统计
+（归一化时长/均值/能量/峰值）。所有状态样本只来自冻结的 state library v1
+（C2-k4）。基础拼接按经验路径模型（train 首态分布 + 转移计数 + 每周期
+状态数分布）采样路径，不加 HSMM 与复杂边界优化——那是 Phase F 的消融量。
 
-可执行门槛检查：
+### 12.1 门槛检查（应无 MISSING）
 
 ```bash
 cd "$PSLG_PROJECT_ROOT"
 for file in \
   src/generation/primitive_cvae.py \
-  scripts/train_primitive_generator.py \
+  scripts/train_full_cycle_generator.py \
   scripts/generate_primitive_cycles.py \
-  config/composition/b4_basic.yaml
+  scripts/compose_generated_cycles.py
 do
   test -f "$file" || echo "MISSING: $file"
 done
 ```
 
-计划统一接口：
+### 12.2 提交（与 §11.3 的 ③ 相同作业；此处单独列出便于只跑 B4）
 
-```text
-python scripts/train_primitive_generator.py --config config/generation/primitive_cvae.yaml --output-dir <run>
-python scripts/generate_primitive_cycles.py --checkpoint <checkpoint> --config config/composition/b4_basic.yaml --output-dir <cycles>
+```bash
+sbatch --export=ALL,PSLG_PROJECT_ROOT="$PSLG_PROJECT_ROOT",PSLG_STATE_LIBRARY="$PSLG_STATE_LIBRARY",PSLG_DONOR_LIBRARY="$PSLG_DONOR_LIBRARY",PSLG_COUNT=246,PSLG_SEED=17,PSLG_EPOCHS=200 \
+  --gres=gpu:1 -w h104-slurm-a slurm/b4_primitive_cvae.sbatch
 ```
 
-第一版只做共享条件 CVAE。输入条件至少包含 state label 和持续时间；所有状态样本只来自
-冻结 train 状态库。生成后先做基础拼接，不加入 HSMM 和复杂边界优化。
+### 12.3 从既有基元池重组（不重新生成）
 
-服务器过程：训练 → 生成基元 → 基础拼接 → 质量审计 → 放入共同背景 → Seq2Point 重训 →
-validation。只有 B4-CVAE 有希望时，才考虑 B4-GAN/扩散扩展。
+若已有一份基元生成产物（其 records 带状态段），可按路径模型重组新周期，
+不需要重新训练：
+
+```bash
+python scripts/compose_generated_cycles.py \
+  --primitives-dir "$PSLG_ARTIFACT_ROOT/b4_s17_<jobid>/cycles" \
+  --state-library-dir "$PSLG_STATE_LIBRARY" \
+  --output-dir "$PSLG_ARTIFACT_ROOT/b4_recomposed_s17_<jobid>" \
+  --count 246 --seed 18
+```
+
+### 12.4 判定
+
+同 §11.3：质量门 `passed: true`（WARN 可解释接受），神经路线复制率接近 0。
+通过后按 §11.4 与其他路线共用共享放置表做下游 validation 比较；
+只有 B4-CVAE 有希望时，才考虑 B4-GAN/扩散扩展。
 
 ---
 
