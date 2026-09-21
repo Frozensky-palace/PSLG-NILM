@@ -51,18 +51,27 @@ def main() -> None:
         raise SystemExit("registry contains no jobs")
     joined = ",".join(ids)
     queue = run(["squeue", "-h", "-j", joined, "-o", "%i|%T|%M|%R"])
-    accounting = run([
-        "sacct", "-n", "-P", "-j", joined,
-        "--format=JobIDRaw,State,Elapsed,ExitCode,MaxRSS,AllocTRES",
-    ])
+    # Some clusters disable Slurm accounting storage; degrade to queue-only
+    # reporting instead of failing, and record why accounting is absent.
+    try:
+        accounting = run([
+            "sacct", "-n", "-P", "-j", joined,
+            "--format=JobIDRaw,State,Elapsed,ExitCode,MaxRSS,AllocTRES",
+        ])
+        accounting_note = None
+        accounting_rows = parse_pipe_rows(
+            accounting, ["job_id", "state", "elapsed", "exit_code",
+                         "max_rss", "allocated_tres"])
+    except RuntimeError as error:
+        accounting_note = str(error)
+        accounting_rows = []
     report = {
         "queried_at_utc": datetime.now(timezone.utc).isoformat(),
         "job_ids": ids,
         "queue": parse_pipe_rows(
             queue, ["job_id", "state", "elapsed", "reason_or_node"]),
-        "accounting": parse_pipe_rows(
-            accounting, ["job_id", "state", "elapsed", "exit_code",
-                         "max_rss", "allocated_tres"]),
+        "accounting": accounting_rows,
+        "accounting_note": accounting_note,
     }
     rendered = json.dumps(report, indent=2, ensure_ascii=False)
     print(rendered)
