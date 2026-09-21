@@ -1833,9 +1833,9 @@ tail -n 200 /home/<user>/pslg_logs/<job>.out
 
 | 门槛 | 内容 | 状态 |
 |---|---|---|
-| G-1 | C2-k4 库适配器：`state_inventory.csv + state_waveforms.npz` → B2 构建器/交换性评估所需格式 | 未做（最先做） |
-| G-2 | validation 选 k 复核：用 Phase A 冻结策略（duration-only + 限长 [0.67,1.5]）对 C2 库跑一次 validation CPU smoke，冻结 state library v1 | 未做 |
-| G-3 | 生成质量评价管线（批次 0 的产物）先于任何生成器 | 未做 |
+| G-1 | C2-k4 库适配器：`state_inventory.csv + state_waveforms.npz` → B2 构建器/交换性评估所需格式 | ✅ 零代码通过：与 pilot 库 31 列逐列一致（同生产者同构），无需适配器 |
+| G-2 | validation 选 k 复核：用 Phase A 冻结策略（duration-only + 限长 [0.67,1.5]）对 C2 库跑一次 validation CPU smoke，冻结 state library v1 | ✅ 已完成：k3/k4/k5 = 24.305/24.434/24.334W（差异在噪声内），按结构证据冻结 **v1 = C2-detsec-k4**，报告见 `reports/server_c2/2026-09-21/state_library_v1_freeze.md` |
+| G-3 | 生成质量评价管线（批次 0 的产物）先于任何生成器 | 未做（下一步） |
 
 无论 C3/C4/C5 结果是否理想，D/E 按本计划推进（研究者已确认）；C5 判决只影响
 生成阶段的解释框架与优先级，不影响 D/E 代码开发的启动。
