@@ -1,5 +1,9 @@
 # pslg-nilm: C3 Seq2Point and generator environment with CUDA PyTorch
-# (guide §4.5). STATUS: 初版参考 — 服务器上完成 torch.cuda 冒烟后才可冻结。
+# (guide §4.5). STATUS: 服务器已验证（2026-09-21，h104-slurm-a RTX3090，驱动
+# 580.65.06）：torch 2.5.1+cu121 CUDA 可用并通过前向/反向冒烟。偏离记录：
+# pip 曾解析到 2.14.0+cu130 且 CUDA 初始化失败，已钉 torch==2.5.1；
+# h103-slurm-a 节点 CUDA 初始化故障（同驱动同环境 False），作业用
+# sbatch --extra='-w h104-slurm-a' 避开。
 # Create on the server (module versions per live `module avail`):
 #   conda env create -f environment_nilm_server.yml
 #   conda activate pslg-nilm

@@ -38,7 +38,7 @@ C1 不是马上跑大模型，而是先证明服务器环境、GPU、代码、�
 | Git 工作树 | 检查前干净；本文修改后只应出现文档变更 | 先前代码修复已提交 |
 | 当前分支 | `feature/haojun`，提交 `9dd3786` | 这是目前可追溯的代码版本 |
 | 冻结标签 | `phase-b-freeze` 指向 `9dd3786` | Phase B 修订版标签存在 |
-| 测试 | 本轮再次运行，131 项全部通过 | 含自定义仓库目录、打包、GPU设备和早停逻辑测试 |
+| 测试 | 本轮再次运行，136 项全部通过 | 含自定义仓库目录、打包、GPU设备、早停与确定性恢复测试 |
 | DETSEC-PC 冒烟 | 8 个 train cycle，k=3/4/5，`test_accessed=false` | 新增状态库元数据修复有效 |
 | 状态库元数据 | feature、segment、commit、status 已正确透传 | 产物能说明自己如何生成 |
 | validation 预测索引 | 与冻结的 validation monitor 完全相同 | 没有偷偷换评价样本 |
@@ -155,7 +155,7 @@ print("all yaml parsed")
 '@ | .\.venv\Scripts\python.exe -
 ```
 
-通过标准：测试全绿、脚本可编译、所有 YAML 可解析。若测试数量不再是131，必须解释是
+通过标准：测试全绿、脚本可编译、所有 YAML 可解析。若测试数量不再是136，必须解释是
 新增了哪些测试，不能只把文档中的数字机械改掉。
 
 ### 4.3 再审计一次数据泄漏
@@ -698,7 +698,7 @@ run_summary.md
 - [ ] 开发服务器上没有最终 test shard；
 - [ ] TensorFlow 能看到 GPU 并完成反向传播；
 - [ ] PyTorch 能看到 GPU 并完成反向传播；
-- [ ] 131项或更新后的全部测试通过；
+- [ ] 136项或更新后的全部测试通过；
 - [ ] DETSEC-PC 8-cycle 冒烟通过；
 - [ ] Seq2Point 训练、保存、恢复、validation 推理通过；
 - [ ] 环境、module、GPU、Slurm、Git 和数据 manifest 已保存；

@@ -484,6 +484,20 @@ python scripts/query_slurm_registry.py \
   --registry "$PSLG_REGISTRY_ROOT/c1_jobs.json"
 ```
 
+需要把作业钉到指定节点（例如某节点 CUDA 初始化故障需避开，2026-09-21 的
+h103 即属此类）时，用 `--extra` 透传 sbatch 选项：
+
+```bash
+python scripts/submit_slurm_matrix.py \
+  --matrix "$PSLG_MANIFEST_ROOT/c1_gpu_smoke.server.yaml" \
+  --registry "$PSLG_REGISTRY_ROOT/c1_jobs.json" --submit \
+  --extra='-w h104-slurm-a'
+```
+
+`--extra` 经 shlex 解析、以参数列表传给 sbatch（无 shell 注入面），并连同
+`sbatch_extra` 字段写入 registry 备查。集群禁用 sacct 时查询脚本自动降级为
+仅 squeue，并在 `accounting_note` 里说明原因。
+
 ### 6.6 C1 人工验收
 
 GPU 框架冒烟成功后，再申请一次短时 GPU 交互会话：
@@ -517,6 +531,8 @@ python scripts/train_state_discovery.py \
 conda deactivate
 conda activate pslg-nilm
 
+# CUDA>=10.2 上确定性算法要求 CuBLAS 固定工作区；trainer 模块导入时已自动
+# 设置（CUBLAS_WORKSPACE_CONFIG=:4096:8，不覆盖显式用户值），无需手工操作。
 export PSLG_C1_NILM_SMOKE="$PSLG_ARTIFACT_ROOT/c1_nilm_smoke"
 mkdir -p "$PSLG_C1_NILM_SMOKE"
 

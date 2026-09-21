@@ -1,5 +1,7 @@
 # pslg-detsec: C2 DETSEC-PC environment with TensorFlow GPU (guide §4.5).
-# STATUS: 初版参考 — 只有在服务器上完成 GPU 枚举与冒烟后才可标为冻结。
+# STATUS: 服务器已验证（2026-09-21，h104-slurm-a RTX3090，驱动 580.65.06）：
+# TF 2.18.1 自行枚举 GPU 并通过前向/反向冒烟。偏离记录：装后补
+# PyWavelets（prim-glr 分段依赖，初版漏列；服务器实装 1.10.0）。
 # Create on the server (Linux; module versions must be confirmed with
 # `module avail` first, guide §7.7):
 #   conda env create -f environment_detsec_server.yml
