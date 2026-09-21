@@ -35,16 +35,21 @@
 - [x] `slurm/b3_transform.sbatch`（CPU 作业，无 GPU）
 - [x] 提交
 
-## 批次 2：CVAE 族（B3-V + B4）
+## 批次 2：CVAE 族（B3-V + B4）（✅ 完成 2026-09-21）
 
-- [ ] `src/generation/full_cycle_cvae.py`（条件 CVAE + 长度桶/mask）
-- [ ] `src/generation/primitive_cvae.py`（共享条件基元 CVAE）
-- [ ] `scripts/train_full_cycle_generator.py`（统一训练入口，--route cvae|primitive）
-- [ ] `scripts/generate_primitive_cycles.py`
-- [ ] `scripts/compose_generated_cycles.py`（B4 基础拼接）
-- [ ] 单元测试（损失下降、形状、mask 边界、时长一致性）
-- [ ] CPU 冒烟（数百 epoch 级小样本，loss 曲线落盘）
-- [ ] `slurm/b3_cvae.sbatch`、`slurm/b4_primitive_cvae.sbatch`
+- [x] `src/generation/full_cycle_cvae.py`（条件 CVAE + 长度桶/mask + 梯度裁剪
+      + 功率归一化 + CVAESamplingGenerator）
+- [x] `src/generation/primitive_cvae.py`（状态段加载、经验路径模型、
+      PrimitiveComposer 基础拼接）
+- [x] `scripts/train_full_cycle_generator.py`（--route cvae|primitive）
+- [x] `scripts/generate_primitive_cycles.py`
+- [x] `scripts/compose_generated_cycles.py`（从既有基元池重组）
+- [x] 单元测试 13 项（桶倍数/覆盖、损失下降、采样形状、mask、确定性、
+      schema 有效、CLI 路由）
+- [x] CPU 冒烟：B4 基元 CVAE 10 epoch（loss 0.0342→0.0064，功率归一化
+      修复 NaN）；组合 246 条 → 质量门 PASS（duration WARN 为欠训预期）+
+      复制审计 0/246；B3-V 5 epoch + 采样 20 条；compose 100 条
+- [x] `slurm/b3_cvae.sbatch`、`slurm/b4_primitive_cvae.sbatch`
 - [ ] 提交
 
 ## 批次 3：B3-G 条件 WGAN

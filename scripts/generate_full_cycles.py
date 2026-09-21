@@ -18,11 +18,37 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.generation.base_generator import BaseGenerator  # noqa: E402
+from src.generation.full_cycle_cvae import (  # noqa: E402
+    CVAESamplingGenerator,
+    ConditionalWaveformCVAE,
+    LengthBucketizer,
+)
 from src.generation.full_cycle_transform import (  # noqa: E402
     RealCycleTransformGenerator,
 )
+from src.validation.synthetic_quality import load_real_reference  # noqa: E402
 
-ROUTE_CHOICES = ("transform",)
+ROUTE_CHOICES = ("transform", "cvae")
+
+
+def _load_cvae_checkpoint(checkpoint_dir: Path, device: str
+                          ) -> tuple[ConditionalWaveformCVAE,
+                                     LengthBucketizer, dict, float]:
+    import torch
+
+    payload = torch.load(Path(checkpoint_dir) / "model.pt",
+                         map_location=device, weights_only=False)
+    if payload.get("condition_dim") != 4:
+        raise SystemExit("checkpoint is not a full-cycle CVAE (condition_dim)")
+    model = ConditionalWaveformCVAE(
+        payload["wave_length"], payload["condition_dim"],
+        latent_dim=payload["latent_dim"], width=payload["width"])
+    model.load_state_dict(payload["model"])
+    bucketizer = LengthBucketizer.from_dict(payload["bucketizer"])
+    normalizer = {"length_scale": payload["length_scale"],
+                  "mean_power_scale": payload["mean_power_scale"]}
+    return model, bucketizer, normalizer, float(payload.get("power_scale",
+                                                            1.0))
 
 
 def build_generator(args: argparse.Namespace) -> BaseGenerator:
@@ -32,6 +58,19 @@ def build_generator(args: argparse.Namespace) -> BaseGenerator:
             sample_seconds=args.sample_seconds,
             time_scale_range=(args.time_scale_min, args.time_scale_max),
             power_scale_range=(args.power_scale_min, args.power_scale_max))
+    if args.route == "cvae":
+        if not args.checkpoint_dir:
+            raise SystemExit("--route cvae needs --checkpoint-dir")
+        model, bucketizer, normalizer, power_scale = _load_cvae_checkpoint(
+            Path(args.checkpoint_dir), args.device)
+        donors = load_real_reference(Path(args.real_library_dir),
+                                     max_cycles=200)
+        return CVAESamplingGenerator(
+            model, bucketizer,
+            length_scale=normalizer["length_scale"],
+            mean_power_scale=normalizer["mean_power_scale"],
+            donor_waves=donors, sample_seconds=args.sample_seconds,
+            device=args.device, power_scale=power_scale)
     raise SystemExit(
         f"route {args.route!r} is not implemented yet; choose from "
         f"{ROUTE_CHOICES}")
@@ -50,6 +89,9 @@ def main() -> None:
     ap.add_argument("--time-scale-max", type=float, default=1.2)
     ap.add_argument("--power-scale-min", type=float, default=0.9)
     ap.add_argument("--power-scale-max", type=float, default=1.1)
+    ap.add_argument("--checkpoint-dir", default=None,
+                    help="cvae route: trained checkpoint directory")
+    ap.add_argument("--device", default="cpu", choices=("cpu", "cuda"))
     args = ap.parse_args()
 
     generator = build_generator(args)
