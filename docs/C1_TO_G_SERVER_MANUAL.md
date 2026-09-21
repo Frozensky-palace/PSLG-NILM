@@ -1024,25 +1024,38 @@ done
 
 计划统一接口：
 
-```text
-python scripts/fit_hsmm_composer.py --state-library <train-only-state-library> --config config/composition/b5_hsmm.yaml --output-dir <run>
-python scripts/compose_generated_cycles.py --hsmm <frozen-hsmm> --primitive-generator <checkpoint> --config <ablation-yaml> --output-dir <cycles>
+> 2026-09-22 更新：接口已实现并本机验证（附录 A 批次 4，177→194 项测试）。
+> 拟合与组合均为纯 CPU；真实 v1 库上消融已见端点选择把平均边界代价
+> 从 807.5W 降到 537.5W。实际命令如下（与早先规划略有差异）：
+
+```bash
+# 拟合冻结 HSMM 模型（CPU，秒级）
+python scripts/fit_hsmm_composer.py \
+  --state-library-dir "$PSLG_STATE_LIBRARY" \
+  --output "$RUN_DIR/hsmm_model.json"
+
+# B5 默认（HSMM 时长 + 无边界手术）与 endpoint 消融，一次作业跑两组
+sbatch --export=ALL,PSLG_PROJECT_ROOT="$PSLG_PROJECT_ROOT",PSLG_STATE_LIBRARY="$PSLG_STATE_LIBRARY",PSLG_PRIMITIVES_DIR="$PSLG_ARTIFACT_ROOT/b4_s17_<jobid>/cycles",PSLG_DONOR_LIBRARY="$PSLG_DONOR_LIBRARY",PSLG_COUNT=246,PSLG_SEED=17 \
+  slurm/b5_hsmm.sbatch
+
+# 手动消融阶梯（每次只加一个约束；B4-basic 即 §12 的 B4 产物本身）
+python scripts/compose_b5_cycles.py \
+  --primitives-dir "$PSLG_PRIMITIVES_DIR" \
+  --hsmm-json "$RUN_DIR/hsmm_model.json" \
+  --boundary-mode none \
+  --output-dir "$RUN_DIR/cycles_b5" --count 246 --seed 17
+python scripts/compose_b5_cycles.py ... \
+  --boundary-mode endpoint_match \
+  --output-dir "$RUN_DIR/cycles_b5_endpoint" ...
+# B4+Markov 阶梯：--ignore-hsmm-durations（保留 donor 原长）
 ```
 
-HSMM 拟合通常可用 CPU；大批量调用 B4 生成器时再用 GPU。正式消融顺序：
-
-```text
-B4-basic
-B4 + Markov
-B4 + HSMM
-B4 + HSMM + endpoint
-B5-final
-```
-
-每次只增加一个约束，并复用相同 seed、目标条件、背景和 placement schedule。B2 已发现通用
-cross-fade 和端点偏移可能是负收益，所以不能默认打开；若重新使用，必须成为单独消融组。
-
-每组仍要重训相同预算的 NILM，不能只比较波形“看起来像不像”。
+纪律不变：每次只增加一个约束并复用相同 seed、目标条件、背景和 placement
+schedule；B2 已证明通用 cross-fade / 端点偏移为负收益，禁止作为默认打开。
+每组仍要重训相同预算的 NILM 并只看 validation——不能只比较波形像不像。
+判定：质量门 `passed: true`（duration WARN 可解释），复制率接近 0；
+`mean_boundary_cost_w`（记录在每个合成周期的 conditions 里）是 endpoint
+消融的内置度量。
 
 ---
 
