@@ -23,14 +23,17 @@
       diversity=WARN（常量生成器被正确标记零多样性）；复制审计 0/20
 - [x] 提交
 
-## 批次 1：B3-T 真实周期变换
+## 批次 1：B3-T 真实周期变换（✅ 完成 2026-09-21）
 
-- [ ] `src/generation/full_cycle_transform.py`（受限时间/功率缩放 + 防护）
-- [ ] `scripts/generate_full_cycles.py`（统一生成入口，--route transform）
-- [ ] 单元测试（缩放边界、负功率拒绝、能量约束、provenance）
-- [ ] 本机端到端闭环：生成 246 条 → 质量评价 → 记忆审计
-- [ ] `slurm/b3_transform.sbatch`
-- [ ] 提交
+- [x] `src/generation/full_cycle_transform.py`（受限时间/功率缩放 + 守卫包络
+      + 有界重试；重试上限 64，不可行包络确定性 RuntimeError）
+- [x] `scripts/generate_full_cycles.py`（统一生成入口，未实现路线快速失败）
+- [x] 单元测试 6 项（缩放边界、负功率、包络重试、确定性、provenance、CLI+质量门）
+- [x] 本机端到端闭环：生成 246 条 → 质量门全 PASS（含 diversity=PASS）→
+      记忆审计 replication=99.2%（**B3-T 定义属性**：形变真实周期本就近邻；
+      exact 复制 0；形状中位距离 0.0451）。神经路线必须接近 0，两口径分开记录
+- [x] `slurm/b3_transform.sbatch`（CPU 作业，无 GPU）
+- [x] 提交
 
 ## 批次 2：CVAE 族（B3-V + B4）
 
