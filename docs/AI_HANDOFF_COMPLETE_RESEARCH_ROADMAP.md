@@ -6,11 +6,12 @@
 > 第一研究对象：UK-DALE House 1 washing machine  
 > 主要用途：供后续 AI 模型、开发者和服务器实验直接接手执行  
 > 当前状态：Phase A 与 Phase B 本机部分已完成（B2 策略与粒度候选已冻结、Seq2Point
-> 训练器已实现且本机冒烟跑通、全套 106 项测试通过）；服务器 DETSEC-PC、正式
+> 训练器已实现且本机冒烟跑通、全套 131 项测试通过）；服务器 DETSEC-PC、正式
 > Seq2Point 多 seed 网格与 B3–B5 生成模型尚未开始。B3 已冻结为四条完整周期路线，
 > B4 为基元生成，B5 为基于 HSMM 的受约束拼接。B2 冻结策略见
 > `docs/state_and_b2_policy_freeze_v1.md`；进入 C1 前的本机准备、服务器操作和验收标准见
-> `docs/C1_LOCAL_PREPARATION_AND_SERVER_EXECUTION_GUIDE.md`。
+> `docs/C1_LOCAL_PREPARATION_AND_SERVER_EXECUTION_GUIDE.md`；C1 到 Phase G 的逐步人工操作见
+> `docs/C1_TO_G_SERVER_MANUAL.md`。
 
 ---
 
@@ -430,7 +431,7 @@ k=4 的 MAE 最好，k=5 的 F1、误报和边界最好。差异不足以让树�
 | `evaluate_nilm_predictions.py` | 已实现 | MAE/RMSE/SAE/P/R/F1 |
 | `build_server_transfer_manifest.py` | 已实现 | 最小服务器包及 SHA-256 |
 
-全套本地测试：106 项通过（2026-09-20 更新；原 58 项，新增 Phase A/B 覆盖与状态
+全套本地测试：131 项通过（2026-09-21 更新；原 58 项，新增 Phase A/B、C1 准备和服务器操作覆盖与状态
 发现入口测试，并已
 修复第三方 `tests` 包遮蔽导致的导入问题）。当前警告仅涉及 Windows 物理核心探测，
 不影响结果。
@@ -1388,7 +1389,7 @@ reports/
 - [x] Seq2Point 小数据训练/恢复/推理跑通（192,225 参数，test 默认锁定）；
 - [x] 生成 schema 和 provenance 测试通过；
 - [x] 服务器包 SHA-256 校验清单完成（dev bundle 73 文件校验通过）；
-- [x] 全套单元测试通过（106 项；已为 `tests/` 增加 `__init__.py` 包定义并让
+- [x] 全套单元测试通过（131 项；已为 `tests/` 增加 `__init__.py` 包定义并让
   `test_dpc_kmeans` 的跨模块导入兼容两种发现模式，消除第三方 `tests` 包遮蔽
   导致的导入错误——修复前该环境仅 97 项可运行）。
 
@@ -1515,7 +1516,7 @@ config/experiments/nilm_b0_b2_pilot.yaml
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-当前基准：106 项通过。
+当前基准：131 项通过。
 
 ### 16.2 重建 B2-matched 配对周期
 

@@ -7,6 +7,9 @@
 > 与 SHA-256 记录在本机 `server_transfer/` 目录（不进 Git），服务器优先走 Git 远程。
 > 核心原则：train 用于学习，validation 用于选择，最终 test 暂不上传、不读取、不评价。
 
+本文件用于解释“进入 C1 前准备什么”。准备完成后，实际从 C1 执行到 Phase G 请使用
+`docs/C1_TO_G_SERVER_MANUAL.md`。
+
 ---
 
 ## 1. 先用一句话说明现在要做什么
@@ -35,12 +38,12 @@ C1 不是马上跑大模型，而是先证明服务器环境、GPU、代码、�
 | Git 工作树 | 检查前干净；本文修改后只应出现文档变更 | 先前代码修复已提交 |
 | 当前分支 | `feature/haojun`，提交 `9dd3786` | 这是目前可追溯的代码版本 |
 | 冻结标签 | `phase-b-freeze` 指向 `9dd3786` | Phase B 修订版标签存在 |
-| 测试 | 本轮再次运行，106 项全部通过 | 代码层回归检查已通过 |
+| 测试 | 本轮再次运行，131 项全部通过 | 含自定义仓库目录、打包、GPU设备和早停逻辑测试 |
 | DETSEC-PC 冒烟 | 8 个 train cycle，k=3/4/5，`test_accessed=false` | 新增状态库元数据修复有效 |
 | 状态库元数据 | feature、segment、commit、status 已正确透传 | 产物能说明自己如何生成 |
 | validation 预测索引 | 与冻结的 validation monitor 完全相同 | 没有偷偷换评价样本 |
 | B0/B1/B2 无 test 包 | `--exclude-test` 可生成并通过逐文件哈希 | 开发阶段可物理隔离 test |
-| YAML | 37 个现有 YAML 已解析通过 | 配置格式没有明显错误 |
+| YAML | 40 个现有 YAML 已解析通过 | 含新增 C1/C2/C3 服务器矩阵 |
 
 ### 2.2 进入 C1 前仍有四个硬门槛
 
@@ -152,7 +155,7 @@ print("all yaml parsed")
 '@ | .\.venv\Scripts\python.exe -
 ```
 
-通过标准：测试全绿、脚本可编译、所有 YAML 可解析。若测试数量不再是106，必须解释是
+通过标准：测试全绿、脚本可编译、所有 YAML 可解析。若测试数量不再是131，必须解释是
 新增了哪些测试，不能只把文档中的数字机械改掉。
 
 ### 4.3 再审计一次数据泄漏
@@ -695,7 +698,7 @@ run_summary.md
 - [ ] 开发服务器上没有最终 test shard；
 - [ ] TensorFlow 能看到 GPU 并完成反向传播；
 - [ ] PyTorch 能看到 GPU 并完成反向传播；
-- [ ] 106项或更新后的全部测试通过；
+- [ ] 131项或更新后的全部测试通过；
 - [ ] DETSEC-PC 8-cycle 冒烟通过；
 - [ ] Seq2Point 训练、保存、恢复、validation 推理通过；
 - [ ] 环境、module、GPU、Slurm、Git 和数据 manifest 已保存；
