@@ -24,4 +24,5 @@ dependencies:
       - scikit-learn>=1.5
       - matplotlib>=3.9
       - pyyaml>=6.0
+      - PyWavelets>=1.6
       - tensorflow[and-cuda]==2.18.1

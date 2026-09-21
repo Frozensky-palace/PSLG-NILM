@@ -316,7 +316,7 @@ git rev-parse HEAD
 ```bash
 cd "$PSLG_PROJECT_ROOT"
 
-export PSLG_NILM_EXPERIMENT_DIR="$PSLG_PROJECT_ROOT/reports/core_validation/ukdale_b1_washing_machine/nilm_inputs_b2matched_k4_seed17_r0p5_v1"
+export PSLG_NILM_EXPERIMENT_DIR="$PSLG_PROJECT_ROOT/reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/inputs"
 
 python scripts/prepare_server_matrices.py \
   --project-root "$PSLG_PROJECT_ROOT" \
