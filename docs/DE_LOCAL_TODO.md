@@ -1,5 +1,29 @@
 # D/E 本机任务执行清单（TODO）
 
+## 服务器执行（✅ 生成阶段 5/5 完成 2026-09-22）
+
+| 路线 | quality | memorization | replication_rate |
+|---|---|---|---|
+| B3-T 变换 | true | true | 0.992（定义属性，exact=0） |
+| B3-V CVAE | true | true | 0.0 |
+| B4 基元拼接 | true | true | 0.004 |
+| B3-G WGAN | true | true | 0.0 |
+| B3-D 扩散 | true | true | 0.0 |
+
+- 扩散经历三次修复后过门：时间嵌入设备跟随（fd3a657）、std 尺度替代
+  峰值尺度（学习信噪比）、方法级峰值截断（坐标系换算后生效，d83f200）
+- 服务器运行目录：`~/pslg_artifacts/{b3t_s17, b3_cvae_s17, b4_s17,
+  b3_wgan_s17, b3_diffusion_s17}_*`（各含 quality/memorization 报告）
+
+## 待办（下一会话）
+
+- [ ] 五个 run 目录打包回传本机 `reports/server_de/2026-09-22/`
+- [ ] 共享放置表 + 四路线合成周期统一放置 + 同预算 Seq2Point 重训
+      （自动化脚本待本机补齐：schedule → place → prepare → train 串联）
+- [ ] B3-T/V/G/D/B4 五路线 + B0/B1 基准的 validation 对照表（D/E 结论）
+- [ ] 批次 4：B5/HSMM 组本机开发（Phase F）
+- [ ] C1 记录补账（pack_c1.sh）；B2-random 输入准备（协议诊断组）
+
 > 依据：路线图附录 A。本文件是**执行追踪器**，随进度更新勾选；
 > 研究方案本身见路线图 §Phase D/E/F，验收标准见附录 A.1。
 > 目标：完成 D/E 阶段除服务器正式实验外的全部本机任务。

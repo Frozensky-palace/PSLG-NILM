@@ -17,8 +17,12 @@
 > ratio=0.5：B1 全面显著优于 B0；B2-matched 均值最优 11.84±1.61 且方差最小，
 > 与 B1 相当但逐 seed 方向翻转，见
 > `reports/server_c3/2026-09-21/c3_results_and_c5_decision.md`——按 C5 分支规则
-> 具备进入生成阶段条件）；ratio=1/2 的 C4 与 B3–B5 生成模型尚未开始（B3 生成
-> 代码本机并行开发中）。B3 已冻结为四条完整周期路线，
+> 具备进入生成阶段条件）；**D/E 服务器生成阶段已于 2026-09-22 完成 5/5**：
+> B3-T/V/G/D + B4 全部通过质量门与记忆审计（B3-T 近复制为定义属性，
+> 神经路线复制率 ≤0.4%），扩散经三次修复后过门，运行目录在
+> `~/pslg_artifacts/`，TODO 见 `docs/DE_LOCAL_TODO.md`，待办：产物回传、
+> 共享放置+下游重训比较、批次 4（B5/HSMM）本机开发）；ratio=1/2 的 C4 与
+> B5 生成模型尚未开始。B3 已冻结为四条完整周期路线，
 > B4 为基元生成，B5 为基于 HSMM 的受约束拼接。B2 冻结策略见
 > `docs/state_and_b2_policy_freeze_v1.md`；进入 C1 前的本机准备、服务器操作和验收标准见
 > `docs/C1_LOCAL_PREPARATION_AND_SERVER_EXECUTION_GUIDE.md`；C1 到 Phase G 的逐步人工操作见
