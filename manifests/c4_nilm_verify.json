@@ -1,0 +1,9 @@
+{
+  "manifest": "manifests/c4_nilm_trainval_manifest.json",
+  "repo_root": "D:\\zhj\\vscode\\PSLG-NILM",
+  "exclude_test": null,
+  "expected_files": 109,
+  "verified_files": 109,
+  "failures": [],
+  "passed": true
+}
