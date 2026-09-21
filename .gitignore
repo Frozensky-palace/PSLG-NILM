@@ -68,3 +68,4 @@ docs/server.html
 
 # C1 offline code/data transfer artifacts (git bundle + hashes)
 server_transfer/
+server_bundles/

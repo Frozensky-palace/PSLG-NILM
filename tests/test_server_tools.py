@@ -24,9 +24,13 @@ from scripts.server_preflight import check_manifest  # noqa: E402
 
 
 def _write_fake_library(root: Path, partitions=("train", "train")) -> Path:
+    import hashlib
+
     library = root / "library"
     segments = library / "segments"
+    cycles = library / "cycles"
     segments.mkdir(parents=True)
+    cycles.mkdir(parents=True)
     pd.DataFrame({
         "csv_idx": range(len(partitions)),
         "filename": [f"cycle_{i:04d}.csv" for i in range(len(partitions))],
@@ -37,10 +41,16 @@ def _write_fake_library(root: Path, partitions=("train", "train")) -> Path:
         "start_unix": 0, "end_unix": 10, "samples": 2,
     }).to_csv(segments / "segment_source_map.csv", index=False)
     (segments / "segment_export_manifest.json").write_text("{}", encoding="utf-8")
+    sha_rows = []
+    for index in range(len(partitions)):
+        payload = f"fake-cycle-{index}".encode("utf-8")
+        (cycles / f"cycle_{index:04d}.npz").write_bytes(payload)
+        sha_rows.append(hashlib.sha256(payload).hexdigest())
     pd.DataFrame({
         "cycle_id": [f"c{i}" for i in range(len(partitions))],
         "partition": list(partitions),
         "path": [f"cycles/cycle_{i:04d}.npz" for i in range(len(partitions))],
+        "sha256": sha_rows,
     }).to_csv(library / "real_cycle_library.csv", index=False)
     (library / "real_cycle_library_manifest.json").write_text("{}", encoding="utf-8")
     for index in range(len(partitions)):
@@ -62,6 +72,8 @@ class StateDiscoveryBundleTests(unittest.TestCase):
             self.assertIn("scripts/train_state_discovery.py", relatives)
             self.assertTrue(any(p.endswith("cycle_0000.csv") and
                                 "segments" in p for p in relatives))
+            self.assertTrue(any(p.endswith("cycle_0000.npz") and
+                                "cycles" in p for p in relatives))
             for relative in paths:
                 self.assertFalse(looks_like_test_path(relative))
 

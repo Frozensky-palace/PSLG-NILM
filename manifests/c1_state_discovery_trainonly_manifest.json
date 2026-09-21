@@ -1,8 +1,8 @@
 {
   "protocol": "c1_state_discovery_trainonly_bundle_v1",
   "project_relative_paths": true,
-  "file_count": 503,
-  "total_bytes": 40943020,
+  "file_count": 996,
+  "total_bytes": 48323556,
   "files": [
     {
       "path": "config/experiments/core_wm_state_discovery_detsec_pc.yaml",
@@ -23,6 +23,2471 @@
       "path": "reports/core_validation/ukdale_b1_washing_machine/partition_manifest.json",
       "bytes": 375242,
       "sha256": "d50d74828f95fcfc3803e23411a2a8b8a23040d04645020da10ec3e0ac54fde6"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0000.npz",
+      "bytes": 16447,
+      "sha256": "7112204fe29ef9c3c1cd1227a13b59aca152c8f60bad79081316fa9460583de3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0001.npz",
+      "bytes": 16225,
+      "sha256": "23962fb7a751543081a77ee2bc011c8348b45d299bdeeda12721996e422b2461"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0002.npz",
+      "bytes": 16746,
+      "sha256": "4ea1d274760561448afa8e9eb27091694bf73173e9638e2ee1560eb62025aa76"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0003.npz",
+      "bytes": 17449,
+      "sha256": "3ea6b9ad648893bd8d328e119afa01d71c6e8b88df2022afe9c10e09fc638118"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0004.npz",
+      "bytes": 16814,
+      "sha256": "1367f8c05dddfa9b4e35458e1ac5faaffe49341f41edd4d307916667e1a39644"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0005.npz",
+      "bytes": 16378,
+      "sha256": "8d961dce5015a847628edf8498bc69af4d2e094b8dd23abbe52042ddaceca100"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0006.npz",
+      "bytes": 16967,
+      "sha256": "faff2e78f2cb72c19c0d239936f4e14139422185cfeec4315f5e717fb0cbd5cc"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0007.npz",
+      "bytes": 16797,
+      "sha256": "c20e2b10764c756caa45b8893f6fd4175a40c482759a900a5ab0634fbfaebf3d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0008.npz",
+      "bytes": 16013,
+      "sha256": "38d4befef71674412f97f7d4f45d9493e1496053402a9bd0e4bcd9d6d9568987"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0009.npz",
+      "bytes": 14519,
+      "sha256": "15677f396945768ce989cb51e84797bb41a2b8c2821db73f29538efa33c52e2d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0010.npz",
+      "bytes": 8940,
+      "sha256": "9ba62579d9915dd87dd6faf74fa99dbeb12e0464e6d61b8b22261aaf0f09b297"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0011.npz",
+      "bytes": 16359,
+      "sha256": "a718d5bf65c0ec7762723cef526df8337e87ed8b6d8cf48bae629c8b41d781d6"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0012.npz",
+      "bytes": 16511,
+      "sha256": "9bfde33cb231b57bce9fd14b1f3d7764ef3d58c3f0ab768c132f1cf29588ceb1"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0013.npz",
+      "bytes": 16318,
+      "sha256": "3f42026f145d0895b36cd37d02818d49d9757383d4fd9b92df45c266a3d7a40d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0014.npz",
+      "bytes": 14718,
+      "sha256": "a792e686f7a10582203a0e0b6e7e986b7e260328c0e45609bb2ed4d074140018"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0015.npz",
+      "bytes": 8948,
+      "sha256": "f703fff8507690ad05f2d4f60f6598198ba51134f9634d47d18f4280a4987737"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0016.npz",
+      "bytes": 15746,
+      "sha256": "f0b8d75e0c7ab3f35788231695e7d2403a3191cab564e58d32e7397f65345027"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0017.npz",
+      "bytes": 16200,
+      "sha256": "5d779a38891f1548571d39ea2030d6ad5308acc9928189108a667e2bc3aa5446"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0018.npz",
+      "bytes": 16269,
+      "sha256": "8d3f59cfb8f933e0ee1608f23286b9bbaa006824e7d94a6f6d181697415054b7"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0019.npz",
+      "bytes": 16737,
+      "sha256": "62614581790fd2c5d5e1ca78e5cef2205c0dd44eb73aa20e9cbc759c5825056d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0020.npz",
+      "bytes": 12854,
+      "sha256": "45ef8f8a7b435005afe22a9912a8fa4c7db88146699ef651066121c9b5824109"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0021.npz",
+      "bytes": 8174,
+      "sha256": "0cb1e718eecfd913cfa93837c7c95ffd781eff925c0ceaa2bd9fd288b9753e44"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0022.npz",
+      "bytes": 15602,
+      "sha256": "799016a2b0e803240c95091c8407e238e02e39021acaa8a1804bc76d502ba708"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0023.npz",
+      "bytes": 16093,
+      "sha256": "7caa36970121a4d366bd444a5e7d184a7d2680116759bd52b657af39964c2728"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0024.npz",
+      "bytes": 15838,
+      "sha256": "597cf2b556ae7357cf49b528c05ba4609c85d38e79c3c779702e9cc1ed9aede4"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0025.npz",
+      "bytes": 16312,
+      "sha256": "77c8f8ecc7f82fadca5b20283bdd0782ac700124c8c68ffcd7c31aa8124951e1"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0026.npz",
+      "bytes": 18012,
+      "sha256": "e2e04d334fe49112852fa3401d44e55de5d3beccd9bd68ed4a0342282c602a62"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0027.npz",
+      "bytes": 16566,
+      "sha256": "7e695f9c504d1642ce402e5231c07be1bd40a83ada377394533b56be8730dbf9"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0028.npz",
+      "bytes": 15626,
+      "sha256": "2ad5f9aae90ec62e9876ab69c06986ca21da22b923aed192d777e83588f33b3f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0029.npz",
+      "bytes": 15647,
+      "sha256": "ec439137cbf77a6b8946b4e8c5327d32c4e51ab351dc15313c9c75e65680caa3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0030.npz",
+      "bytes": 16144,
+      "sha256": "3b905d17e6811a7cfc905a8c42a32c2e60b0e4f200157b761dd1c29b4abdf25c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0031.npz",
+      "bytes": 15347,
+      "sha256": "6bd9dd2377d16ee238738d1b80def8d3caffd0c430f304cabc7e047b81d2eddf"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0032.npz",
+      "bytes": 15877,
+      "sha256": "00d6c7f66ea8259a827eddd449fad7b29976a1f585be52ae9ceb939a05919a2f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0033.npz",
+      "bytes": 12799,
+      "sha256": "c09b8ce63b84e3e3d450df15e07c4e2c2aff60350df3dae6788954b59bea3778"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0034.npz",
+      "bytes": 8549,
+      "sha256": "85cf0e1098c2a7185e8a853544dd39565f886bfec3fe793a5fc0e45bb5d4e17a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0035.npz",
+      "bytes": 16307,
+      "sha256": "fd9553245eea3210126550207ebac68079f63fd27738ae34efc9cd1beda8cc73"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0036.npz",
+      "bytes": 15836,
+      "sha256": "ac69cb21e7a1fd40a567a21f42f38f050828b56c84595f02c6aa92a3e64cb680"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0037.npz",
+      "bytes": 15529,
+      "sha256": "3219dc35d1e75238eefab8a3cc4f194f1f77b7db5479747e1969aa15abcad456"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0038.npz",
+      "bytes": 14021,
+      "sha256": "9b80b70e723aa4fd8ecf48b22e81470b8dfbd0b7445abe0eef2a4a910c6be3f5"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0039.npz",
+      "bytes": 9335,
+      "sha256": "6d19e6c93710dfbfb8db09a0907ac9694b8d5a2af1d0b42495d746210b504ccb"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0040.npz",
+      "bytes": 15816,
+      "sha256": "6245ecdf939d2e847a3cbad699c0dd4ba2daac34e51ab96b3aa9089525c09574"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0041.npz",
+      "bytes": 15467,
+      "sha256": "3d0e9782d08c6388d4ce098bce483cd8ae73b00003f779bfb2d0e41296c3d4ba"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0042.npz",
+      "bytes": 15314,
+      "sha256": "6fe89abd8c1fa156a64d2e5732280e24a13f76df2f324fd25c7cbcaac37a1c16"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0043.npz",
+      "bytes": 13205,
+      "sha256": "a2819c3c370543099fb912ca10329f1bcde73a2d325431110051155946017523"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0044.npz",
+      "bytes": 8984,
+      "sha256": "5d602293d662ca9d921e3028595bb287b9d2eec3f9897aeaf394b765772f7c9d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0045.npz",
+      "bytes": 15564,
+      "sha256": "963a590396aba973f25454820003c694ea8d4149a3db5f0d840f7d5a5fdd8116"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0046.npz",
+      "bytes": 15746,
+      "sha256": "66ef9a707114104c7bae37ceb6387fd2158f2bbc553e7e62e893b3b324e51e94"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0047.npz",
+      "bytes": 12449,
+      "sha256": "9ba21d39f9f62946d396bfd5009a2601da079620f5ccedc3bbebe821e16262de"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0048.npz",
+      "bytes": 8625,
+      "sha256": "69b152c7cca030ec0a2c26d71305855b31d859017e92349704899c9fe79abf41"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0049.npz",
+      "bytes": 17165,
+      "sha256": "88970e7f20d3cb4f9dd043b2a68add4bd9a4d0ed3d2d4be41240bf67f74ca5a2"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0050.npz",
+      "bytes": 15427,
+      "sha256": "5187ae860ce1ce4d1606e3cb7b82f7a53a4106704989044acb3a439e6276a38c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0051.npz",
+      "bytes": 15532,
+      "sha256": "8ca705d3103bdd9c5d0eec6e21d7dd39d84eb1efaea0d097d3fc90aad12f7b93"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0052.npz",
+      "bytes": 15595,
+      "sha256": "35fbdc98128d6f8c523b0e058f394d77d698fa05265fd9f660dc34e1a23023ee"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0053.npz",
+      "bytes": 15871,
+      "sha256": "2d2a93def0378a4ce05447a68c1fa3a2a1d6342a383b7f1171b18fb11f0aa823"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0054.npz",
+      "bytes": 16140,
+      "sha256": "8c42abbfd8647b39d78110b9debf7c4336cf91074f25b0187b28dbc754ab2c6c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0055.npz",
+      "bytes": 16405,
+      "sha256": "ab1a278bde81d625e7ec506d63b4f8c5ab7f26cee6a8d84cb4f11a5b1b50646b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0056.npz",
+      "bytes": 14970,
+      "sha256": "052b7360c5268fb7a4d30889caa4fd34a8233dbc578931f5eac07ee5283cb1c4"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0057.npz",
+      "bytes": 15888,
+      "sha256": "62a18d85432e0807cdf8327cdad8cde56da916cc216fc239e070bc34a86a7bb7"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0058.npz",
+      "bytes": 16008,
+      "sha256": "ef6255627e60a58f51d89ddb3c3596d65f691d8725e3f3a9b979b8bc6be2d390"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0059.npz",
+      "bytes": 15103,
+      "sha256": "14744411ffdc665225df6e92432bf34a22532ae11e96c1579622163d79f62138"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0060.npz",
+      "bytes": 16215,
+      "sha256": "c3dd301face8917029def6ec5180712f9f77997cd00f67efb30f1393009b0c6f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0061.npz",
+      "bytes": 14340,
+      "sha256": "29e6e97f3a49e7b886a874e457ee6ba51447249b34acb3ce222263fa21d43e11"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0062.npz",
+      "bytes": 15114,
+      "sha256": "75d769568d882a9a3cce6222a4a7f88e8f030f5bf8b1c42db9e9d2d2da470705"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0063.npz",
+      "bytes": 15743,
+      "sha256": "e96de473d7ef9f1c555e9446e97c4d825afbdb70899f4da8a2e50b1b6b646146"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0064.npz",
+      "bytes": 15280,
+      "sha256": "b2a1fe121aa1785e8dbe5f78ebf0b330f8fa2ed3e9043766046e33c3b42c3b77"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0065.npz",
+      "bytes": 14953,
+      "sha256": "455528d1e6eeadf435c4d0210a8a2a08f7d3a8813b06a6d159d41e0ee1b5db95"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0066.npz",
+      "bytes": 15599,
+      "sha256": "ec26f274ca58c26abe27de4ee12e1f6632fd8e2787d0fbef252b04dc994ad4dc"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0067.npz",
+      "bytes": 14997,
+      "sha256": "12c45c82c1b1501c49ba317ffe043ffcbc1da772e6ce47c7e1476a40aac33396"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0068.npz",
+      "bytes": 14692,
+      "sha256": "68ad3178712125618eaca0cbfa2c805074b94fce7637f7b41f3deb421eabbbb3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0069.npz",
+      "bytes": 15277,
+      "sha256": "0873c474479c12b7b806f7c668d42bfc605ba2975039397cca96de20c1b7b35c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0070.npz",
+      "bytes": 14791,
+      "sha256": "f969fbe4d99ce3f99ff0a562e89781422aed4545c597a0b85ec4c89af453ef0c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0071.npz",
+      "bytes": 14909,
+      "sha256": "de4cc109e0a787fbb3d20833d31aae4ea55441b985a9c4fcf51a4c4bdabde229"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0072.npz",
+      "bytes": 14722,
+      "sha256": "38e3c3a5a831fdca7e39786eb3c9ac446c43966e7088ecdb2a1d755b50d67720"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0073.npz",
+      "bytes": 14897,
+      "sha256": "10a278d62ab24ef23d4155d9cd9743ed879ee7c7a4198d51466854961fc3070d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0074.npz",
+      "bytes": 16207,
+      "sha256": "d7108fbfe99d33834a4016ccdc889536f6971995c018ce0c1b656f375e4cf551"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0075.npz",
+      "bytes": 14913,
+      "sha256": "eb81994692aa278bb04b5e0f456e0c1e4065868e14ff3f2945214d9f27db96db"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0076.npz",
+      "bytes": 15051,
+      "sha256": "c3f7285fa73be9f520cb6cab01ce33d908eba106cf78ad2edc98a0a9b4a200ad"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0077.npz",
+      "bytes": 15138,
+      "sha256": "d6a0e6939185d455ac4f4f3285e89cc496023a1374bc86201d897db1d8bb82f3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0078.npz",
+      "bytes": 7096,
+      "sha256": "2fa0b07fa9dd730f9416a829821a795c102a701febe7179c9bc2dd6bb21f194a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0079.npz",
+      "bytes": 14314,
+      "sha256": "e0ab5e824e46a686b7501883fb3cf7db3a937a77ef61d1cfe491f12b9b682e5e"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0080.npz",
+      "bytes": 14914,
+      "sha256": "c5ab320111f72e5a41cc8f739c16e58a920f617a747d711015610c1cb597bb7b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0081.npz",
+      "bytes": 14559,
+      "sha256": "3034de2b8bb082d6f413038a2ee304510da1226e76ef49177b1c9e5347d15447"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0082.npz",
+      "bytes": 14844,
+      "sha256": "d15202b4c8a9f0fe6091bdb736af49753a29f2ecbc2b097baa47c57ab452039e"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0083.npz",
+      "bytes": 14674,
+      "sha256": "25ff15f272ada978c98dd8c0c00af23dd6c69f616371218ba3290ce1fe630dbd"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0084.npz",
+      "bytes": 14312,
+      "sha256": "c7eeb042ab5d79733a0d42de38b13490a68c180592e7f8e16a66f06de2013d85"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0085.npz",
+      "bytes": 12454,
+      "sha256": "6ecf7212c0732492ed471900a020e2808d570246cfa918edfcd7ef25097fdad6"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0086.npz",
+      "bytes": 8651,
+      "sha256": "e4b0ea9b2407614a73307284076252a862b0113218c60222f57b9d2f7fe67068"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0087.npz",
+      "bytes": 14736,
+      "sha256": "bcf7553d997c0e366fd093bebb5fd3e5218a4e3feb821a1a234b7e31243ee855"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0088.npz",
+      "bytes": 13929,
+      "sha256": "6e7f407dfb0c4b442c79b9a4bb2df464c4fe51d8348808c94c69c82e5d5f877d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0089.npz",
+      "bytes": 16093,
+      "sha256": "b6ac21c5e5426d09bb007685d33a64048cc0d12feed636c0c6407d9dfb44441f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0090.npz",
+      "bytes": 15645,
+      "sha256": "74416d7284025e5a3a56008b312155d4a590b9dcc32069e424480e0448584546"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0091.npz",
+      "bytes": 15223,
+      "sha256": "49dd1c6bc3b80e7e6c2290b2547367a826aae3cb3245ee8e793643d789cc4345"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0092.npz",
+      "bytes": 16392,
+      "sha256": "e1eb4e30633fe25853edfa257e21cec356a820fca34a5fa0b76445fef5fa9c32"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0093.npz",
+      "bytes": 14478,
+      "sha256": "de0111b9ffa24e7563bb70ea18b7949d2244e32d069fb2043ed19ca0ad64e2c1"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0094.npz",
+      "bytes": 15149,
+      "sha256": "1c7b10b416eb2e0243c58ed953ad64cb71428bbb8b67147a895e0b6975fa0a1c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0095.npz",
+      "bytes": 14577,
+      "sha256": "0eaf21a3c798aff52fb3ccdfa7f689adc8c2fe8a8e222e952dbab3d32a98f695"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0096.npz",
+      "bytes": 16823,
+      "sha256": "8b8db9ac6a0689f2d9faeb40fec5782b296bd2e893cf9e20d7279e148e3995da"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0097.npz",
+      "bytes": 16947,
+      "sha256": "c8a7e2925ed2ae31257415b5269ff82a8ee7fbba527305222d0a5cfdd64c9e85"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0098.npz",
+      "bytes": 14106,
+      "sha256": "eb35ec980e99f17cb128cbc176c4e9bdefbd1e597eca22aa5a1ddac50a59db97"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0099.npz",
+      "bytes": 14584,
+      "sha256": "42513bbdc4c8623293319feabc9d01db05884ec51b38966655a27cc9387ee996"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0100.npz",
+      "bytes": 14241,
+      "sha256": "4d113b0216b9657dc4a3ed337d26cb61a8646d592a2b98f28e72f6e3bd1afd9a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0101.npz",
+      "bytes": 14699,
+      "sha256": "87db5856e7e63c0c4cbc7de8f398b71e28d9dd91d19874e5f9e48a5ef2d1c5af"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0102.npz",
+      "bytes": 14613,
+      "sha256": "728993e680608285d9d5fcb50f661086235d18d28e7b238ba471f600bc6da7b2"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0103.npz",
+      "bytes": 14600,
+      "sha256": "671aa6e39fff88a17ca57c3ab483191c71d4e58ad412a346982d99c83f04ffd7"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0104.npz",
+      "bytes": 14691,
+      "sha256": "1a1e711f7fa37379ca729883d3fb709872e0792aee5da56defb57ec1dcd6f181"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0105.npz",
+      "bytes": 14485,
+      "sha256": "fa22190d4012cf4c21035437a1bc88cd5c5731caecf6fe83523caae8671e24eb"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0106.npz",
+      "bytes": 14983,
+      "sha256": "22112b1e1b128aa07fb9ef3661b9fd15abf91d871a20423ad4bb8a99280c10d4"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0107.npz",
+      "bytes": 15131,
+      "sha256": "2a961a5f554f670c82e764ec411e1423397860c5244bbc619d328eace4c017ef"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0108.npz",
+      "bytes": 15595,
+      "sha256": "ccfa19e4b108c862f19fed626b7e5acccc697b96398183ac8cd46f2fdbd2a82e"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0109.npz",
+      "bytes": 14888,
+      "sha256": "1cfc6020e62f0188d0dc2051749887d3eec617cd5e5add07ac723f680da8e736"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0110.npz",
+      "bytes": 14156,
+      "sha256": "f6b2bf59b3fabe3400c4c1de3d285ac1360003b6fc294b6ab07b060a074c3625"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0111.npz",
+      "bytes": 14631,
+      "sha256": "272892cf289b03672959e8bdc7c79fdb69ec555079d0ca4a79d1a3fb45487fb5"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0112.npz",
+      "bytes": 11670,
+      "sha256": "8b64ee9ed42ad88bf35458c3dc6c0edfca369158d55c158ccbfa5a5659a9fab4"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0113.npz",
+      "bytes": 8275,
+      "sha256": "f36ed932a25e37d4342f4505653b20d3ddda2f63a0b774ab4a47422e9186548a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0114.npz",
+      "bytes": 15091,
+      "sha256": "7677cff58d6f75f0b9cc87c512b0b362af939eb5142b07a5509fa845bca40d29"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0115.npz",
+      "bytes": 15081,
+      "sha256": "3f14f323f37f2b74cbad45853270a969797c22b3aeb511ceb66810483907992e"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0116.npz",
+      "bytes": 14696,
+      "sha256": "02eabe8827fb7ec0e4320ad79f6e6eb0ad59ebdf04afd6da397170154bbc9e72"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0117.npz",
+      "bytes": 11660,
+      "sha256": "0faae22425b69ecbf9a5751138ffbe958557e7418217fa9a063014342879dba9"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0118.npz",
+      "bytes": 8647,
+      "sha256": "d3d334319827e1eaa6a53f9841a674a204ee2dbd75afaaa4889fbc08f12563f9"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0119.npz",
+      "bytes": 14358,
+      "sha256": "d47ee44f1690ea5c4a72540c2621d0f6476a71d24aa64656f0bdcdba44642854"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0120.npz",
+      "bytes": 14660,
+      "sha256": "c507719ea28d1df7a8f5539b11df8f73ecda174550dd3faba296b34084653928"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0121.npz",
+      "bytes": 15707,
+      "sha256": "bce28c619b8475914346db54525e7ac17b7b8a59926f1cbdf3f535f7ad943e6f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0122.npz",
+      "bytes": 15395,
+      "sha256": "7d84f9cdccdab8362634e20a50eb37bb3b6fb863495280b07ef0e5852fe2907d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0123.npz",
+      "bytes": 14651,
+      "sha256": "4f5f4e8d04e8ee8dc5a2ca5e708a29a358646beea798d895aee898d29f80ed1f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0124.npz",
+      "bytes": 14534,
+      "sha256": "f360d911f0b09167915146f4b1ec6e5c7efdb8e45ef2900e45382dd2356561f3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0125.npz",
+      "bytes": 14968,
+      "sha256": "05c7833427e4e284c211491360d481469b1c5bce7d4cecf67e3384ab70b6a2d3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0126.npz",
+      "bytes": 14778,
+      "sha256": "cee4ff01011c8016f24f4762122e4f8cc3c3d223e6c985decfa2d6a69f0b04db"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0127.npz",
+      "bytes": 13024,
+      "sha256": "ed1e7d820da83fa9db07802ec2bae1bfb950e8212372ab773a37a550882e09ae"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0128.npz",
+      "bytes": 9152,
+      "sha256": "f0d1173a4f1721cc8ae7c5f8531da61f1c24885ca0d50fa46de88520c522d2c9"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0129.npz",
+      "bytes": 14983,
+      "sha256": "4b401515e2407c406fa0bca32ffb0b26d915808324085a8bc4816e46a0215f6c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0130.npz",
+      "bytes": 14585,
+      "sha256": "a70996fe9ab6f58cf55e7246c70a7737a9a2760c97539068db3ac5fbf49b9bb0"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0131.npz",
+      "bytes": 15057,
+      "sha256": "57143768fb41d1301fbc823ea2e3cc7724b0a3fed23f926db94d722795369c2f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0132.npz",
+      "bytes": 14976,
+      "sha256": "c07eab11069c2810a3b591ad6a498472378700f1eddad4a38dc098b7dd275142"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0133.npz",
+      "bytes": 15051,
+      "sha256": "55542b35fe8bb2d5f3b67d6ae23bf55fb5554f45dfb3daf997172b8c532c512f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0134.npz",
+      "bytes": 14696,
+      "sha256": "7a4c01beb49bebb56a2f99b81401a1c379b6a369c197c9adcfba6ca2326e7653"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0135.npz",
+      "bytes": 15226,
+      "sha256": "59870f70a16c1e107d357a25b9d7b6f48ae3287a3c3c0e18df76e42253c2552d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0136.npz",
+      "bytes": 11764,
+      "sha256": "8d9b1e22f743127ba9c893ef41ae727c07172805ddec4efe0f8dec31adc9409b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0137.npz",
+      "bytes": 8473,
+      "sha256": "d415ee6ca9881604e3e5210c1cffb9d8bcd12dfc2fd4f61317424cacfa20d001"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0138.npz",
+      "bytes": 15096,
+      "sha256": "2cd0867cef44206ccb600d536af789680badde5cc07db68fc98d6fb7425ba6dd"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0139.npz",
+      "bytes": 14872,
+      "sha256": "e64ed1726bf69790871c8129bf2d607db0dae1ab2f94b07c59d703168372f5f1"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0140.npz",
+      "bytes": 13413,
+      "sha256": "00d2628dc1e7d56c634b81dc30cb2f4a9fa9287c1d6a934b89b40c393a2f2d2a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0141.npz",
+      "bytes": 8951,
+      "sha256": "303a1843a7e8cc02a87e21eef0499563f1b4b3fc6b3a9fbb439936dae11a7e0f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0142.npz",
+      "bytes": 14890,
+      "sha256": "900a3983d7240adf83cfab84f37eea1fd7c973cafcaa1648dda317318e771580"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0143.npz",
+      "bytes": 12386,
+      "sha256": "1c44bd7be4cad99f3a626483c185337c1ef2d099bf157856612953d536f34d14"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0144.npz",
+      "bytes": 8424,
+      "sha256": "9302ecd34a0163dc637123bd29f125173ac6ade35356f296d575004bb6bd5cf0"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0145.npz",
+      "bytes": 10060,
+      "sha256": "6051fe11329771952eec2f31b5af76ba2a06663752c09de1d0f0e33d354fe8b1"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0146.npz",
+      "bytes": 7980,
+      "sha256": "2b2a20c73d291999463187031228dee65267828536e555e1462929391f296826"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0147.npz",
+      "bytes": 14620,
+      "sha256": "41760389e0cd5a355ae027d8551fb8fd2f9467e242a84b86af84bba4f86572fc"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0148.npz",
+      "bytes": 14943,
+      "sha256": "040b073fa806207045a5749ca9bda804bea32085f7551a32df3a5d37c27da05f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0149.npz",
+      "bytes": 14430,
+      "sha256": "02da8247445453a89df1d28b96c789f3a4550d81d9058becaf888b49dcd42c78"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0150.npz",
+      "bytes": 12219,
+      "sha256": "0aa3879af60921d0409ba2345bb7eb5dfd802640a1d8b93e955040f05063ca71"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0151.npz",
+      "bytes": 8844,
+      "sha256": "9681202e367d8921b35c524c18863bb60e6a5c02acf24e21c2030d1c18e3ccc4"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0152.npz",
+      "bytes": 14714,
+      "sha256": "1dd8475112a94cdfdf049814eb354bf6dc60d3c1bcc994cf2b95bdb141cb8857"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0153.npz",
+      "bytes": 15195,
+      "sha256": "f73a0f8e15e0b45f6b26e65766b842d32c838199b808a3120a92cc0c0495b443"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0154.npz",
+      "bytes": 14359,
+      "sha256": "27a311336096937c41702b72ea34523c819c016150408829f648f94aa8f9ce15"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0155.npz",
+      "bytes": 12142,
+      "sha256": "af9ef531e9a8adc882edac6e29a640c24e1aaad54c351615a274747628bfe3e5"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0156.npz",
+      "bytes": 8366,
+      "sha256": "4a432f0c4a6853cd1e313ac0637497afa1b3f54bf70477e8b241f91da36fbcaa"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0157.npz",
+      "bytes": 14401,
+      "sha256": "c70d716891a4b2faeff5bfcc13f8989ddde8055a533c5bc1603e4b0accd2650d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0158.npz",
+      "bytes": 13189,
+      "sha256": "b6c1ed24cab60013f5e12042b4bbc20baaa264f83dfe869eb79579a775b876c7"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0159.npz",
+      "bytes": 9004,
+      "sha256": "fe8e23190a71fa16cb38066144329d463a5376fa9ec288fdacae7c6064c2c86e"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0160.npz",
+      "bytes": 14770,
+      "sha256": "b539400461a8e33a83a5ca3cad3dd8e589339a8f92f6102acd153af50d6eef74"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0161.npz",
+      "bytes": 14541,
+      "sha256": "edfd1cff6a625654523ce4a5fec4ff32bdc2fe127efab901e75118c50600dec5"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0162.npz",
+      "bytes": 15126,
+      "sha256": "ac8f921f9e133134ae82e91a1a5f50d9b781e49988228453f8e9e89f3ae1a4cd"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0163.npz",
+      "bytes": 15194,
+      "sha256": "da4fa2406ccd7866d8ab0ffd58a03b52c90416dc9a182207f2c431e59c5b6099"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0164.npz",
+      "bytes": 15347,
+      "sha256": "e4f9c95385fa6e3327e1d9216d1ceddfda8d2cb58769e221bdcb38c790da1579"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0165.npz",
+      "bytes": 15221,
+      "sha256": "edff116736267c9d4f8bf7d69bcf142509e240952effca79c1f4b1bb80c34e29"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0166.npz",
+      "bytes": 14972,
+      "sha256": "afe8b18df59498ef1662dcfff2958ae32ea47a16649f5eed5e33b2e5aa08f27d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0167.npz",
+      "bytes": 14861,
+      "sha256": "b714e271caee518c91f41930c65fe7ed7fdb1c4c0b8718dc30b55126e54f3704"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0168.npz",
+      "bytes": 15111,
+      "sha256": "ff8eae218884026c892bd610015e1925986c201bca72ecf1246dc132edaf770d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0169.npz",
+      "bytes": 15279,
+      "sha256": "eb34e35485f61b3d71eef579019f89fc164143e5259b2167f321fab10ffdc591"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0170.npz",
+      "bytes": 15696,
+      "sha256": "bc216e530583161b142e0ff509c41655c60bacafd1b20ee61e0ff8ce55019db3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0171.npz",
+      "bytes": 15185,
+      "sha256": "4fc14c2c9b5050574df3f69724537c2cf5a444e86379774eeb26cc971e0be423"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0172.npz",
+      "bytes": 15752,
+      "sha256": "95075631aebe7d1391bd37cd51f5a2dd5ec786058312a7f98dee16ad78d1fc42"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0173.npz",
+      "bytes": 14461,
+      "sha256": "8b1b5d8cefddf6029b1a9ed0d34c305cbd946d9a3ddd3a18f03a1c6f749dfefc"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0174.npz",
+      "bytes": 18937,
+      "sha256": "2e248e6bdc05df4d034b130287ead268fbcb6136c88a54214020309399fc97c9"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0175.npz",
+      "bytes": 15118,
+      "sha256": "5e90006b6aa2353311bed21c9b8510e88933a03a998b1d2f49f4014607ce2ee7"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0176.npz",
+      "bytes": 14500,
+      "sha256": "07251b10bfd83001396363ecc78e5bccd38e2cd4fc9f4ce90adbd9d133ed578c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0177.npz",
+      "bytes": 15111,
+      "sha256": "e4a8b63bce42d6a2e3997d699eef9c0e212aaf0d535c61a7b0b3ca08804094c3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0178.npz",
+      "bytes": 15051,
+      "sha256": "f42d562979024ce9389342597ddace68149abd8152e9b1730ed6051edef111db"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0179.npz",
+      "bytes": 11588,
+      "sha256": "34e1d3e2c3b6fe57538f8789d86b6150fe87a293098122e3eca25dc16394c443"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0180.npz",
+      "bytes": 8550,
+      "sha256": "65f24316ceed23ba05ffd5d9953dc1b7e6d30755bc30db41c6c8bf23b9ca882b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0181.npz",
+      "bytes": 17284,
+      "sha256": "cf83a0665c321d23fb4d5a83b4bf7afdf6071430bb4c1ad69f12fb8d0d84bd4f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0182.npz",
+      "bytes": 15246,
+      "sha256": "a3a54389431274e237c773c86eb4e590621c24a2512a9fe13d51a831a0d7612c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0183.npz",
+      "bytes": 15102,
+      "sha256": "9e412ac96347eb16761549bb14d66404d46b204e2b02beffa0d3b00606074b26"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0184.npz",
+      "bytes": 15434,
+      "sha256": "48dd988a954032033d9459520fde79e6c7188ea7a65f39471bd685fb025b334d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0185.npz",
+      "bytes": 15112,
+      "sha256": "fde93677ba999adbb1f86b318ddb3672d0b4fd7989a6b92053941295b176898f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0186.npz",
+      "bytes": 15619,
+      "sha256": "38b88987c750b278cf5d538c723e700fde52c649594c721abf16149fabee3560"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0187.npz",
+      "bytes": 16114,
+      "sha256": "5fae62e14cbed2252a11c93a5faa0dc682f9ac67989cda7d3c6b6fdcb7975fbf"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0188.npz",
+      "bytes": 15364,
+      "sha256": "4b533c39805174934e61940021089bf0920592de0aabe2f057103e2ad4441fe3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0189.npz",
+      "bytes": 16490,
+      "sha256": "0bf0cbbd4ecfc1afc2e1c2a856fc993e559ac7e2bd41aa40b6e61506ab800ccf"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0190.npz",
+      "bytes": 15294,
+      "sha256": "4fb400c8a44b38f36d7e10496befc74e976cef8787af1cdb8707c86f0a28b7de"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0191.npz",
+      "bytes": 15931,
+      "sha256": "f2ad2708a534dc1e11aa5b1972d54adc3c270120f43314b71e1999b2d638a4c9"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0192.npz",
+      "bytes": 15428,
+      "sha256": "63f4472bdcca6b00d4b7019c9a703bb28716b6a08b0959a7fd52fd45802e1793"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0193.npz",
+      "bytes": 8125,
+      "sha256": "9b8a2c5d38728eebb2081f4de2a94cc315d36861fe84e202a26ac23a3b40ccc5"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0194.npz",
+      "bytes": 15312,
+      "sha256": "302fc2997cd5d162247cb5fdb56937eea020cd45432d60509cf8dfa18b898a15"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0195.npz",
+      "bytes": 15580,
+      "sha256": "a86b2b3e1e1f50094a59ab6f599a57a7adedc5d4caa458dd2273453d44c54809"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0196.npz",
+      "bytes": 15925,
+      "sha256": "0a07bd0bd6e8f8425923cab60e7e45f007cf0f6349c818c927ed4ece161807d3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0197.npz",
+      "bytes": 15894,
+      "sha256": "d2a04e0ff9db22f41548b9904d091f3868b56cb08c28dc7cfcb580be2600832a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0198.npz",
+      "bytes": 16510,
+      "sha256": "197cc70509e2b88590d1dc502461db5294be0039e204286b09a32eaf3cd5a909"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0199.npz",
+      "bytes": 9308,
+      "sha256": "f86d6f6573ff84c8e72fb849b2ab3f36a49a1dfa90bc7ff29a8cd5c72f9bfc79"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0200.npz",
+      "bytes": 7362,
+      "sha256": "aaabfbcebb920077b8450ad40670ebf689d018868a78e993509419b358453181"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0201.npz",
+      "bytes": 16378,
+      "sha256": "cb4e1c7835b68a7fbfc30f78da87cbb03d9cc4a4cc62c1da8cd005535dd3be84"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0202.npz",
+      "bytes": 16121,
+      "sha256": "82dbcf86f051286bc644223886d075e181825b7ca096c5560c063071a1dcbb2e"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0203.npz",
+      "bytes": 15654,
+      "sha256": "086b076a1603d65880c11298c83653ba3890e72af747ba0e005de219143d7b87"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0204.npz",
+      "bytes": 15682,
+      "sha256": "7f7d71ef264ddf231d6b4f6d2cb4380bae5c710bff921df9a8b2b3c50c06f51c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0205.npz",
+      "bytes": 16071,
+      "sha256": "c1a8242c4c61f7080a691849fd720a91da2fe8651bc2cd7439be66f8b0502146"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0206.npz",
+      "bytes": 16558,
+      "sha256": "c5236bd4dbb859e7293bb40c16a419995c4e67a079aeddb7dca6865d14a3c9c7"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0207.npz",
+      "bytes": 15957,
+      "sha256": "a90bfde8f114a2dbe817c9cdbe6f86e6a8d76c8711e1fac701cde420e1e11662"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0208.npz",
+      "bytes": 15351,
+      "sha256": "6a704532719351a8ec5e8398e8f3fd8db6625c3d494918bb86ece4eaea130b29"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0209.npz",
+      "bytes": 16135,
+      "sha256": "d54530acbc392da7c2c93aad050ddbb3b1272f6630688a8a50e416d70b9c9d28"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0210.npz",
+      "bytes": 15854,
+      "sha256": "36ffebb7a49a0a97515d7821e35a5bc100321aef2b06b3d15e857e2ee8f2ca5d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0211.npz",
+      "bytes": 15197,
+      "sha256": "f0a572eb772fb38600cbaaa1f5b9c1fef2b4d43ce751d37836de02638bc6c7dc"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0212.npz",
+      "bytes": 8430,
+      "sha256": "771b834fefe9357138147a512bc9315e9d4fb1c94d87092a5f33d917cd3328e2"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0213.npz",
+      "bytes": 16323,
+      "sha256": "307a79dc7897e2f2e35455f429f8426bbdcef048da3b364138d47aca631bfc5e"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0214.npz",
+      "bytes": 17042,
+      "sha256": "6ca1aebd92bced1fe3dfb769afd59b5f1ae09a472dbbc553274bbfe99d17adfd"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0215.npz",
+      "bytes": 16837,
+      "sha256": "5b25db376a0147de01b93f3167e616c86b14ebc11c3d51db87f193e4a96ae8d8"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0216.npz",
+      "bytes": 17117,
+      "sha256": "791abbd51268405d1616560ca6b284108f2ba24c6b4944ae517e9d8db619e533"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0217.npz",
+      "bytes": 17080,
+      "sha256": "90e373bb4807d96f8e204379363d47ce491e70470c6d595e66cb89c07644de81"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0218.npz",
+      "bytes": 16273,
+      "sha256": "5da3916b5d5152ad915d23941c5015560d999a8ac8f0a5d69f31dfcede57ed61"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0219.npz",
+      "bytes": 17297,
+      "sha256": "4eba276421d389ef2a09dbf1da90e804575b2922f3b9b83646cdc0d2acaf6aa3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0220.npz",
+      "bytes": 17189,
+      "sha256": "e8fca3323c110af61658c1dad7733b63ba43d9129feebdb7a97971df7aa96125"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0221.npz",
+      "bytes": 17124,
+      "sha256": "23dddbabd0b87a0056cb7bd2a3c2147562ff96df898f8221859345abe11710bb"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0222.npz",
+      "bytes": 14305,
+      "sha256": "8499de9378f1315fa4bf76b65173ef27806ec5d8c169f6e9d5372f7721411783"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0223.npz",
+      "bytes": 8436,
+      "sha256": "477b3a028c7dad400cfac7b303e2329d46bc23a6ee2e96f881e59898ae5a7494"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0224.npz",
+      "bytes": 15903,
+      "sha256": "25a30d65822156fdd880bf70d173e8f94b441219e5847905fa543d83b1b793de"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0225.npz",
+      "bytes": 16490,
+      "sha256": "990d92ca1fa7ecd5ea0285afa26df0cdb0c481fdeefbf7080cc6e490df7e3443"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0226.npz",
+      "bytes": 17253,
+      "sha256": "3995e1e7e658ce19896b240b4f738bb51d465a7fa08cca2a939a5d688cdd7b41"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0227.npz",
+      "bytes": 17068,
+      "sha256": "a03d873cdbe284552bd2690e8b123f8ff7e97fb84fada306f068e3608a5b5453"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0228.npz",
+      "bytes": 17033,
+      "sha256": "04fba9fab6a8c6ec29daaa2f6713d0ec92e1f9f89f6d0fd8faaeb6accb93808d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0229.npz",
+      "bytes": 15359,
+      "sha256": "580f145f8204436880c9c64e3bebc5db197662b1fdf302fad93773d747e6ae98"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0230.npz",
+      "bytes": 16755,
+      "sha256": "fe4fbd2b306adf7a30707146c403e18ffec38979132163c6b24e34b7d038f756"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0231.npz",
+      "bytes": 16784,
+      "sha256": "cf5597b3f43c3b2b784fc4b81a9657e99325db070e95d0861c037cbc5aa9291b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0232.npz",
+      "bytes": 17697,
+      "sha256": "d67f568ff12070d49130d53ce1953f241296b8fa9b52ebedba65eb9cd915555f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0233.npz",
+      "bytes": 17631,
+      "sha256": "dd5a46964389c24cfda68eb05c96c3e139cd25bd07c10a1b550cdb92cc35ea3c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0234.npz",
+      "bytes": 14743,
+      "sha256": "bd633c5e864d7a4fde6f49e7d51736d0b064e065ba089482e65c69440c465e45"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0235.npz",
+      "bytes": 9414,
+      "sha256": "7d85a2a05977329bf56168d5c6df3c9742cdca0ea1d8eea227b4956b9cf24d82"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0236.npz",
+      "bytes": 17027,
+      "sha256": "4b6d95800f0891d4ed98e8c2551e5faa41bd0c8844722aec8b9d739957e728e1"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0237.npz",
+      "bytes": 17281,
+      "sha256": "dc09594885ef3c5fc823f851a81da895888a5fc24e6014e58df31ecf848cd7e3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0238.npz",
+      "bytes": 17066,
+      "sha256": "6ccbc3ef0c7fc29d60b431745e25a254a88b32a888ffea7ef31b6ea52f399e30"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0239.npz",
+      "bytes": 17115,
+      "sha256": "a410f8af1e170129e99f2c9a9dcfb6461e35b37457630d02ee3c1eb2edcc3ec9"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0240.npz",
+      "bytes": 17602,
+      "sha256": "6551ff08411dfd32a66e11f2641f388312cfea4cc47ac353efbe7ee4d265ce7f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0241.npz",
+      "bytes": 17065,
+      "sha256": "6aa0e9ae84e0c0c9c4fea3f19443af1bec72498a6af10e8372d851d90a6d22d3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0242.npz",
+      "bytes": 15124,
+      "sha256": "dd5da6929ba9660b841055fe34650824f342c76d8e775715e94dfe9bb31a07ec"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0243.npz",
+      "bytes": 8634,
+      "sha256": "9adb185c12fe965e129e155cc9e3862a0df0d3ed9c72f35379ff226135eb34cb"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0244.npz",
+      "bytes": 16933,
+      "sha256": "9590bec5d793dac1cc8005ca42685a28e8e880e82e0d0125cf9b35931ac36c81"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0245.npz",
+      "bytes": 16783,
+      "sha256": "83188e6eb426a63b4af3aa731f1303713572e2bf4867722cbdcddf80e4ed95b0"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0246.npz",
+      "bytes": 17736,
+      "sha256": "946300ec41cef9eecdf3b8c5707db05b2fde72dc2b2cb715b2c3f7d8159351aa"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0247.npz",
+      "bytes": 16810,
+      "sha256": "8e417e156a0e6817e87204fbd160bc5734866cddbd6696e7659b476f62fc57f1"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0248.npz",
+      "bytes": 18793,
+      "sha256": "4f7339671462d39f74e2d81ba6ac06978dc9ca8e7a97bb6ed805a59419478bff"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0249.npz",
+      "bytes": 13646,
+      "sha256": "83063cb28aa2210f3a40820908fa443c8af42730b10d0aedc188e5b8187e1f8a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0250.npz",
+      "bytes": 8514,
+      "sha256": "f3aa86d92adedd4f2abd247f6f1c57d7b06bcbdd3c7830d6cbfaa017a0a84c1f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0251.npz",
+      "bytes": 16846,
+      "sha256": "b7b19c41441f2e747a1a7207529b7efa615d0e008c5e343d7c140566242e5fa5"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0252.npz",
+      "bytes": 16847,
+      "sha256": "0b6a2da7ce7881fcdfad7eb6e2f45cf93bede81e1cca34228b30af438eb5978c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0253.npz",
+      "bytes": 16067,
+      "sha256": "bdedd7dab8799d7795f7dd9d72c627f38accc8155ad695dc101e162720679ace"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0254.npz",
+      "bytes": 16795,
+      "sha256": "a237caffb88a9678efba3ff694e31e8b37b1face55a23cd0f2416ef2c76b4042"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0255.npz",
+      "bytes": 16517,
+      "sha256": "510ebd031a9dcbd56a9eba19299a159e82b79e5a974d99d4fb2f8a4c516a0639"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0256.npz",
+      "bytes": 17135,
+      "sha256": "6e7156c3c78b06fe6c1aa36d0f187cc77d6457cc00366127f0408348815bb245"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0257.npz",
+      "bytes": 17732,
+      "sha256": "1a4a96340c0bca563109ca4a3d74f63ef43c8280f1bd163d032e2fcd63f2554d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0258.npz",
+      "bytes": 16802,
+      "sha256": "288a2a8e5f2b767573696845f4d201ad33943aa8be3024dc129999d974b29ccf"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0259.npz",
+      "bytes": 16868,
+      "sha256": "2ac03e50cc9c2556fd84e4c4a045a120c27b6ea234c4b8b32b7af26df6fdbaf2"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0260.npz",
+      "bytes": 16907,
+      "sha256": "c734271f3db7de61aaee2fcc04d0fda42ac49584f08c2bd7e2fca0a2c0094ba5"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0261.npz",
+      "bytes": 17428,
+      "sha256": "a73be74129c1a45a6644392d6982f54e00243b3e972195333dcd4986cb8bd9ab"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0262.npz",
+      "bytes": 16753,
+      "sha256": "a5505ebe5be9db5c75bf75bd3847896f6c0f4cd1c8010bd1d9ab40aa92a55ea2"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0263.npz",
+      "bytes": 17447,
+      "sha256": "f75a2436744ea860f1b3a514f16f4e7a29242aad44397c3312b9ec020529c469"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0264.npz",
+      "bytes": 16439,
+      "sha256": "a82b72157e3db5b6539325a7aca441bca7b488057d99290954242d0f53f639ab"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0265.npz",
+      "bytes": 16659,
+      "sha256": "ada817ca8611350d737b351ab0b216ea02b66f33bc5d9646676b279cdd339d95"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0266.npz",
+      "bytes": 17383,
+      "sha256": "522bea3b87fe7e769efb060a5de72f88dddb6d0514c2ea1a484d4bd2957f10dc"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0267.npz",
+      "bytes": 17313,
+      "sha256": "cdb85d5e44ff8e662ca574343abd529a6793a24c91796c72a93eda7ec0ea3d63"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0268.npz",
+      "bytes": 16936,
+      "sha256": "771f9cd3011efbd3fd6c3f71208a3508460ec093baeb7698c2963141c3354765"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0269.npz",
+      "bytes": 17160,
+      "sha256": "9d0e38ad0fbcabec80f79ca7fd9d43f8ffcf098df20fdb07d1e963fbd63d75cf"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0270.npz",
+      "bytes": 16814,
+      "sha256": "ba5814c619dbcc6fda1141f8c2f179c79d13a6ee26d33d729a06d75673cf2d49"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0271.npz",
+      "bytes": 13760,
+      "sha256": "69cdb26dd329558116670a01818e1e4c8fcd0a52ed563a0322654f90bfa65966"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0272.npz",
+      "bytes": 9010,
+      "sha256": "8b71cb6fa80a389a7d591492cc02c6df7960fe058942fe9132ce3b77dd04d335"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0273.npz",
+      "bytes": 16096,
+      "sha256": "9e183902b72bbda45425dfb76d6e43743c91b422c1d101bbe2499f415da47c33"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0274.npz",
+      "bytes": 16974,
+      "sha256": "bc8ff58e5e19b8da8585d5688d0d1511b9dadacadc770cd62ade520e4a15d398"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0275.npz",
+      "bytes": 19089,
+      "sha256": "df893325960aa800669553f8dbbfa393b055a35edcad4895ee9531153f75c2f8"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0276.npz",
+      "bytes": 16685,
+      "sha256": "c332ca0df49eb6297a8d443278b97365e0ed4e804b799bd3e74c2d11a829524a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0277.npz",
+      "bytes": 16776,
+      "sha256": "16ddee6c3c80eafa3499a52a454ab9fe305c281ea7e70fd3026960b6bdeee526"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0278.npz",
+      "bytes": 17526,
+      "sha256": "1a069ff6cbfaad84dc2f31834a7ee7b39fd903718caca528a9a5e32f172fbd87"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0279.npz",
+      "bytes": 17293,
+      "sha256": "7ab1a9e191cd1928c01090e96c6fe8eb2897f0e45c37047386eb4165e4502cbc"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0280.npz",
+      "bytes": 16884,
+      "sha256": "52914776d8af613d0874a6e5c0e12f203f466c696b59ddfa88a8112579d0a0b7"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0281.npz",
+      "bytes": 17888,
+      "sha256": "58d765ff53f051d77017e43c9456406d8618adfe90da728c7ab4b7b6b3a9f38d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0282.npz",
+      "bytes": 16004,
+      "sha256": "07fcd58a2badbc07bc534fa585896656fa54a3afeb673317a5432b08a5819a79"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0283.npz",
+      "bytes": 16980,
+      "sha256": "b317ab054482b4827bb0a8147169f24ae1f069def6fab547476458189cdb43be"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0284.npz",
+      "bytes": 17401,
+      "sha256": "3f1df97607c66cdc1cef4a21cd9dacaf4c2d55cdbdfc712f9946abf5fddefe0c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0285.npz",
+      "bytes": 17332,
+      "sha256": "9a4435fe1683bfee4d14b6f398915ac652ee08b8b731a62ef8a80ed12ff9f90d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0286.npz",
+      "bytes": 17647,
+      "sha256": "454c876610194602adea45cb2dd10d4e3c9ac199848529b7ee87ad834f391b04"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0287.npz",
+      "bytes": 16112,
+      "sha256": "cb1bbf2aa12791eb2633881d8cff4d34f412a501d6e87771c27dac1581581e52"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0288.npz",
+      "bytes": 16411,
+      "sha256": "d8c0f433406577373984c5e8d91dc56c2289a822953dd8cd55520f7c0c5eeaad"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0289.npz",
+      "bytes": 13589,
+      "sha256": "50170b8ea4ef3d5c851f863bf556c3d57996fd71d805940d509ab9a42884653c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0290.npz",
+      "bytes": 8551,
+      "sha256": "6ef823501106d3cd648192ff7bed0787cf991d421f6b7345cc6bbc6998354df2"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0291.npz",
+      "bytes": 16444,
+      "sha256": "ce0350ad5bcf5c21010dd1b6892da1f819323e5d9caeffd7e427c677446fefdc"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0292.npz",
+      "bytes": 16889,
+      "sha256": "eacbf5dc2fb762f533d1c673a4d259796a2b8f67d7aabdd2acb3bebed979bce9"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0293.npz",
+      "bytes": 16956,
+      "sha256": "97bdc3c754b7a8a19bc6c6d9335bcfaf5d9744b180ccb930a24800722b713f54"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0294.npz",
+      "bytes": 16922,
+      "sha256": "844382b1776fd0ab7d96a8b581a9becda3e6ec5ad4037e4d412538a6bdbe5aad"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0295.npz",
+      "bytes": 16752,
+      "sha256": "3a26731f44775bccdb6e0c0712fa73255bc98075c5ed0772ceb047e2156566bd"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0296.npz",
+      "bytes": 15126,
+      "sha256": "9d0e4f8ac324f0b9247f0f462d3a2e6ea40679c6f83d6eea66ac480a5f9728d0"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0297.npz",
+      "bytes": 9199,
+      "sha256": "547bc2a500b98573fbf52499386ae8b05361c546db6131a1ed68ff19b85bf161"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0298.npz",
+      "bytes": 16444,
+      "sha256": "1da0dfedba34ce90351818794e2f43674261711ade2caccd6851ab4780e476f7"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0299.npz",
+      "bytes": 19488,
+      "sha256": "1685107ef8553d22d5ada8954e787149817911429af4f55f17eb8cb83d9ea8d8"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0300.npz",
+      "bytes": 16719,
+      "sha256": "2f171ef7f99f71c8c61bc5c9d4897c4292c22b3959f657f67a3ad359e499a5bd"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0301.npz",
+      "bytes": 16377,
+      "sha256": "a0cd3ef4cfc6f9a59f6b83ab5f85149048e470578550b251381cd54462dd0069"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0302.npz",
+      "bytes": 16744,
+      "sha256": "549936b7324e4ba0abe53ce36e9c95f215001439ae51c30c24f308c00b00a7c1"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0303.npz",
+      "bytes": 16983,
+      "sha256": "ba5e61e7f88cb2fa3747a9517b634809188f87b5b7b0743b6207361e362a1738"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0304.npz",
+      "bytes": 13298,
+      "sha256": "388de5a86127b013b46d4184097a35c1544bcff8f60943f20b75f40fd2091877"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0305.npz",
+      "bytes": 8588,
+      "sha256": "288c23f660928a60ad9fdebedf069afda6cff0d1c2eeb5b92a9a56947b4b671a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0306.npz",
+      "bytes": 16545,
+      "sha256": "7d52e51031e8b7ed563c4b799125c0fd7c23bd5e0babd2b627fa84d4c31a4fa1"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0307.npz",
+      "bytes": 17103,
+      "sha256": "a6421b2ec4562cdd932d60ea9b3ae67e9ddc6cd1907f1aa9dd628ac830ae0b55"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0308.npz",
+      "bytes": 16405,
+      "sha256": "9eb12377c28f8a3219a4d5ceae65068a1b61fca591785517e49cfad026c7cb44"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0309.npz",
+      "bytes": 16813,
+      "sha256": "9783fa31b86b5fe8e707db6e6b896e5a137bb208903e0f084dd198ae7fca60da"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0310.npz",
+      "bytes": 17222,
+      "sha256": "6bca793574d639ef916b24160d3f207865cfb8f4a32256aafdd217227a288c80"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0311.npz",
+      "bytes": 15373,
+      "sha256": "845def1cf4dda072feeb0b34ffadd1748f5e7ee2dfc6508ea9351569f522cfb9"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0312.npz",
+      "bytes": 9235,
+      "sha256": "f827d90a4a51727e88e5f1b5c73e9a89e0ad7bfbf078a35771ab61d95acfbaba"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0313.npz",
+      "bytes": 17587,
+      "sha256": "bb4c01b9250607b6770da91a2544a438362352fce0229763735f2c603c128565"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0314.npz",
+      "bytes": 17006,
+      "sha256": "1d3da3ccb3c22b6c485966f6a8ab8225c35a0ad1d899f94f870ec9b659be6f9c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0315.npz",
+      "bytes": 17278,
+      "sha256": "d5a18af7f8888b811cf5375af07fd3d0bb82d82f489c1569217c2d84d4e33836"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0316.npz",
+      "bytes": 17710,
+      "sha256": "fdf04f1b6d26ceff70401d3aa21f09c351896bc1ea171858a26ec0ec1593ec5f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0317.npz",
+      "bytes": 16523,
+      "sha256": "c70e6136d926e2013dddf1835cce4ea430ffb3bb1818602f5862390e2076815b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0318.npz",
+      "bytes": 13075,
+      "sha256": "112c04ec4a0d34f7ef38ab57c71b5596574a056cd2f3dfb1ab994e299cc085d6"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0319.npz",
+      "bytes": 8369,
+      "sha256": "6d87ad5476d9c86631f493d433f5ba140dcf691983ef676edc12165f28359ee5"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0320.npz",
+      "bytes": 13089,
+      "sha256": "a4c38e5357f76118f7ed95ccc6115cbbca3112634b348aae619bb4062d19b82b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0321.npz",
+      "bytes": 8642,
+      "sha256": "903f7f1f4f942802ba6c786b68b714b6c214749c138f98889b9f74395a2c4980"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0322.npz",
+      "bytes": 13816,
+      "sha256": "f003a6902cd3507e4bf5ceef1269aedaaa2484cd40fa3eb59c51072d6a4232a6"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0323.npz",
+      "bytes": 9580,
+      "sha256": "469e63358d4a91bd1213cd73a3c1676a874659a09147b70f4d8f274dfb3ab520"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0324.npz",
+      "bytes": 16637,
+      "sha256": "519d83e59a8b659b74afe5198b33d5f13674bd02d774285ab8bb043622e0b4c3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0325.npz",
+      "bytes": 16425,
+      "sha256": "d49b64f47c031aa730e9434697d59f3a2c9ae0e654e4d4e2014fcdca20ecae17"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0326.npz",
+      "bytes": 18411,
+      "sha256": "c12d36e99e17be66b2733a6ac1bc622c941fd9aae3c3108367529bc3d0fc07ab"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0327.npz",
+      "bytes": 16345,
+      "sha256": "e3bc93f96891af66d7f8bc50f580ed2c7b51ae3005e6ab3faa918fc337a4cc60"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0328.npz",
+      "bytes": 14788,
+      "sha256": "8cb634eddd6e5069ad65fdf31b3936a2917999f2f561ffe4c07f21373cf84de0"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0329.npz",
+      "bytes": 8762,
+      "sha256": "efdd8b9222bd826ff7f24ee416f4881621be881ad547d56e029d2a4d3fa2664f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0330.npz",
+      "bytes": 16556,
+      "sha256": "911d843a61a682866162b01ad99be247fbeed45196952f84fbd7e3898287486e"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0331.npz",
+      "bytes": 17224,
+      "sha256": "4052b64f70cb951ae55519c3331974710020891fe0016a8103fc27e2b6ee8e5a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0332.npz",
+      "bytes": 15935,
+      "sha256": "8084728d6e93b91d5ff321a48729e1e18f52aab00ac00754177db1b88f161a16"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0333.npz",
+      "bytes": 16980,
+      "sha256": "bcf5343b901b12bd8601a021e14fbc1c9c29342cd6d749201a9379d09ec9d571"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0334.npz",
+      "bytes": 17238,
+      "sha256": "514380a385a7c51dd08f2475b9486a80ab1e951f3eb9394d3f97b043bf95ebd6"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0335.npz",
+      "bytes": 12583,
+      "sha256": "7212258ac3216e2e966905e234f3b0fc086b1354d646f81ea110382e3e7e9c03"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0336.npz",
+      "bytes": 8392,
+      "sha256": "d0f177ffcd01fafc1dd50e713b21477c1675f39d953a6c882d8b4e2a0343665d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0337.npz",
+      "bytes": 18931,
+      "sha256": "abaddc558e6ef6102515c9d402d806983fd25c3bf677b2a008760f2674900481"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0338.npz",
+      "bytes": 16498,
+      "sha256": "ed5c56f221f221f97c36cc722a08defc8eeb7489d4b8ad3ad684158350c679e3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0339.npz",
+      "bytes": 16741,
+      "sha256": "cad97c912191d597710b0d94d60843568a0b85b5ecaf93f9e5b22b0353777082"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0340.npz",
+      "bytes": 16279,
+      "sha256": "30df6467cef7eb8fa03e4c06966e9146a022e7324b93058094604ea3adf73a1d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0341.npz",
+      "bytes": 17077,
+      "sha256": "6b9036b991ef5f88dc95918bbea7c768ca8c38943dc8882bd8d846e9212efae5"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0342.npz",
+      "bytes": 16456,
+      "sha256": "dbd2916eb3b67e63fc6ee46540af84439eeca6ac3dc9dcc1f80f8f05c3c0d265"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0343.npz",
+      "bytes": 16134,
+      "sha256": "1b6b514ee6d095b9cf0124aab75c02224370d000aaec971559e7658888544e75"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0344.npz",
+      "bytes": 16320,
+      "sha256": "0d70d974e8cd0782cf59cd0368cf2b566d7cfc97ac8a8b5153de40c300efc008"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0345.npz",
+      "bytes": 16968,
+      "sha256": "e4551d7a4cf835d66ba04dc1ff6241d578baea9248263c4814dfe98966975e59"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0346.npz",
+      "bytes": 16357,
+      "sha256": "df874dc1b53833d515c8f4029dc0f92301a280f0354192c95977d2aee0576b20"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0347.npz",
+      "bytes": 16441,
+      "sha256": "d42c0994c4a65bd7daef961a92852b540c1b2f772c0ddbc08215ff846bb73c3b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0348.npz",
+      "bytes": 12455,
+      "sha256": "04b3c671f68a4c19a94c028992b1eaae31827e35e87ddbd9b6b6e40652506047"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0349.npz",
+      "bytes": 8536,
+      "sha256": "c99aa5335801cecfa9ecae25a9cce4f3f5117378d172be02d9cf303062b5bd32"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0350.npz",
+      "bytes": 17123,
+      "sha256": "10cb120b6844e8053279237b2ac3ec4411571bc6b0f3440e1904404e7b845c42"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0351.npz",
+      "bytes": 16746,
+      "sha256": "361dde35825f052d66a952e9332e99468640c3d57aa020357afe2f56b78c63b4"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0352.npz",
+      "bytes": 13617,
+      "sha256": "1ca6ee11b5c4e774e2ab0285a58a27109adfcebdc15630b1a963f061e0555f75"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0353.npz",
+      "bytes": 8435,
+      "sha256": "ec9b96dfa89247efcf92e9059de8e56a7d23eed7ca4e488d6f672f966bb13ece"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0354.npz",
+      "bytes": 16126,
+      "sha256": "6d2a8b7f42ca4273e67847905a54853b2ee454a6826cd2af3e1ccd134afebd8d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0355.npz",
+      "bytes": 17014,
+      "sha256": "06cf3e45b877c9813f97116df8648300751a19ef85d132b9dc2f523f671809ba"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0356.npz",
+      "bytes": 16407,
+      "sha256": "1f8e357ee86709bb611e808a5f9c70b84439a6ac2d13da5b21f16a705ee0b97c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0357.npz",
+      "bytes": 15607,
+      "sha256": "018897cc32878f7d73c4633b250d8a52528bee4d963e34de558d5b6182ca6b0f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0358.npz",
+      "bytes": 16583,
+      "sha256": "fbf57becca931a030bb72f134bebc22766742f6aa4c7d5dfd239fc647431e65f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0359.npz",
+      "bytes": 15381,
+      "sha256": "8c581978c35a7c9cb59862e5dee28c45741772b0329cb02b9a44c038240a6b79"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0360.npz",
+      "bytes": 16360,
+      "sha256": "238d6a626ccb09493454595f4ae07364487fbab70955f51cae3a1927c489f314"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0361.npz",
+      "bytes": 16335,
+      "sha256": "9d71c1b4d50647817256e6c31ca024fc83cd049ca118180aee4161d8938b7fed"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0362.npz",
+      "bytes": 15105,
+      "sha256": "3cb70291d00b32f6384e878a75634e5061b20ff877307b7b580f0c918627379b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0363.npz",
+      "bytes": 15461,
+      "sha256": "ee72df3a498322ca1d93bf5f086e69b2d98cbaa594786942a3ab8a6e18a8e3aa"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0364.npz",
+      "bytes": 16065,
+      "sha256": "3fe776688d2fa0843d38ec7d2bb004a6a3060d6e74f9882d25a249f3d96f60fb"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0365.npz",
+      "bytes": 15899,
+      "sha256": "cece84b3728426dc95279e904e3a66a5164657ba1a9337611d22476003f8c49d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0366.npz",
+      "bytes": 16750,
+      "sha256": "c23218f8712718fb9fca4df60a32ffea58d3e518c123ee9fb889d2aefab5976b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0367.npz",
+      "bytes": 15879,
+      "sha256": "a28d77af93c4b97d3a54ed8ec5709a491c04388a7d24498107fd54532c029876"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0368.npz",
+      "bytes": 15901,
+      "sha256": "395cf0fa07bfc8b54cff4a9bc471796aa61130cd3c91e32a040b36b50bc3e51a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0369.npz",
+      "bytes": 15226,
+      "sha256": "c77b9ba3092cb5a5f47872bc9b2edb419136c2622a4ffe14a5ef812ab6ee91e1"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0370.npz",
+      "bytes": 15600,
+      "sha256": "b5c9f4e4a9ac98387662ea011e67521de02c0b50e9a10bfb03b793f53f3ff887"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0371.npz",
+      "bytes": 14827,
+      "sha256": "b973e88d0ef51a0f3c9303f1e52d2224037c6b7be6927aa0eed9a00a867e5070"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0372.npz",
+      "bytes": 15865,
+      "sha256": "daf154048de4f7a1c1f3d273e60b79cfde292a685668fe37ef48e2aa778af660"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0373.npz",
+      "bytes": 15590,
+      "sha256": "df098cdb325d24222b0e2a5b580c14901a68962be67f2ec0d1502985306b0009"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0374.npz",
+      "bytes": 15585,
+      "sha256": "ad620de07c05e68b92544cade8e5e0e06a32ff43bd6a36617ce5f9f092eae13c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0375.npz",
+      "bytes": 15648,
+      "sha256": "ed7ab61f83ff305164bc51dc45a2817c3c42fa76de1e92761769434632f17132"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0376.npz",
+      "bytes": 15901,
+      "sha256": "915c7f669ca41bad05466b1cb17e1384400a20a7ab7b217e016bce511135425f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0377.npz",
+      "bytes": 15393,
+      "sha256": "96eaaa3fd0359e51b919a1f97e134a5cdfe0268322e9e38b0f10f0f8fdf308ba"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0378.npz",
+      "bytes": 16148,
+      "sha256": "6de2bbafbc430fa9f6937495a5cf6d8e1ee01d4617a05c95f489b981664eb5a9"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0379.npz",
+      "bytes": 16347,
+      "sha256": "2a5f92c869047299976048cd32b3ff6f24c49c961f326f355723a01463f88819"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0380.npz",
+      "bytes": 15102,
+      "sha256": "15806da6062e6fdf21ee415e5196114327fe125aa6c2da98ca2741214f1b7aed"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0381.npz",
+      "bytes": 15291,
+      "sha256": "f562c81deb5bf9017f38761e6ca117aff393a70760dd84db7ce8aebd1a929aea"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0382.npz",
+      "bytes": 15715,
+      "sha256": "0dd49424d7e429e0358a36b65da78ff752a54c5a998aaf8e26ded5b71431cbb6"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0383.npz",
+      "bytes": 15724,
+      "sha256": "e6cd4dfbde8eebb6cebb53088a58ae4a5e2f86509c1163e6f71273eec871bab9"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0384.npz",
+      "bytes": 15791,
+      "sha256": "02b66f9ffa44252b52fa0832a87e019899f5561bd5e8f06f2baba4027d503098"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0385.npz",
+      "bytes": 15220,
+      "sha256": "fb11f2fac34e9bca25a8d2ddabbb262d16b64ee4546a3ffabf53689e054a3f7e"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0386.npz",
+      "bytes": 15982,
+      "sha256": "2acb81a288ab62e5ff8cfff24e9e126ca33882dddaadcecac2263645bcd11106"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0387.npz",
+      "bytes": 15845,
+      "sha256": "5ad7f21d2e10ed440c99b809e0d3a5ef06e9d5bfcd07db3d07e85053902a175b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0388.npz",
+      "bytes": 14805,
+      "sha256": "138adb741b633812a60082121effe17f284e1d569ebec43e18149aecae09db7f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0389.npz",
+      "bytes": 15439,
+      "sha256": "d547d52a10f6a6586b996d87d40e906790cade0eb0ed1a64c869c22f4a2547f6"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0390.npz",
+      "bytes": 15521,
+      "sha256": "9a5f8eedb228fd34b656fdfdb6d18ef49bd87bcb4f03f15da98d14decb8d66ca"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0391.npz",
+      "bytes": 16176,
+      "sha256": "71b9ad8969d976cc9c041a5a1da5be366656a3fcb7279d64f73bde95189925b6"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0392.npz",
+      "bytes": 15336,
+      "sha256": "72403711eaabbe2deb29b823e8a561031e5e2324da90fba5b3b0df4a522e84b0"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0393.npz",
+      "bytes": 15819,
+      "sha256": "cd6496c18aad63848332282f762297df5aa23e1f1a42267b1194ecba152d2469"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0394.npz",
+      "bytes": 15887,
+      "sha256": "ea44ecac643dd3b2e5393c1ed19277064af3c110b7ed90dd1f962aba21bcf0da"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0395.npz",
+      "bytes": 15396,
+      "sha256": "edef6a277f8ba169b6b625335d25b9298bf08cbf219e3cfde7d4fa978e8b19f0"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0396.npz",
+      "bytes": 17992,
+      "sha256": "004f47ca08885564184506a0e2bd3798cc28b2165ce941b42a3a4042430d5b16"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0397.npz",
+      "bytes": 11669,
+      "sha256": "2981e8b6148c49c550c6f15a77824293b220c1360acf781ddaaf62a16cfdbafb"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0398.npz",
+      "bytes": 9453,
+      "sha256": "413ac63258cee9795bfd602ab72fda4e7f63038f52f18a2b3334325a7f481ed2"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0399.npz",
+      "bytes": 15041,
+      "sha256": "be05d3795b673ff597f792a24dbd3578b2ea927e14934f4582278c145583658e"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0400.npz",
+      "bytes": 15480,
+      "sha256": "3895a3861cbf7cc71d490a832e050e32ab184c88526cf2104a791ac7c812b2c4"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0401.npz",
+      "bytes": 15053,
+      "sha256": "ce83ead00359bce9bde1de0ab84a0ee797141c0c5b62fc695a1b10b15b54f41b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0402.npz",
+      "bytes": 12148,
+      "sha256": "f2cd04dd395d0955ee531bd8135db381fe592c1b8f628665401e208f2be7ef10"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0403.npz",
+      "bytes": 8747,
+      "sha256": "8a97900d88f4d58ec7adee48edcfea3e5e08c98408b0201afb6e7add0a623617"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0404.npz",
+      "bytes": 15638,
+      "sha256": "e47a099bfc99551974f294a143d61f5714749b61e5ed20a552c1b92b70b772e3"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0405.npz",
+      "bytes": 11305,
+      "sha256": "aeaa8baa622d0881909b3bf0c8eb10c2c68b57e7dad7a5b7bd34b4a095eb6155"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0406.npz",
+      "bytes": 8529,
+      "sha256": "7da5d239c3b3d233f31e5aa406216b86a6a480ad629f7420e74ed95fe9786b7a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0407.npz",
+      "bytes": 16099,
+      "sha256": "be0fd77322097cf1704560be0fbcfab39d0585f8fe08e1118b8c6c006e842024"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0408.npz",
+      "bytes": 15565,
+      "sha256": "38fd825c4775a3a976e32857ee01b55bbbc8ae6794251510703dc07646171e6f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0409.npz",
+      "bytes": 15342,
+      "sha256": "44921acb6eb36ae13223ed5c3585cda0c3ebc1010264e8e7b4a6fc83b649a909"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0410.npz",
+      "bytes": 15295,
+      "sha256": "52db8f44fbec16e099fc227552cb304ffcdbf1c0e4872c7e90739f56126b5381"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0411.npz",
+      "bytes": 15667,
+      "sha256": "91029da823f029d6c920d28b6674ebfa98bc4f66602124e42cc83e0c0a58ae1b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0412.npz",
+      "bytes": 16385,
+      "sha256": "a3110017f1e694c9336fb6b35abf20d3d30f1f40da10b03c87b29334c775f805"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0413.npz",
+      "bytes": 15328,
+      "sha256": "be11992ef7c4e4125b07e4acd2c1f0c4bf6dde04067608432c2ff2f650b030a7"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0414.npz",
+      "bytes": 15897,
+      "sha256": "532d24f7467ea5e309563b9e722ab39038b2479bc4a91a12b24234750d83d509"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0415.npz",
+      "bytes": 15489,
+      "sha256": "bfe297249e96a416880f427f75ee79596e4ed7e9d19b443675d661410634fd57"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0416.npz",
+      "bytes": 15863,
+      "sha256": "1d6f7836cc0b29f10dc2c148d1c44581a3581a37e68f5f5630826a24bddff12c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0417.npz",
+      "bytes": 15817,
+      "sha256": "b5b69e1e370b4814a0b012e7051b78570ad9ac3e13d957a1c64bdb385460a4e2"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0418.npz",
+      "bytes": 16628,
+      "sha256": "40d9b580db2ba780e7fea7b551697f34e10840c086cff11af3e8b86441ca15ee"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0419.npz",
+      "bytes": 15058,
+      "sha256": "fc5777f6f1881952d1cd5acede6514528815e378bfd863073b06ebef1dc8ff69"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0420.npz",
+      "bytes": 17095,
+      "sha256": "b371fc3f375b9914be309ab35f653a457cf001ef7a502b8cd7d751074c087966"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0421.npz",
+      "bytes": 15482,
+      "sha256": "3736c271e804ad0c688ea9fc3af62b1213a8c363bfd93ad8a08437e8b466e798"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0422.npz",
+      "bytes": 16935,
+      "sha256": "8f1c1f0b8501a82a307eba191ebaafffd18ef5ddf9a210bcdfa4e1d77289ab62"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0423.npz",
+      "bytes": 16166,
+      "sha256": "b795bba3b47bd33f0720099e97c7967c30ee2a81aefaf5c19f13b4384b929ffe"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0424.npz",
+      "bytes": 14982,
+      "sha256": "afec719548ccd10f811f8bb0984675a5d1100a80b7b43a1a4e4b169230a79678"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0425.npz",
+      "bytes": 15212,
+      "sha256": "b1082019d70d1ffc5c872bef51eb79fb7253474fe3374b9e372f8a4a9249c3ff"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0426.npz",
+      "bytes": 12624,
+      "sha256": "9a1844e341cfeab75d49570b2a4424e9a1a7bcd0f98fa5dabe9d12b626c3061d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0427.npz",
+      "bytes": 8644,
+      "sha256": "9433034d4e627ff5a4b4088c8770ec87670387cbad421152f26d009195794e39"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0428.npz",
+      "bytes": 15126,
+      "sha256": "f87b1b99cea8bd07e0dd1a5a80245f8c15be4423fa2ab1fa37c5cda4b24ad011"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0429.npz",
+      "bytes": 15161,
+      "sha256": "ef6d778912a7d31b33ff9a433dd05b8861d230ef854ef99b3bb15fd4e5a14e91"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0430.npz",
+      "bytes": 15215,
+      "sha256": "b6ff2ae0e3017498e0fa9af1b89ba5302d45ab229d6b5c635153659f3b750464"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0431.npz",
+      "bytes": 16084,
+      "sha256": "9bbf2da8c598a49c4d48727c8eadf007139b40c3348c618e434819e68ff47610"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0432.npz",
+      "bytes": 15291,
+      "sha256": "cfd6b5263ee4c05b8052b90e88a4c7c328ab6cdd792596a61b3f21fb63856da9"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0433.npz",
+      "bytes": 15126,
+      "sha256": "cd808b8148c607fc9e0a703d1adc1884c7160014313d617410a99fe1cc80723d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0434.npz",
+      "bytes": 15575,
+      "sha256": "be2a80e3a96b56e406c7f726703c27e303208ca058a1696098c5cdfc440ff0dd"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0435.npz",
+      "bytes": 15300,
+      "sha256": "8e6f330cba99eb3406e97fcbe18c030b55a7cdaabe9b91c4cb0c78fd4b2c0fa6"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0436.npz",
+      "bytes": 16095,
+      "sha256": "02f712c96409c4339a12291202ffe9775aba39f2d2418d512cd8b78111a6a186"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0437.npz",
+      "bytes": 15479,
+      "sha256": "805240f65571d9917f3364cc393f1ab972cdb391c09b2c11f121ba2afb108276"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0438.npz",
+      "bytes": 15296,
+      "sha256": "a7fb09c67be180058014f3e6731e3d4437b22425610d9208d640eef7f50801bb"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0439.npz",
+      "bytes": 15614,
+      "sha256": "acd4d9047ca977691bb51d6820c8f7dd15f9e67b138ac0fb3d3fc75b93f348ba"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0440.npz",
+      "bytes": 16207,
+      "sha256": "a24270c5e7656766d1ab160bd59d76266482b1f255c64c2d1f3daba07839241a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0441.npz",
+      "bytes": 16430,
+      "sha256": "01c1e438204c1407f4be99114745b3380bea16acaef58d256d6fefcb6c28af4b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0442.npz",
+      "bytes": 15565,
+      "sha256": "bb6a93fc3ff1c80346d1de7daa622c31fc06bfad097028a0081013b006930231"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0443.npz",
+      "bytes": 15491,
+      "sha256": "a11816985225e05e8b8c310fd843683caf787e0b8dad7c581c59c62053c93752"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0444.npz",
+      "bytes": 15072,
+      "sha256": "43ed0021e5f24fc4a27b899aa7e1e6dcf579bc7776d39d0d69b2276b2ef20892"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0445.npz",
+      "bytes": 15245,
+      "sha256": "73fbd4cc14c74393e11822c39ac5c7e2c8611d098f1280567ac83358bbf72fb8"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0446.npz",
+      "bytes": 15457,
+      "sha256": "70e4225cca78ed8ecf8e9185b7d69c4ed60723c60a347fa80faf1d68c978846d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0447.npz",
+      "bytes": 15478,
+      "sha256": "ff57eb178c5b1cc217c84eca7d236e806c9b1aeaafe35b284cf9e0935e03b63d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0448.npz",
+      "bytes": 15613,
+      "sha256": "7fc10abb289462cf25bda430ac06aab5ff2990aadbddb9b305903bec3dbc0788"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0449.npz",
+      "bytes": 15188,
+      "sha256": "80d233c56f3082594a3ca94018edbb32de320b76745f86ff95620dd3974ad4b0"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0450.npz",
+      "bytes": 16107,
+      "sha256": "4bd3d5c630ecc545c4ba5c2bd7c46433ccc7777a9c1a7a7aa6e995a6dcef7ca2"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0451.npz",
+      "bytes": 15901,
+      "sha256": "2cd165a901074587b524489f16150e5f7c9c474d03f429b5f8805c452588f86e"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0452.npz",
+      "bytes": 15461,
+      "sha256": "d055b02c74d6d3e506038272b744350602d3e53be62549001faa903f762ce986"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0453.npz",
+      "bytes": 15340,
+      "sha256": "1aae29e0ac6762577ffa17c6ab4437a2bb043a8e15313adccc1aec21380e9f3b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0454.npz",
+      "bytes": 16104,
+      "sha256": "1c87c97c7fa4c3d783d765f3eeae75edcb7264fea410b1e5112c5de892702e7e"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0455.npz",
+      "bytes": 14971,
+      "sha256": "60364e04f8b08892f409a87b1f4cabdefad87898a92f478b4a82c8fcdcdc9668"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0456.npz",
+      "bytes": 15857,
+      "sha256": "443bc6859ba738248a10ca6e86141830a69056b4bfdb565217f2bc8d20b4f46a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0457.npz",
+      "bytes": 11959,
+      "sha256": "6b9855b0a113bbed18e2c26b8dc502e39f5c7fea4256e4756ea7672a98cc4609"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0458.npz",
+      "bytes": 9119,
+      "sha256": "3e9e3237fdedcb5bf580b27b53ebea016e72e9cfeed829026199bec18270a762"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0459.npz",
+      "bytes": 11747,
+      "sha256": "a73b3711161874652f0acb992bdaea712ca16b318756b09f0a869c113f055e96"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0460.npz",
+      "bytes": 8398,
+      "sha256": "0eb88473d6ca46422d832ccf0b7cb6b90165203ce5df5d44a115d526354c01cd"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0461.npz",
+      "bytes": 15293,
+      "sha256": "3dc8c2ba74ef978a140d24f9d9a213839763a5e5afba1c7f31aa6f3b3d51b1dd"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0462.npz",
+      "bytes": 15662,
+      "sha256": "c00408129e90bc9b2fc674257a2d6445aeb8a19000b2add50f6859f6f3762a48"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0463.npz",
+      "bytes": 15764,
+      "sha256": "6370eae698a95dfd322b2db9a782db8495b819c44fa08532dd239677b4cbffc2"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0464.npz",
+      "bytes": 15632,
+      "sha256": "4b222b93b14430bd07cf14fc2e64fd3290b60dd47fac5dc43a252ec3bc1c51ef"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0465.npz",
+      "bytes": 15785,
+      "sha256": "68c95181d28ffd1e442da4d505500eb6ed361df67c6a63fe3fd5de7c5f65f290"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0466.npz",
+      "bytes": 12847,
+      "sha256": "fca6397302c54d83cd0dcf51a5e4bd44bb40fbdb192816dcaf450f26d93ceb94"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0467.npz",
+      "bytes": 8807,
+      "sha256": "6c953afbadb21a3dfa6d5e4b4c1f91feef09840a00ed60ecff472ba4f5f509df"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0468.npz",
+      "bytes": 15708,
+      "sha256": "724005862abe2ad86afbe6353dde869997f25e29d32337b8eb6977d00ce0694b"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0469.npz",
+      "bytes": 15090,
+      "sha256": "1a38f049f906fecdf6422b20f3081cc3404ce326158d6569b2cf756e03d310fd"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0470.npz",
+      "bytes": 15412,
+      "sha256": "b537943810ebca6547931608c129b0580fd5587aff88e37a40219ae1793a7d3a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0471.npz",
+      "bytes": 15290,
+      "sha256": "f30ef9a368f9981e85dd312f5993348b165f9bed4ccd65db206ce0fb7b0597bd"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0472.npz",
+      "bytes": 15750,
+      "sha256": "2c459f566aa7c69429af2f9b4c324beaa89d0c3b471a8c06db3162b8b9d792d6"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0473.npz",
+      "bytes": 15636,
+      "sha256": "12ab547d6007a088599522da94a9048b6c42f3a2d96cecbe9c3ec0c0bcf0970f"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0474.npz",
+      "bytes": 16236,
+      "sha256": "41695e731200206fab406fa914a8505b698da4f63a3d0631a81313bf5e59829c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0475.npz",
+      "bytes": 15593,
+      "sha256": "3185db66e762fa2e6776d4bbc035b329acea9485c1f70b86594bab92b329bfe7"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0476.npz",
+      "bytes": 15590,
+      "sha256": "d8ea10a7db22a4722ec17a15f31832df608b5f1a10ee0c8fe95b101f8f6a50a8"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0477.npz",
+      "bytes": 15113,
+      "sha256": "92235b01dff9380d86f623f42934262902e9f719594b89ef48ee58a3e025a48d"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0478.npz",
+      "bytes": 15626,
+      "sha256": "33b943dca45f2ecd6dbd8e2d38946e585b137ac7a12906347a2e4902bc906060"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0479.npz",
+      "bytes": 12502,
+      "sha256": "3c3e207e78327ae1482e58b03dabc11adc53fe44125e14e1d5c7a0cd4fae9777"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0480.npz",
+      "bytes": 9156,
+      "sha256": "f579cfdbd511c94eb11f72a86c3e15e430a7af0d22dbe2c33b660d07bc421941"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0481.npz",
+      "bytes": 15656,
+      "sha256": "ce93c3d4b1d441e01decc19052379149ed68bc1ea650638dd4270c40ed125530"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0482.npz",
+      "bytes": 15388,
+      "sha256": "b8771f0dfb4410195c1694f6a3f1e81781e333c9ba12bc1c52346e1c44fbbdfd"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0483.npz",
+      "bytes": 15513,
+      "sha256": "63488de1865fafc87eea553a2039f33cc0ec19525c0bd9dbc48875e0823e891c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0484.npz",
+      "bytes": 15226,
+      "sha256": "09e84ae5671694670bf6491f2a7a9e8ee8402df242fba4b3e4b28308462b908c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0485.npz",
+      "bytes": 15688,
+      "sha256": "81f4f8b0375c7047e9ba489583e91bd1fa41b908d7f3a289f7550dce7d381c6c"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0486.npz",
+      "bytes": 15895,
+      "sha256": "07dbda1531d1889b9cd25ff9929d18bf93cfba62d68c020b67b94d68d3ff0e7a"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0487.npz",
+      "bytes": 15696,
+      "sha256": "e423a07c278f6b37873c6ceb36f72349f64f160b760c7b0a9f35d41469b3e8b4"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0488.npz",
+      "bytes": 15300,
+      "sha256": "6d9f81fb777337b868c3ba3e17f807875b8d231793cd820ebc333cdcce0d96e5"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0489.npz",
+      "bytes": 17254,
+      "sha256": "af9c547361be1d489e3f8210293c5d5470094b4587ea060d30d7e5932bc1bf97"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0490.npz",
+      "bytes": 15681,
+      "sha256": "dac44200a471b86e2684b7b8903bafb3e435cef0a5b2a03ba74d3fab9889b700"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0491.npz",
+      "bytes": 15650,
+      "sha256": "256d421a97c406060ea401f7bd1b01e62cbfc13e6c67a33e63e3c9cac58fefa7"
+    },
+    {
+      "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/cycles/cycle_0492.npz",
+      "bytes": 15774,
+      "sha256": "86dcdeb9541e7d37296cc6abee1f6be00729aeea0a992c3fe840517251bb3ed4"
     },
     {
       "path": "reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/real_cycle_library.csv",

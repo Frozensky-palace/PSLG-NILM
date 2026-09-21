@@ -81,6 +81,32 @@ def collect_state_discovery_paths(root: Path,
     for segment in segment_files:
         paths.add(segment.resolve().relative_to(root))
 
+    # Full-cycle waveforms: build_state_library.py reloads them to compute
+    # per-state statistics. Missed in the first bundle (2026-09-21 C1 smoke
+    # caught it: FileNotFoundError cycles/cycle_0000.npz on the server).
+    cycles_dir = library_dir / "cycles"
+    cycle_npz = sorted(cycles_dir.glob("cycle_*.npz"))
+    if not cycle_npz:
+        raise SystemExit(f"no cycle NPZ files under {cycles_dir}")
+    recorded = dict(zip(inventory["path"].astype(str),
+                        inventory["sha256"].astype(str)))
+    if len(cycle_npz) != len(recorded):
+        raise SystemExit(
+            f"cycle NPZ count ({len(cycle_npz)}) and inventory rows "
+            f"({len(recorded)}) disagree")
+    for cycle in cycle_npz:
+        relative = cycle.resolve().relative_to(root)
+        library_relative = cycle.relative_to(library_dir).as_posix()
+        if library_relative not in recorded:
+            raise SystemExit(
+                f"cycle file {cycle.name} missing from inventory; "
+                "bundle must stay exactly train-only")
+        digest = hash_records([relative], root)[0]["sha256"]
+        if digest != recorded[library_relative]:
+            raise SystemExit(
+                f"cycle file {cycle.name} sha256 disagrees with inventory")
+        paths.add(relative)
+
     # Train-only provenance metadata from the split layer.
     for relative in (
             "partition_manifest.json", "leakage_report.json",

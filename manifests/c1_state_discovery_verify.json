@@ -2,8 +2,8 @@
   "manifest": "manifests/c1_state_discovery_trainonly_manifest.json",
   "repo_root": "D:\\zhj\\vscode\\PSLG-NILM",
   "exclude_test": null,
-  "expected_files": 503,
-  "verified_files": 503,
+  "expected_files": 996,
+  "verified_files": 996,
   "failures": [],
   "passed": true
 }
