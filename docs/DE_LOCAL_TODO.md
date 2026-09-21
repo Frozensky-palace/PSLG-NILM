@@ -1,0 +1,77 @@
+# D/E 本机任务执行清单（TODO）
+
+> 依据：路线图附录 A。本文件是**执行追踪器**，随进度更新勾选；
+> 研究方案本身见路线图 §Phase D/E/F，验收标准见附录 A.1。
+> 目标：完成 D/E 阶段除服务器正式实验外的全部本机任务。
+
+## 前置门槛
+
+- [x] G-1 C2 库格式兼容验证（零代码，31 列同构）
+- [x] G-2 validation 选 k 复核 → v1 = C2-detsec-k4 冻结
+- [ ] G-3 生成质量评价管线（批次 0）
+
+## 批次 0：评价管线（✅ 完成 2026-09-21）
+
+- [x] `src/validation/synthetic_quality.py`（物理合法性/分布/多样性/边界检查）
+- [x] `src/validation/memorization.py`（最近邻复制审计，分块距离计算）
+- [x] `scripts/evaluate_synthetic_quality.py`
+- [x] `scripts/audit_generation_memorization.py`
+- [x] `scripts/build_shared_placement_schedule.py`（复用 idle_runs/schedule_lengths，
+      输出冻结 schedule CSV + SHA-256）
+- [x] 单元测试 15 项（含 CLI 失败路径、确定性、排他自距离）
+- [x] ConstantGenerator + 真实周期库端到端冒烟：质量门全 PASS +
+      diversity=WARN（常量生成器被正确标记零多样性）；复制审计 0/20
+- [x] 提交
+
+## 批次 1：B3-T 真实周期变换
+
+- [ ] `src/generation/full_cycle_transform.py`（受限时间/功率缩放 + 防护）
+- [ ] `scripts/generate_full_cycles.py`（统一生成入口，--route transform）
+- [ ] 单元测试（缩放边界、负功率拒绝、能量约束、provenance）
+- [ ] 本机端到端闭环：生成 246 条 → 质量评价 → 记忆审计
+- [ ] `slurm/b3_transform.sbatch`
+- [ ] 提交
+
+## 批次 2：CVAE 族（B3-V + B4）
+
+- [ ] `src/generation/full_cycle_cvae.py`（条件 CVAE + 长度桶/mask）
+- [ ] `src/generation/primitive_cvae.py`（共享条件基元 CVAE）
+- [ ] `scripts/train_full_cycle_generator.py`（统一训练入口，--route cvae|primitive）
+- [ ] `scripts/generate_primitive_cycles.py`
+- [ ] `scripts/compose_generated_cycles.py`（B4 基础拼接）
+- [ ] 单元测试（损失下降、形状、mask 边界、时长一致性）
+- [ ] CPU 冒烟（数百 epoch 级小样本，loss 曲线落盘）
+- [ ] `slurm/b3_cvae.sbatch`、`slurm/b4_primitive_cvae.sbatch`
+- [ ] 提交
+
+## 批次 3：B3-G 条件 WGAN
+
+- [ ] `src/generation/full_cycle_wgan.py`（梯度惩罚、loss/mode-collapse 指标）
+- [ ] 单元测试 + CPU 冒烟
+- [ ] `slurm/b3_wgan.sbatch`
+- [ ] 提交
+
+## 批次 4：B5 HSMM 组（可与批次 3 并行）
+
+- [ ] `src/composition/transition_model.py`（Markov 顺序）
+- [ ] `src/composition/duration_model.py`
+- [ ] `src/composition/hsmm_sequence.py`
+- [ ] `src/composition/boundary_handler.py`（端点/斜率匹配，可消融）
+- [ ] `src/composition/constrained_composer.py`
+- [ ] `scripts/fit_hsmm_composer.py`（仅 train 状态序列拟合）
+- [ ] 消融原型（B4+Markov → +HSMM → +endpoint），本机可完整验证
+- [ ] `slurm/b5_hsmm.sbatch`
+- [ ] 提交
+
+## 批次 5：B3-D 条件扩散
+
+- [ ] `src/generation/full_cycle_diffusion.py`
+- [ ] 单元测试 + 极小冒烟
+- [ ] `slurm/b3_diffusion.sbatch`
+- [ ] 提交
+
+## 收尾
+
+- [ ] 全套测试 + compileall + YAML 检查
+- [ ] 附录 A 勾选与里程碑更新（M2：管线闭环）
+- [ ] 服务器执行清单整理（哪些 sbatch 何时提交）
