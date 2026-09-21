@@ -23,6 +23,11 @@ from src.generation.full_cycle_cvae import (  # noqa: E402
     condition_vector,
     train_cvae,
 )
+from src.generation.full_cycle_diffusion import (  # noqa: E402
+    DiffusionDenoiser,
+    GaussianDiffusion,
+    train_diffusion,
+)
 from src.generation.full_cycle_wgan import (  # noqa: E402
     WGANCritic,
     WGANGenerator,
@@ -163,9 +168,48 @@ def train_full_cycle_wgan(args: argparse.Namespace) -> None:
           f"power_scale={power_scale:.1f} -> {args.output_dir}")
 
 
+def train_full_cycle_diffusion(args: argparse.Namespace) -> None:
+    waves = load_real_reference(Path(args.real_library_dir),
+                                max_cycles=args.max_cycles)
+    power_scale = _power_scale(waves)
+    lengths = np.array([len(w) for w in waves])
+    bucketizer = LengthBucketizer.fit(lengths, n_buckets=args.n_buckets)
+    length_scale = bucketizer.bucket_length(bucketizer.n_buckets - 1)
+    mean_scale = _mean_power_scale(waves)
+    conditions = np.stack([
+        condition_vector(len(w), w, args.sample_seconds, mean_scale,
+                         length_scale) for w in waves])
+    bucket_length = bucketizer.bucket_length(bucketizer.n_buckets - 1)
+    denoiser = DiffusionDenoiser(bucket_length, len(conditions[0]),
+                                 width=args.width)
+    diffusion = GaussianDiffusion(n_steps=args.diffusion_steps)
+    history = train_diffusion(denoiser, diffusion,
+                              [w / power_scale for w in waves], conditions,
+                              bucketizer, epochs=args.epochs,
+                              batch_size=args.batch_size,
+                              learning_rate=args.learning_rate,
+                              seed=args.seed, device=args.device)
+    _save_checkpoint(
+        Path(args.output_dir),
+        {"denoiser": denoiser.state_dict(), "wave_length": bucket_length,
+         "condition_dim": len(conditions[0]), "width": args.width,
+         "diffusion_steps": args.diffusion_steps,
+         "bucketizer": bucketizer.to_dict(),
+         "length_scale": length_scale, "mean_power_scale": mean_scale,
+         "power_scale": power_scale},
+        history,
+        {"route": "diffusion", "epochs": args.epochs, "seed": args.seed,
+         "n_waves": len(waves), "device": args.device,
+         "power_scale": power_scale,
+         "real_library_dir": str(args.real_library_dir)})
+    print(f"[train-diffusion] final noise_mse="
+          f"{history[-1]['noise_mse']:.5f} -> {args.output_dir}")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--route", choices=("cvae", "primitive", "wgan"),
+    ap.add_argument("--route",
+                    choices=("cvae", "primitive", "wgan", "diffusion"),
                     required=True)
     ap.add_argument("--real-library-dir", default=None,
                     help="cvae route: real train cycle library")
@@ -179,6 +223,8 @@ def main() -> None:
     ap.add_argument("--width", type=int, default=32)
     ap.add_argument("--n-critic", type=int, default=5,
                     help="wgan route: critic updates per generator update")
+    ap.add_argument("--diffusion-steps", type=int, default=500,
+                    help="diffusion route: noise schedule steps")
     ap.add_argument("--n-buckets", type=int, default=4)
     ap.add_argument("--max-cycles", type=int, default=None)
     ap.add_argument("--sample-seconds", type=int, default=6)
@@ -194,6 +240,10 @@ def main() -> None:
         if not args.real_library_dir:
             raise SystemExit("--route wgan needs --real-library-dir")
         train_full_cycle_wgan(args)
+    elif args.route == "diffusion":
+        if not args.real_library_dir:
+            raise SystemExit("--route diffusion needs --real-library-dir")
+        train_full_cycle_diffusion(args)
     else:
         if not args.state_library_dir:
             raise SystemExit("--route primitive needs --state-library-dir")

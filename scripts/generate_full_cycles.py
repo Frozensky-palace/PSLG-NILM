@@ -23,13 +23,17 @@ from src.generation.full_cycle_cvae import (  # noqa: E402
     ConditionalWaveformCVAE,
     LengthBucketizer,
 )
+from src.generation.full_cycle_diffusion import (  # noqa: E402
+    DiffusionDenoiser,
+    GaussianDiffusion,
+)
 from src.generation.full_cycle_transform import (  # noqa: E402
     RealCycleTransformGenerator,
 )
 from src.generation.full_cycle_wgan import WGANGenerator  # noqa: E402
 from src.validation.synthetic_quality import load_real_reference  # noqa: E402
 
-ROUTE_CHOICES = ("transform", "cvae", "wgan")
+ROUTE_CHOICES = ("transform", "cvae", "wgan", "diffusion")
 
 
 def _load_cvae_checkpoint(checkpoint_dir: Path, device: str
@@ -59,7 +63,7 @@ def build_generator(args: argparse.Namespace) -> BaseGenerator:
             sample_seconds=args.sample_seconds,
             time_scale_range=(args.time_scale_min, args.time_scale_max),
             power_scale_range=(args.power_scale_min, args.power_scale_max))
-    if args.route in ("cvae", "wgan"):
+    if args.route in ("cvae", "wgan", "diffusion"):
         if not args.checkpoint_dir:
             raise SystemExit(f"--route {args.route} needs --checkpoint-dir")
         import torch
@@ -77,34 +81,64 @@ def build_generator(args: argparse.Namespace) -> BaseGenerator:
                 latent_dim=payload["latent_dim"], width=payload["width"])
             model.load_state_dict(payload["model"])
             name = "b3_cvae"
-        else:
+        elif args.route == "wgan":
             model = WGANGenerator(
                 payload["wave_length"], payload["condition_dim"],
                 latent_dim=payload["latent_dim"], width=payload["width"])
             model.load_state_dict(payload["generator"])
             name = "b3_wgan"
+        else:
+            model = DiffusionDenoiser(
+                payload["wave_length"], payload["condition_dim"],
+                width=payload["width"])
+            model.load_state_dict(payload["denoiser"])
+            name = "b3_diffusion"
 
-        class _DecoderAdapter:
-            """Expose generator(latent, cond) through a decode() interface."""
+        class _SamplingAdapter:
+            """Expose non-CVAE models through the decode() interface.
 
-            def __init__(self, inner: WGANGenerator):
+            For diffusion, the incoming ``latent`` only seeds the sampler
+            (deterministic given the seed); the real generation runs the
+            full ancestral loop over the noise schedule.
+            """
+
+            def __init__(self, inner, diffusion: GaussianDiffusion | None,
+                         wave_length: int):
                 self.inner = inner
-                self.latent_dim = inner.latent_dim
+                self.diffusion = diffusion
+                self.wave_length = wave_length
+                # Diffusion denoisers have no latent space; the latent is
+                # only a deterministic seed source.
+                self.latent_dim = getattr(inner, "latent_dim", 8)
 
-            def to(self, device: str) -> "_DecoderAdapter":
+            def to(self, device: str) -> "_SamplingAdapter":
                 self.inner.to(device)
                 return self
 
-            def eval(self) -> "_DecoderAdapter":
+            def eval(self) -> "_SamplingAdapter":
                 self.inner.eval()
                 return self
 
             def decode(self, latent: "torch.Tensor", cond: "torch.Tensor"
                        ) -> "torch.Tensor":
-                return self.inner(latent, cond)
+                if self.diffusion is None:
+                    return self.inner(latent, cond)
+                self.inner.eval()
+                torch.manual_seed(
+                    int(torch.round(latent.sum().detach().cpu()
+                                    * 1e6).abs().item()) % (1 << 31) + 1)
+                initial = torch.randn(cond.shape[0], 1, self.wave_length,
+                                      device=cond.device)
+                return self.diffusion.sample(self.inner, initial.shape,
+                                             cond, cond.device)
 
         if args.route == "wgan":
-            model = _DecoderAdapter(model)
+            model = _SamplingAdapter(model, None, payload["wave_length"])
+        if args.route == "diffusion":
+            diffusion = GaussianDiffusion(
+                n_steps=payload.get("diffusion_steps", 500))
+            model = _SamplingAdapter(model, diffusion,
+                                     payload["wave_length"])
         bucketizer = LengthBucketizer.from_dict(payload["bucketizer"])
         return CVAESamplingGenerator(
             model, bucketizer,

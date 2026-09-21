@@ -74,12 +74,17 @@
 - [ ] `slurm/b5_hsmm.sbatch`
 - [ ] 提交
 
-## 批次 5：B3-D 条件扩散
+## 批次 5：B3-D 条件扩散（✅ 本机部分完成 2026-09-21）
 
-- [ ] `src/generation/full_cycle_diffusion.py`
-- [ ] 单元测试 + 极小冒烟
-- [ ] `slurm/b3_diffusion.sbatch`
-- [ ] 提交
+- [x] `src/generation/full_cycle_diffusion.py`（线性调度 DDPM、正弦时间
+      嵌入、噪声预测训练、祖先采样）
+- [x] 单元测试 4 项（嵌入形状、加噪尺度、噪声 MSE 下降、采样有限）
+- [x] CLI 路由（--diffusion-steps 可调）
+- [x] `slurm/b3_diffusion.sbatch`
+- [x] 提交
+- [ ] **服务器正式训练**（3 epoch/50 步冒烟的生成峰值越界，质量门
+      FAIL 属预期；正式 epoch 数 + 全步调度后才可能过门——诚实记录，
+      不放宽门槛）
 
 ## 收尾
 
