@@ -8,6 +8,7 @@ with the same sliding-window technique as the CPU smoke, grouped by shard.
 from __future__ import annotations
 
 import json
+import os
 import platform
 import time
 from pathlib import Path
@@ -28,6 +29,20 @@ from src.nilm.window_dataset import ShardedWindowDataset
 
 ACTIVE_THRESHOLD_W = 20.0
 MODEL_HISTORY_LENGTHS = (2, 12, 50)
+
+
+def ensure_deterministic_cuda_env() -> None:
+    """CuBLAS needs a fixed workspace for deterministic algorithms.
+
+    ``torch.use_deterministic_algorithms(True)`` makes every CuBLAS call
+    raise on CUDA >= 10.2 unless ``CUBLAS_WORKSPACE_CONFIG`` was set before
+    the process started. Set it at import time so any entry point that
+    imports this module is safe; never override an explicit user value.
+    """
+    os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+
+
+ensure_deterministic_cuda_env()
 
 
 def update_early_stopping(val_mae: float, best_val_mae: float,
@@ -115,6 +130,7 @@ def train_seq2point(experiment_dir: Path, output_dir: Path, arm: str,
     if arm not in ("B0", "B1", "B2"):
         raise ValueError(f"unsupported arm {arm}; test is not an arm")
     torch.manual_seed(seed)
+    ensure_deterministic_cuda_env()
     torch.use_deterministic_algorithms(True)
     rng = np.random.default_rng(seed)
     if device_name == "auto":

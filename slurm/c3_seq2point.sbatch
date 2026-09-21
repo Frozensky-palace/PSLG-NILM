@@ -25,6 +25,8 @@ module list
 
 source "$(conda info --base)/bin/activate"
 conda activate pslg-nilm
+# deterministic CuBLAS workspace required by torch.use_deterministic_algorithms
+export CUBLAS_WORKSPACE_CONFIG=:4096:8
 
 : "${PSLG_PROJECT_ROOT:?submit with PSLG_PROJECT_ROOT}"
 cd "$PSLG_PROJECT_ROOT"

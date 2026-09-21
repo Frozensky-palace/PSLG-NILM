@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -176,6 +177,19 @@ class TrainingControlTests(unittest.TestCase):
         self.assertTrue(improved)
         self.assertEqual(best, 4.0)
         self.assertEqual(misses, 0)
+
+    def test_deterministic_cuda_env_setdefault(self) -> None:
+        import src.nilm.trainer as trainer
+
+        with patch.dict(os.environ):
+            os.environ.pop("CUBLAS_WORKSPACE_CONFIG", None)
+            trainer.ensure_deterministic_cuda_env()
+            self.assertEqual(os.environ.get("CUBLAS_WORKSPACE_CONFIG"),
+                             ":4096:8")
+            os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":16:8"
+            trainer.ensure_deterministic_cuda_env()
+            self.assertEqual(os.environ.get("CUBLAS_WORKSPACE_CONFIG"),
+                             ":16:8")
 
 
 class GpuFrameworkSmokeTests(unittest.TestCase):
