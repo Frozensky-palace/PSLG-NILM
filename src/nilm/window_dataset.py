@@ -2,10 +2,27 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+ARM_PATTERN = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
+
+
+def validate_arm(arm: str) -> str:
+    """Validate an arm label: B0/B1/B2 plus D/E route labels (B3T, B4, ...).
+
+    Labels are case-preserved (they must match the dataset manifest keys
+    and the ``{arm.lower()}_*`` index files). Anything containing ``test``
+    stays forbidden by protocol.
+    """
+    if "test" in arm.lower():
+        raise ValueError("test is not an arm; test stays locked")
+    if not ARM_PATTERN.fullmatch(arm):
+        raise ValueError(f"unsupported arm {arm!r}")
+    return arm
 
 
 def valid_center_ranges(timestamps: np.ndarray, *, window_length: int,
@@ -61,10 +78,8 @@ class ShardedWindowDataset:
             self.manifest = json.load(stream)
         with open(self.experiment_dir / "normalization.json", encoding="utf-8") as stream:
             self.normalization = json.load(stream)
-        self.arm = arm.upper()
+        self.arm = validate_arm(arm)
         self.partition = partition
-        if self.arm not in ("B0", "B1", "B2"):
-            raise ValueError("arm must be B0, B1 or B2")
         ranges = pd.read_csv(self.experiment_dir / "window_ranges.csv")
         self.ranges = ranges[ranges["partition"] == partition].reset_index(drop=True)
         self.cumulative = np.cumsum(self.ranges["count"].to_numpy(dtype=np.int64))

@@ -63,18 +63,34 @@ def main() -> None:
     ap.add_argument("--train-stride", type=int, default=6)
     ap.add_argument("--eval-stride", type=int, default=1)
     ap.add_argument("--sample-seconds", type=int, default=6)
+    ap.add_argument("--extra-arm", action="append", default=[],
+                    help="LABEL=placed_dir for a D/E route placed by "
+                         "place_synthetics_on_background.py; repeatable")
     args = ap.parse_args()
 
     aligned_dir = Path(args.aligned_dir)
     placed_dir = Path(args.placed_dir)
     output_dir = Path(args.output_dir)
+    extra_arms: dict[str, Path] = {}
+    for spec in args.extra_arm:
+        label, _, placed = spec.partition("=")
+        label = label.strip()
+        if not label or not placed:
+            raise SystemExit(f"bad --extra-arm spec: {spec!r}")
+        if "test" in label.lower():
+            raise SystemExit("test is not a valid arm label")
+        if not all(c.isalnum() or c == "_" for c in label):
+            raise SystemExit(
+                f"arm label must be alphanumeric/underscore: {label!r}")
+        extra_arms[label] = Path(placed)
+
     with open(aligned_dir / "aligned_partition_manifest.json", encoding="utf-8") as stream:
         aligned = json.load(stream)
     with open(placed_dir / "placement_summary.json", encoding="utf-8") as stream:
         placed = json.load(stream)
 
     sources = {arm: {p: [] for p in ("train", "validation", "test")}
-               for arm in ("B0", "B1", "B2")}
+               for arm in ("B0", "B1", "B2", *extra_arms)}
     for partition in ("train", "validation", "test"):
         for shard in aligned["partitions"][partition]["shards"]:
             entry = {
@@ -83,7 +99,7 @@ def main() -> None:
                 "appliance_field": "appliance_w",
                 "rows": shard["valid_rows"],
             }
-            for arm in ("B0", "B1", "B2"):
+            for arm in sources:
                 sources[arm][partition].append(dict(entry))
     for arm in ("B1", "B2"):
         sources[arm]["train"] = [{
@@ -92,6 +108,20 @@ def main() -> None:
             "appliance_field": "augmented_appliance_w",
             "rows": shard["rows"],
         } for shard in placed["arms"][arm]["shards"]]
+    for label, extra_placed_dir in extra_arms.items():
+        with open(extra_placed_dir / "placement_summary.json",
+                  encoding="utf-8") as stream:
+            extra_placed = json.load(stream)
+        if label not in extra_placed.get("arms", {}):
+            raise SystemExit(
+                f"extra arm {label!r} missing from "
+                f"{extra_placed_dir / 'placement_summary.json'}")
+        sources[label]["train"] = [{
+            "path": _portable_path(extra_placed_dir / shard["path"]),
+            "mains_field": "augmented_mains_w",
+            "appliance_field": "augmented_appliance_w",
+            "rows": shard["rows"],
+        } for shard in extra_placed["arms"][label]["shards"]]
 
     coverage = pd.read_csv(aligned_dir / "cycle_alignment_coverage.csv")
     excluded = coverage[
@@ -137,7 +167,7 @@ def main() -> None:
     ranges_frame.to_csv(ranges_path, index=False)
     train_pools = {}
     train_ranges = ranges_frame[ranges_frame["partition"] == "train"].reset_index(drop=True)
-    for arm in ("B0", "B1", "B2"):
+    for arm in sources:
         active_parts, inactive_parts = [], []
         ordinal = 0
         current_shard = None

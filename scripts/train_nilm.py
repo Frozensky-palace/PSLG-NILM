@@ -16,7 +16,9 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--experiment-dir", required=True,
                     help="directory produced by prepare_nilm_b0_b2_inputs.py")
-    ap.add_argument("--arm", required=True, choices=("B0", "B1", "B2"))
+    ap.add_argument("--arm", required=True,
+                    help="arm label, e.g. B0/B1/B2 or a D/E route label "
+                         "(B3T, B3CVAE, B4, ...); 'test' is forbidden")
     ap.add_argument("--output-dir", required=True)
     ap.add_argument("--seed", type=int, default=17)
     ap.add_argument("--batch-size", type=int, default=128)

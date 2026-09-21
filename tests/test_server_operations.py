@@ -201,6 +201,16 @@ class TrainingControlTests(unittest.TestCase):
         self.assertEqual((start_epoch, best_val_mae, best_epoch, history),
                          (3, 10.0, 0, []))
 
+    def test_validate_arm_accepts_routes_and_bans_test(self) -> None:
+        from src.nilm.trainer import validate_arm
+
+        self.assertEqual(validate_arm("B0"), "B0")
+        self.assertEqual(validate_arm("B3T"), "B3T")
+        self.assertEqual(validate_arm("B4"), "B4")
+        for bad in ("test", "B3-test", "B3 T", "4B3"):
+            with self.assertRaises(ValueError):
+                validate_arm(bad)
+
     def test_deterministic_cuda_env_setdefault(self) -> None:
         import src.nilm.trainer as trainer
 

@@ -28,7 +28,9 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--experiment-dir", required=True)
     ap.add_argument("--checkpoint", required=True)
-    ap.add_argument("--arm", required=True, choices=("B0", "B1", "B2"))
+    ap.add_argument("--arm", required=True,
+                    help="arm label, e.g. B0/B1/B2 or a D/E route label; "
+                         "'test' is forbidden")
     ap.add_argument("--partition", choices=("validation", "test"),
                     default="validation")
     ap.add_argument("--sample-source", choices=("monitor", "first_n"),

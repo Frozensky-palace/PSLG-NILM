@@ -25,7 +25,7 @@ from src.nilm.checkpoint import (
     save_checkpoint,
 )
 from src.nilm.seq2point import Seq2PointCNN
-from src.nilm.window_dataset import ShardedWindowDataset
+from src.nilm.window_dataset import ShardedWindowDataset, validate_arm
 
 ACTIVE_THRESHOLD_W = 20.0
 MODEL_HISTORY_LENGTHS = (2, 12, 50)
@@ -138,8 +138,7 @@ def train_seq2point(experiment_dir: Path, output_dir: Path, arm: str,
     """Train one arm end to end; returns the summary dict written to disk."""
     experiment_dir = Path(experiment_dir)
     output_dir = Path(output_dir)
-    if arm not in ("B0", "B1", "B2"):
-        raise ValueError(f"unsupported arm {arm}; test is not an arm")
+    validate_arm(arm)
     torch.manual_seed(seed)
     ensure_deterministic_cuda_env()
     torch.use_deterministic_algorithms(True)
