@@ -6,7 +6,10 @@
 #   python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
 # If the conda pip section rejects the --index-url option on your conda
 # version, create the env without the torch line and install manually:
-#   pip install torch>=2.4 --index-url https://download.pytorch.org/whl/cu121
+#   pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+# torch==2.5.1 is the LAST cu121 build; pinning is required because with
+# torch>=2.4 pip silently resolves a newer cu130 build from PyPI
+# (observed 2026-09-21: 2.14.0+cu130 failed CUDA init on driver 580.65.06).
 # cu121 matches the module cuda-toolkit/12.1.1 recorded in the lab guide;
 # re-check against `nvidia-smi` on the allocated node and record any change.
 name: pslg-nilm
@@ -24,4 +27,4 @@ dependencies:
       - pyyaml>=6.0
       - --index-url=https://download.pytorch.org/whl/cu121
       - --extra-index-url=https://pypi.org/simple
-      - torch>=2.4
+      - torch==2.5.1
