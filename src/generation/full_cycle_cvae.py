@@ -221,18 +221,18 @@ def sample_cvae(model: ConditionalWaveformCVAE, bucketizer: LengthBucketizer,
 
 
 class CVAESamplingGenerator(BaseGenerator):
-    """B3-V sampling wrapper: conditions come from a real reference cycle."""
+    """Sampling wrapper for latent+cond decoders (CVAE; reused by WGAN)."""
 
-    name = "b3_cvae"
     version = "1"
 
-    def __init__(self, model: ConditionalWaveformCVAE,
-                 bucketizer: LengthBucketizer, length_scale: float,
-                 mean_power_scale: float, donor_waves: list[np.ndarray],
-                 sample_seconds: int = 6, device: str = "cpu",
-                 power_scale: float = 1.0):
+    def __init__(self, model, bucketizer: LengthBucketizer,
+                 length_scale: float, mean_power_scale: float,
+                 donor_waves: list[np.ndarray], sample_seconds: int = 6,
+                 device: str = "cpu", power_scale: float = 1.0,
+                 name: str = "b3_cvae"):
         import torch as _torch
 
+        self.name = name
         self.model = model
         self.bucketizer = bucketizer
         self.length_scale = float(length_scale)

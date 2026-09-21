@@ -26,9 +26,10 @@ from src.generation.full_cycle_cvae import (  # noqa: E402
 from src.generation.full_cycle_transform import (  # noqa: E402
     RealCycleTransformGenerator,
 )
+from src.generation.full_cycle_wgan import WGANGenerator  # noqa: E402
 from src.validation.synthetic_quality import load_real_reference  # noqa: E402
 
-ROUTE_CHOICES = ("transform", "cvae")
+ROUTE_CHOICES = ("transform", "cvae", "wgan")
 
 
 def _load_cvae_checkpoint(checkpoint_dir: Path, device: str
@@ -58,19 +59,59 @@ def build_generator(args: argparse.Namespace) -> BaseGenerator:
             sample_seconds=args.sample_seconds,
             time_scale_range=(args.time_scale_min, args.time_scale_max),
             power_scale_range=(args.power_scale_min, args.power_scale_max))
-    if args.route == "cvae":
+    if args.route in ("cvae", "wgan"):
         if not args.checkpoint_dir:
-            raise SystemExit("--route cvae needs --checkpoint-dir")
-        model, bucketizer, normalizer, power_scale = _load_cvae_checkpoint(
-            Path(args.checkpoint_dir), args.device)
+            raise SystemExit(f"--route {args.route} needs --checkpoint-dir")
+        import torch
+
+        payload = torch.load(Path(args.checkpoint_dir) / "model.pt",
+                             map_location=args.device, weights_only=False)
+        normalizer = {"length_scale": payload["length_scale"],
+                      "mean_power_scale": payload["mean_power_scale"]}
+        power_scale = float(payload.get("power_scale", 1.0))
         donors = load_real_reference(Path(args.real_library_dir),
                                      max_cycles=200)
+        if args.route == "cvae":
+            model = ConditionalWaveformCVAE(
+                payload["wave_length"], payload["condition_dim"],
+                latent_dim=payload["latent_dim"], width=payload["width"])
+            model.load_state_dict(payload["model"])
+            name = "b3_cvae"
+        else:
+            model = WGANGenerator(
+                payload["wave_length"], payload["condition_dim"],
+                latent_dim=payload["latent_dim"], width=payload["width"])
+            model.load_state_dict(payload["generator"])
+            name = "b3_wgan"
+
+        class _DecoderAdapter:
+            """Expose generator(latent, cond) through a decode() interface."""
+
+            def __init__(self, inner: WGANGenerator):
+                self.inner = inner
+                self.latent_dim = inner.latent_dim
+
+            def to(self, device: str) -> "_DecoderAdapter":
+                self.inner.to(device)
+                return self
+
+            def eval(self) -> "_DecoderAdapter":
+                self.inner.eval()
+                return self
+
+            def decode(self, latent: "torch.Tensor", cond: "torch.Tensor"
+                       ) -> "torch.Tensor":
+                return self.inner(latent, cond)
+
+        if args.route == "wgan":
+            model = _DecoderAdapter(model)
+        bucketizer = LengthBucketizer.from_dict(payload["bucketizer"])
         return CVAESamplingGenerator(
             model, bucketizer,
             length_scale=normalizer["length_scale"],
             mean_power_scale=normalizer["mean_power_scale"],
             donor_waves=donors, sample_seconds=args.sample_seconds,
-            device=args.device, power_scale=power_scale)
+            device=args.device, power_scale=power_scale, name=name)
     raise SystemExit(
         f"route {args.route!r} is not implemented yet; choose from "
         f"{ROUTE_CHOICES}")

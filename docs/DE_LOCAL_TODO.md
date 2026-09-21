@@ -52,12 +52,15 @@
 - [x] `slurm/b3_cvae.sbatch`、`slurm/b4_primitive_cvae.sbatch`
 - [ ] 提交
 
-## 批次 3：B3-G 条件 WGAN
+## 批次 3：B3-G 条件 WGAN（✅ 完成 2026-09-21）
 
-- [ ] `src/generation/full_cycle_wgan.py`（梯度惩罚、loss/mode-collapse 指标）
-- [ ] 单元测试 + CPU 冒烟
-- [ ] `slurm/b3_wgan.sbatch`
-- [ ] 提交
+- [x] `src/generation/full_cycle_wgan.py`（Critic/Generator、梯度惩罚、
+      w_distance/penalty 历史曲线）
+- [x] 训练与生成入口接入 wgan 路由（--n-critic 可调）
+- [x] 单元测试 3 项 + CPU 冒烟：3 epoch 训练 → 采样 30 条 →
+      质量门 6 项全 PASS + 复制 0/30
+- [x] `slurm/b3_wgan.sbatch`
+- [x] 提交
 
 ## 批次 4：B5 HSMM 组（可与批次 3 并行）
 
