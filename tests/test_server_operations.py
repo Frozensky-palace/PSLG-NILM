@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -165,6 +166,25 @@ class TrainingControlTests(unittest.TestCase):
         self.assertTrue(improved)
         self.assertEqual(best, 4.0)
         self.assertEqual(misses, 0)
+
+
+class GpuFrameworkSmokeTests(unittest.TestCase):
+    def test_output_writes_report_json(self) -> None:
+        import scripts.gpu_framework_smoke as smoke
+
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "nested" / "smoke.json"
+            with patch.object(sys, "argv", [
+                    "gpu_framework_smoke", "--framework", "torch",
+                    "--require-gpu", "false", "--output", str(output)]):
+                with self.assertRaises(SystemExit) as exited:
+                    smoke.main()
+                self.assertEqual(exited.exception.code, 0)
+            report = json.loads(output.read_text(encoding="utf-8"))
+            self.assertTrue(report["all_passed"])
+            self.assertFalse(report["require_gpu"])
+            self.assertEqual(report["results"][0]["framework"], "torch")
+            self.assertFalse(report["results"][0]["gpu_detected"])
 
 
 if __name__ == "__main__":
