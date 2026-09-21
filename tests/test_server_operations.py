@@ -178,6 +178,29 @@ class TrainingControlTests(unittest.TestCase):
         self.assertEqual(best, 4.0)
         self.assertEqual(misses, 0)
 
+    def test_resume_state_keeps_best_epoch(self) -> None:
+        from src.nilm.trainer import resume_training_state
+
+        payload = {"epoch": 7, "best_val_mae": 84.99,
+                   "config": {"_best_epoch": 5, "_history": [
+                       {"epoch": 5, "val_mae_w": 84.99}],
+                       "arm": "B0"}}
+        start_epoch, best_val_mae, best_epoch, history = (
+            resume_training_state(payload))
+        self.assertEqual(start_epoch, 8)
+        self.assertEqual(best_val_mae, 84.99)
+        self.assertEqual(best_epoch, 5)
+        self.assertEqual(history[0]["epoch"], 5)
+
+    def test_resume_state_defaults_without_metadata(self) -> None:
+        from src.nilm.trainer import resume_training_state
+
+        start_epoch, best_val_mae, best_epoch, history = (
+            resume_training_state({"epoch": 2, "best_val_mae": 10.0,
+                                   "config": {}}))
+        self.assertEqual((start_epoch, best_val_mae, best_epoch, history),
+                         (3, 10.0, 0, []))
+
     def test_deterministic_cuda_env_setdefault(self) -> None:
         import src.nilm.trainer as trainer
 

@@ -119,6 +119,17 @@ def evaluate_validation_mae(dataset: ShardedWindowDataset, indices: np.ndarray,
     return mae_w, predictions, targets
 
 
+def resume_training_state(payload: dict) -> tuple[int, float, int,
+                                                  list[dict]]:
+    """Extract (start_epoch, best_val_mae, best_epoch, history) from a
+    ``last_checkpoint`` payload so a resumed run keeps full provenance
+    (best_epoch was lost on resume before 2026-09-21)."""
+    config = payload.get("config", {})
+    return (int(payload["epoch"]) + 1, float(payload["best_val_mae"]),
+            int(config.get("_best_epoch", 0)),
+            list(config.get("_history", [])))
+
+
 def train_seq2point(experiment_dir: Path, output_dir: Path, arm: str,
                     seed: int, batch_size: int, steps_per_epoch: int,
                     max_epochs: int, patience: int, learning_rate: float,
@@ -167,15 +178,15 @@ def train_seq2point(experiment_dir: Path, output_dir: Path, arm: str,
 
     start_epoch = 1
     best_val_mae = float("inf")
+    best_epoch = 0
     history: list[dict] = []
     checkpoint_path = output_dir / "last_checkpoint.pt"
     if resume and checkpoint_path.exists():
         payload = load_checkpoint(checkpoint_path, model=model,
                                   optimizer=optimizer,
                                   map_location=device)
-        start_epoch = payload["epoch"] + 1
-        best_val_mae = payload["best_val_mae"]
-        history = payload["config"].get("_history", [])
+        start_epoch, best_val_mae, best_epoch, history = (
+            resume_training_state(payload))
         restore_rng_states(payload["rng_states"])
         print(f"[train] resumed from epoch {payload['epoch']}", flush=True)
 
@@ -184,7 +195,6 @@ def train_seq2point(experiment_dir: Path, output_dir: Path, arm: str,
     print(f"[train] arm={arm} train pools: active={len(active_pool):,} "
           f"inactive={len(inactive_pool):,}", flush=True)
 
-    best_epoch = 0
     epochs_without_improvement = 0
     environment = {
         "python": platform.python_version(),
@@ -227,7 +237,8 @@ def train_seq2point(experiment_dir: Path, output_dir: Path, arm: str,
         save_checkpoint(output_dir / "last_checkpoint.pt", model=model,
                         optimizer=optimizer, epoch=epoch,
                         best_val_mae=best_val_mae, config={
-                            **config, "_history": history[-50:]},
+                            **config, "_history": history[-50:],
+                            "_best_epoch": best_epoch},
                         rng_states=capture_rng_states())
         (output_dir / "history.json").write_text(
             json.dumps(history, indent=2), encoding="utf-8")
