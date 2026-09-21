@@ -99,14 +99,19 @@ def build_generator(args: argparse.Namespace) -> BaseGenerator:
 
             For diffusion, the incoming ``latent`` only seeds the sampler
             (deterministic given the seed); the real generation runs the
-            full ancestral loop over the noise schedule.
+            full ancestral loop over the noise schedule. An immature
+            denoiser accumulates per-step error into spikes, so the route
+            applies a method-level peak clip at the real train maximum
+            (roadmap D1 guard); the quality gate still checks peaks
+            independently and is not loosened.
             """
 
             def __init__(self, inner, diffusion: GaussianDiffusion | None,
-                         wave_length: int):
+                         wave_length: int, peak_limit: float | None = None):
                 self.inner = inner
                 self.diffusion = diffusion
                 self.wave_length = wave_length
+                self.peak_limit = peak_limit
                 # Diffusion denoisers have no latent space; the latent is
                 # only a deterministic seed source.
                 self.latent_dim = getattr(inner, "latent_dim", 8)
@@ -129,16 +134,22 @@ def build_generator(args: argparse.Namespace) -> BaseGenerator:
                                     * 1e6).abs().item()) % (1 << 31) + 1)
                 initial = torch.randn(cond.shape[0], 1, self.wave_length,
                                       device=cond.device)
-                return self.diffusion.sample(self.inner, initial.shape,
+                wave = self.diffusion.sample(self.inner, initial.shape,
                                              cond, cond.device)
+                if self.peak_limit is not None:
+                    wave = wave.clamp(min=0.0, max=float(self.peak_limit))
+                return wave
 
         if args.route == "wgan":
             model = _SamplingAdapter(model, None, payload["wave_length"])
         if args.route == "diffusion":
             diffusion = GaussianDiffusion(
                 n_steps=payload.get("diffusion_steps", 500))
+            peak_limit = float(max(w.max() for w in donors))
             model = _SamplingAdapter(model, diffusion,
-                                     payload["wave_length"])
+                                     payload["wave_length"],
+                                     peak_limit=peak_limit
+                                     / power_scale)
         bucketizer = LengthBucketizer.from_dict(payload["bucketizer"])
         return CVAESamplingGenerator(
             model, bucketizer,

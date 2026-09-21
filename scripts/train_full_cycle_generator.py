@@ -60,6 +60,15 @@ def _power_scale(waves: list[np.ndarray]) -> float:
     return float(max(np.quantile([w.max() for w in waves], 0.99), 1.0))
 
 
+def _std_power_scale(waves: list[np.ndarray]) -> float:
+    """Std-based scale for diffusion: the signal must have unit variance
+    against the unit-variance noise the forward process adds, otherwise the
+    denoiser converges to predicting ~zero and samples keep noise spikes
+    (observed as impossible_peak FAIL, job 4136)."""
+    stds = [w.std() for w in waves if len(w)]
+    return float(max(np.quantile(stds, 0.95), 1.0))
+
+
 def train_full_cycle_cvae(args: argparse.Namespace) -> None:
     waves = load_real_reference(Path(args.real_library_dir),
                                 max_cycles=args.max_cycles)
@@ -171,7 +180,7 @@ def train_full_cycle_wgan(args: argparse.Namespace) -> None:
 def train_full_cycle_diffusion(args: argparse.Namespace) -> None:
     waves = load_real_reference(Path(args.real_library_dir),
                                 max_cycles=args.max_cycles)
-    power_scale = _power_scale(waves)
+    power_scale = _std_power_scale(waves)
     lengths = np.array([len(w) for w in waves])
     bucketizer = LengthBucketizer.fit(lengths, n_buckets=args.n_buckets)
     length_scale = bucketizer.bucket_length(bucketizer.n_buckets - 1)
