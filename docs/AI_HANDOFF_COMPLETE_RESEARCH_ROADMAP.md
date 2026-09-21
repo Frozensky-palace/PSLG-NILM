@@ -951,6 +951,9 @@ echo "finished=$(date --iso-8601=seconds)"
 
 ## Phase D：B3 普通完整周期生成（四条路线）
 
+> 实施顺序、批次划分、文件级验收标准与完成定义见文末
+> **"附录 A：D/E/F 开发计划（实施导向）"**。
+
 ### 目标和角色
 
 B3 的共同点是“一次得到一条完整洗衣机周期”，不先拆成基元再拼接。它不是单个模型，
@@ -1815,3 +1818,86 @@ tail -n 200 /home/<user>/pslg_logs/<job>.out
 
 执行 test 后只做统一评价和报告。若发现实现错误，需要记录原因并对所有受影响组统一
 重跑；不得只重跑表现不佳的组，也不得继续根据 test 调参。
+
+---
+
+## 附录 A：D/E/F 开发计划（实施导向）
+
+> 本附录是 §Phase D/E/F 研究方案的**实施计划**：那边定义"做什么、为什么"，
+> 这里定义"按什么顺序做、每个文件怎么验收、何时可以在服务器执行"。
+> 纪律不变：本机只做开发、单测、CPU/小样本冒烟与 validation 筛选；
+> 一切正式训练与正式规模生成在服务器；任何 sbatch 在对应 Python 入口
+> 存在且本机冒烟通过前不得创建或提交。
+
+### A.0 前置门槛（所有批次之前）
+
+| 门槛 | 内容 | 状态 |
+|---|---|---|
+| G-1 | C2-k4 库适配器：`state_inventory.csv + state_waveforms.npz` → B2 构建器/交换性评估所需格式 | 未做（最先做） |
+| G-2 | validation 选 k 复核：用 Phase A 冻结策略（duration-only + 限长 [0.67,1.5]）对 C2 库跑一次 validation CPU smoke，冻结 state library v1 | 未做 |
+| G-3 | 生成质量评价管线（批次 0 的产物）先于任何生成器 | 未做 |
+
+无论 C3/C4/C5 结果是否理想，D/E 按本计划推进（研究者已确认）；C5 判决只影响
+生成阶段的解释框架与优先级，不影响 D/E 代码开发的启动。
+
+### A.1 批次划分与完成定义
+
+每个批次的统一完成定义：
+
+1. 全部新文件有单元测试，全套测试通过且数量增加可解释；
+2. 入口脚本 `--help` 可用、失败返回非 0、不触碰 validation/test；
+3. 小样本冒烟在本机跑通并保存产物（含 `provenance`：路线、种子、配置哈希、
+   checkpoint/参数哈希、波形 SHA-256——字段由 `src/generation/schema.py`
+   与 `provenance.py` 强制）；
+4. 该批次的 sbatch 仅在以上三条满足后创建；
+5. 服务器执行后回传产物，本机复算哈希并出报告。
+
+| 批次 | 内容 | 主要新文件 | 本机验证方式 | 服务器工作 | 预估本机天数 |
+|---|---|---|---|---|---|
+| **0 评价管线** | 生成质量评价 + 记忆审计 + 共享放置 | `src/validation/synthetic_quality.py`、`memorization.py`；`scripts/evaluate_synthetic_quality.py`、`audit_generation_memorization.py`、`build_shared_placement_schedule.py` | 用 ConstantGenerator 产物与真实周期验证指标合理性 | 正式跑 | 1–2 |
+| **1 B3-T** | 真实周期受限变换（无神经训练） | `src/generation/full_cycle_transform.py`；`scripts/generate_full_cycles.py --route transform` | 本机可做近乎完整验证（变换规则、负功率/能量/时长防护、最近邻复制率） | 正式规模生成 + 放置 + 下游训练 | 1–2 |
+| **2 CVAE 族（B3-V + B4）** | 一份 CVAE 基础代码两处使用 | `src/generation/full_cycle_cvae.py`、`primitive_cvae.py`；`scripts/train_full_cycle_generator.py`（统一训练入口）、`scripts/generate_primitive_cycles.py`、`scripts/compose_generated_cycles.py` | CPU 冒烟：损失下降、形状正确、mask/长度桶正确、provenance 完整 | 正式训练 + 采样 | 2–4 |
+| **3 WGAN（B3-G）** | 条件 1D WGAN | `src/generation/full_cycle_wgan.py` | 冒烟：loss 记录、梯度惩罚、mode collapse 指标 | 正式训练（最吃稳定性） | 1–2 |
+| **4 B5 HSMM 组** | 顺序/时长/边界/上下文约束 | `src/composition/`：`transition_model.py`、`duration_model.py`、`hsmm_sequence.py`、`boundary_handler.py`、`constrained_composer.py`；`scripts/fit_hsmm_composer.py` | **本机可做接近完整验证**：HSMM 拟合是 CPU 活，493 周期状态序列本机拟合 + 逐级消融原型（B4+Markov → +HSMM → +endpoint） | 批量生成 + 下游重训 | 2–3 |
+| **5 扩散（B3-D）** | 条件扩散 | `src/generation/full_cycle_diffusion.py` | 极小冒烟 | 正式训练 + 采样 | 2–3 |
+
+### A.2 执行顺序与并行关系
+
+```text
+G-1/G-2（状态库 v1 冻结）──┐
+批次 0（评价管线）─────────┼──> 批次 1（B3-T）──> 批次 2（CVAE 族）──> 批次 3（WGAN）──> 批次 5（扩散）
+C3/C4 服务器机时（不阻塞开发）┘              └──> 批次 4（HSMM 组，可与批次 3 并行）
+```
+
+- 批次 0 与 G-1/G-2 可立即开始，互不依赖；
+- 服务器机时（C3→C4）与本机开发完全并行，互不等待；
+- 批次 1 完成即形成第一条完整闭环（生成 → 评价 → 放置 → 下游），
+  为所有后续路线验证管线本身。
+
+### A.3 本机 / 服务器分工总则
+
+| 本机（开发与验证） | 服务器（正式实验） |
+|---|---|
+| 全部模型与脚本代码、单测 | 神经生成器正式训练（B3-V/G/D、B4） |
+| CPU 冒烟与小样本 validation 实验 | 正式规模的合成周期生成 |
+| 生成质量评价管线的开发与小规模运行 | 放置背景后的下游 NILM 训练与评价 |
+| B3-T 的规则验证、B5-HSMM 的拟合原型与消融原型 | 多 seed 统计与正式报告 |
+
+### A.4 新增风险（roadmap §11 之外）
+
+| 风险 | 应对 |
+|---|---|
+| CVAE 记忆化（493 周期小数据） | 批次 0 的 memorization 审计先于任何 CVAE 训练；最近邻距离分布入报告 |
+| WGAN 训练不稳定拖垮进度 | 批次 3 限时：若验证损失持续异常，记录负面结果并跳过，不阻塞批次 4/5 |
+| 变长生成的 mask/长度桶错误 | 单测覆盖长度桶边界；生成后逐条断言 `duration == 样本数 × 6s`（schema 已强制） |
+| HSMM 稀疏转移（某些 k 下边数少） | 冻结的平滑规则预先写定；禁止看 validation 后改平滑 |
+| 配置爆炸（4 路线 × 多超参） | 每路线第一版只允许 1 个配置文件；调参次数按 D5/E3 预算规则记账 |
+
+### A.5 里程碑与判定
+
+| 里程碑 | 判定 |
+|---|---|
+| M1：state library v1 冻结 | G-1/G-2 完成，validation 选 k 复核报告落盘 |
+| M2：管线闭环 | 批次 0+1 完成，B3-T 产物端到端走通评价管线 |
+| M3：首条神经路线 | 批次 2 完成，B3-V/B4 服务器训练完成并回传 |
+| M4：D/E 全路线就绪 | 批次 3/4/5 完成，具备 G 阶段协议冻结条件 |
