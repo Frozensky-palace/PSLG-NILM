@@ -64,10 +64,24 @@ def check_manifest(manifest_path: Path, repo_root: Path) -> dict:
 
 
 def check_writable(output_root: Path) -> None:
-    probe = output_root / ".preflight_write_probe"
+    """Probe writability with a process-unique file.
+
+    A fixed probe name let two jobs starting simultaneously on the same
+    output root delete each other's probe (unlink FileNotFoundError, job
+    4120 on 2026-09-21); pid+uuid makes every probe private.
+    """
+    import os
+    import uuid
+
+    probe = output_root / (
+        f".preflight_write_probe_{os.getpid()}_{uuid.uuid4().hex[:8]}")
     probe.parent.mkdir(parents=True, exist_ok=True)
-    probe.write_text("ok", encoding="utf-8")
-    probe.unlink()
+    try:
+        probe.write_text("ok", encoding="utf-8")
+        if probe.read_text(encoding="utf-8") != "ok":
+            raise RuntimeError(f"write probe did not persist: {probe}")
+    finally:
+        probe.unlink(missing_ok=True)
 
 
 def check_imports(framework: str) -> None:

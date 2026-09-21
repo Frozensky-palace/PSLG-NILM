@@ -234,5 +234,96 @@ class GpuFrameworkSmokeTests(unittest.TestCase):
             self.assertFalse(report["results"][0]["gpu_detected"])
 
 
+class PreflightWritableTests(unittest.TestCase):
+    def test_repeated_probes_clean_up_after_themselves(self) -> None:
+        from scripts.server_preflight import check_writable
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for _ in range(3):
+                check_writable(root)
+            leftovers = [p for p in root.iterdir()
+                         if p.name.startswith(".preflight_write_probe")]
+            self.assertEqual(leftovers, [])
+
+
+class SlurmProgressTests(unittest.TestCase):
+    def test_classify_prefers_done_dir_and_reports_states(self) -> None:
+        from scripts.slurm_progress import classify
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            stale = root / "s2p_b0_r0p5_s17_111"
+            fresh = root / "s2p_b0_r0p5_s17_222"
+            stale.mkdir()
+            fresh.mkdir()
+            (fresh / "validation_metrics.json").write_text(
+                "{}", encoding="utf-8")
+            records = [
+                {"job_id": "111", "exports": {
+                    "PSLG_ARM": "B0", "PSLG_SEED": "17",
+                    "PSLG_RATIO": "0p5"}},
+                {"job_id": "222", "exports": {
+                    "PSLG_ARM": "B0", "PSLG_SEED": "17",
+                    "PSLG_RATIO": "0p5"}},
+                {"job_id": "333", "exports": {
+                    "PSLG_ARM": "B1", "PSLG_SEED": "42",
+                    "PSLG_RATIO": "0p5"}},
+            ]
+            states = {"333": "RUNNING"}
+            report = classify(records, states, root,
+                              "s2p_{arm}_r{ratio}_s{seed}_{job_id}")
+            by_id = {row["job_id"]: row for row in report}
+            self.assertEqual(by_id["111"]["status"], "FAILED")
+            self.assertEqual(by_id["222"]["status"], "DONE")
+            self.assertEqual(by_id["222"]["run_dir"], str(fresh))
+            self.assertEqual(by_id["333"]["status"], "RUNNING")
+
+    def test_render_marks_all_done(self) -> None:
+        from scripts.slurm_progress import render
+
+        report = [{"job_id": "1", "arm": "B0", "seed": "17",
+                   "queue_state": "-", "status": "DONE",
+                   "run_dir": "/x/s2p_b0_r0p5_s17_1"}]
+        text = render(report)
+        self.assertIn("ALL 1 JOBS DONE", text)
+        self.assertIn("1/1 DONE", text)
+
+
+class PackRunRecordsTests(unittest.TestCase):
+    def test_pack_whitelist_only_and_refuses_overwrite(self) -> None:
+        import tarfile
+
+        from scripts.pack_run_records import main as pack_main
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            rec = root / "rec"
+            rec.mkdir()
+            (rec / "gpu_smoke.json").write_text("{}", encoding="utf-8")
+            (rec / "note.txt").write_text("hi", encoding="utf-8")
+            (root / "junk.img").write_bytes(b"x" * 10)
+            run = root / "run"
+            (run / "sub").mkdir(parents=True)
+            (run / "metrics.json").write_text("{}", encoding="utf-8")
+            (run / "sub" / "deep.txt").write_text("d", encoding="utf-8")
+            output = root / "out" / "pack.tar.gz"
+            argv = ["pack_run_records.py", "--output", str(output),
+                    "--file", f"{rec}/*.json:smoke",
+                    "--dir", f"{run}:run"]
+            with patch.object(sys, "argv", argv):
+                pack_main()
+            with tarfile.open(output) as archive:
+                names = set(archive.getnames())
+            self.assertIn("smoke/gpu_smoke.json", names)
+            self.assertIn("run/sub/deep.txt", names)
+            self.assertNotIn("smoke/note.txt", names)
+            self.assertNotIn("junk.img", names)
+            self.assertTrue(Path(f"{output}.sha256").exists())
+            with patch.object(sys, "argv", argv):
+                with self.assertRaises(SystemExit):
+                    pack_main()
+
+
 if __name__ == "__main__":
     unittest.main()
