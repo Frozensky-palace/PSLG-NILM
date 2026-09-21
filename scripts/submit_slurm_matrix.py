@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import shlex
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -46,7 +47,8 @@ def normalize_exports(values: dict) -> dict[str, str]:
 
 
 def build_command(template: Path, exports: dict[str, str],
-                  dependency: str | None = None) -> list[str]:
+                  dependency: str | None = None,
+                  extra: list[str] | None = None) -> list[str]:
     if not template.is_file():
         raise FileNotFoundError(template)
     export_text = "ALL," + ",".join(
@@ -57,6 +59,8 @@ def build_command(template: Path, exports: dict[str, str],
                             dependency):
             raise ValueError(f"invalid Slurm dependency: {dependency}")
         command.append(f"--dependency={dependency}")
+    if extra:
+        command.extend(extra)
     command.append(str(template))
     return command
 
@@ -81,10 +85,20 @@ def main() -> None:
                     help="actually call sbatch; omission is a safe dry-run")
     ap.add_argument("--dependency", default=None,
                     help="optional afterok:123 or afterany:123 dependency")
+    ap.add_argument("--extra", action="append", default=[],
+                    help="additional sbatch options placed before the "
+                         "template, e.g. --extra='-w h104-slurm-a' to pin a "
+                         "node; repeatable, parsed with shlex, no shell")
     args = ap.parse_args()
 
     matrix_path = Path(args.matrix).resolve()
     matrix = load_matrix(matrix_path)
+    extra_tokens: list[str] = []
+    for part in args.extra:
+        tokens = shlex.split(part)
+        if not tokens:
+            raise SystemExit("--extra value parsed to no tokens")
+        extra_tokens.extend(tokens)
     template = Path(matrix["template"])
     if not template.is_absolute():
         template = (matrix_path.parent / template).resolve()
@@ -99,7 +113,8 @@ def main() -> None:
             raise SystemExit(
                 f"job {index} still contains CHANGE_ME; edit a server-local "
                 "matrix copy before submission")
-        command = build_command(template, exports, args.dependency)
+        command = build_command(template, exports, args.dependency,
+                                extra_tokens)
         display = " ".join(command)
         if not args.submit:
             print(f"[dry-run {index}] {display}")
@@ -116,6 +131,7 @@ def main() -> None:
             "matrix": str(matrix_path),
             "exports": exports,
             "dependency": args.dependency,
+            "sbatch_extra": extra_tokens,
         }
         records.append(record)
         print(f"[submitted {index}] job_id={job_id}")

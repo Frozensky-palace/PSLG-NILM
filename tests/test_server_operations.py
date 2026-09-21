@@ -56,6 +56,16 @@ class SubmitMatrixTests(unittest.TestCase):
             records = json.loads(path.read_text(encoding="utf-8"))
             self.assertEqual([item["job_id"] for item in records], ["2", "3"])
 
+    def test_build_command_places_extra_before_template(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            template = Path(tmp) / "job.sbatch"
+            template.write_text("#!/bin/bash\n", encoding="utf-8")
+            command = build_command(template, {"A": "1"}, None,
+                                    ["-w", "h104-slurm-a"])
+            self.assertEqual(command[-3:], ["-w", "h104-slurm-a",
+                                            str(template)])
+            self.assertEqual(command[0:2], ["sbatch", "--parsable"])
+
 
 class MatrixMaterializationTests(unittest.TestCase):
     def test_custom_clone_directory_propagates_to_all_matrices(self) -> None:
