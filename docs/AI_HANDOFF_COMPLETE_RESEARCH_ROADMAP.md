@@ -12,8 +12,13 @@
 > 同日在 h104 完成（job 4107，493 train 周期全量，k=3/4/5 三套
 > formal_candidate_detsec_pc 状态库，约 16 分钟，对比与冻结建议见
 > `reports/server_c2/2026-09-21/c2_k345_comparison.md`：推荐 k=4，k=5 因退化态排除；
-> 待办：B2 构建器与 C2 库格式适配 + validation 选 k 复核后冻结 v1）；正式
-> Seq2Point 多 seed 网格与 B3–B5 生成模型尚未开始。B3 已冻结为四条完整周期路线，
+> 待办：B2 构建器与 C2 库格式适配 + validation 选 k 复核后冻结 v1）；C3 已于
+> 2026-09-21/22 完成（job 4120–4128 + 重跑 4130，B0/B1/B2 × seeds 17/42/73，
+> ratio=0.5：B1 全面显著优于 B0；B2-matched 均值最优 11.84±1.61 且方差最小，
+> 与 B1 相当但逐 seed 方向翻转，见
+> `reports/server_c3/2026-09-21/c3_results_and_c5_decision.md`——按 C5 分支规则
+> 具备进入生成阶段条件）；ratio=1/2 的 C4 与 B3–B5 生成模型尚未开始（B3 生成
+> 代码本机并行开发中）。B3 已冻结为四条完整周期路线，
 > B4 为基元生成，B5 为基于 HSMM 的受约束拼接。B2 冻结策略见
 > `docs/state_and_b2_policy_freeze_v1.md`；进入 C1 前的本机准备、服务器操作和验收标准见
 > `docs/C1_LOCAL_PREPARATION_AND_SERVER_EXECUTION_GUIDE.md`；C1 到 Phase G 的逐步人工操作见
