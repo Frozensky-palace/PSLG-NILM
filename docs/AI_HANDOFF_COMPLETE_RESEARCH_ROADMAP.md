@@ -21,8 +21,14 @@
 > B3-T/V/G/D + B4 全部通过质量门与记忆审计（B3-T 近复制为定义属性，
 > 神经路线复制率 ≤0.4%），扩散经三次修复后过门，运行目录在
 > `~/pslg_artifacts/`，TODO 见 `docs/DE_LOCAL_TODO.md`，待办：产物回传、
-> 共享放置+下游重训比较、批次 4（B5/HSMM）本机开发）；ratio=1/2 的 C4 与
-> B5 生成模型尚未开始。B3 已冻结为四条完整周期路线，
+> 共享放置+下游重训比较、批次 4（B5/HSMM）本机开发）；**C4 已于 2026-09-22
+> 完成**（jobs 4138–4155，B1/B2 × ratio 1.0/2.0 × 3 seeds，6 个冗余 B0 主动取消）：
+> B2-matched 在 r2.0 达 MAE 10.38±0.08 / F1 0.789 且单调改善，B1 在 r2.0 退化
+> （10.14→11.99，重复放置冗余）——**受约束基元重组可扩展、完整周期重放不可
+> 扩展**，C5 终版决策见
+> `reports/server_c4/2026-09-22/c4_results_and_c5_final.md`（生成基线坐标：
+> B2-matched@r2.0，B3/B4/B5 validation 必须优于这条线）。B5 生成模型尚未开始。
+> B3 已冻结为四条完整周期路线，
 > B4 为基元生成，B5 为基于 HSMM 的受约束拼接。B2 冻结策略见
 > `docs/state_and_b2_policy_freeze_v1.md`；进入 C1 前的本机准备、服务器操作和验收标准见
 > `docs/C1_LOCAL_PREPARATION_AND_SERVER_EXECUTION_GUIDE.md`；C1 到 Phase G 的逐步人工操作见
