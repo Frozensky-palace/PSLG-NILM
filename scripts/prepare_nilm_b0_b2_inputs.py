@@ -66,6 +66,10 @@ def main() -> None:
     ap.add_argument("--extra-arm", action="append", default=[],
                     help="LABEL=placed_dir for a D/E route placed by "
                          "place_synthetics_on_background.py; repeatable")
+    ap.add_argument("--skip-test", action="store_true",
+                    help="omit the test partition entirely (for servers "
+                         "that never receive test shards; local builds "
+                         "keep the default test ranges)")
     args = ap.parse_args()
 
     aligned_dir = Path(args.aligned_dir)
@@ -89,9 +93,11 @@ def main() -> None:
     with open(placed_dir / "placement_summary.json", encoding="utf-8") as stream:
         placed = json.load(stream)
 
-    sources = {arm: {p: [] for p in ("train", "validation", "test")}
+    partitions = ("train", "validation") if args.skip_test else (
+        "train", "validation", "test")
+    sources = {arm: {p: [] for p in partitions}
                for arm in ("B0", "B1", "B2", *extra_arms)}
-    for partition in ("train", "validation", "test"):
+    for partition in partitions:
         for shard in aligned["partitions"][partition]["shards"]:
             entry = {
                 "path": _portable_path(aligned_dir / shard["path"]),
@@ -135,7 +141,7 @@ def main() -> None:
     range_records = []
     center_counts = {}
     active_counts = {}
-    for partition in ("train", "validation", "test"):
+    for partition in partitions:
         stride = args.train_stride if partition == "train" else args.eval_stride
         center_counts[partition] = 0
         active_counts[partition] = 0
