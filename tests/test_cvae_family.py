@@ -51,6 +51,7 @@ def _write_state_library(root: Path, n_states: int = 3,
         rows.append({
             "state_block_id": f"b{block:04d}", "state_label": state,
             "cycle_id": cycle_id, "start_sample": block * 10,
+            "duration_seconds": length * 6,
             "waveform_offset_start": offsets[-2],
             "waveform_offset_end": offsets[-1],
             "partition": "train",
