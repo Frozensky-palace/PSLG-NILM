@@ -33,7 +33,7 @@ def main() -> None:
     ap.add_argument("--hsmm-json", required=True,
                     help="frozen model from fit_hsmm_composer.py")
     ap.add_argument("--boundary-mode", default="none",
-                    choices=("none", "endpoint_match"))
+                    choices=("none", "endpoint_match", "power_compensate"))
     ap.add_argument("--ignore-hsmm-durations", action="store_true",
                     help="ablation: keep donor lengths (B4+Markov rung)")
     ap.add_argument("--output-dir", required=True)
@@ -68,8 +68,10 @@ def main() -> None:
     composer = ConstrainedComposer(
         hsmm, pool_waves_by_segment, pool_labels,
         sample_seconds=args.sample_seconds,
-        boundary_mode=args.boundary_mode,
-        use_hsmm_durations=not args.ignore_hsmm_durations)
+        boundary_mode="none" if args.boundary_mode == "power_compensate"
+        else args.boundary_mode,
+        use_hsmm_durations=not args.ignore_hsmm_durations,
+        power_compensate=args.boundary_mode == "power_compensate")
     records = composer.generate_dataset(
         Path(args.output_dir), count=args.count, seed=args.seed,
         sample_seconds=args.sample_seconds)

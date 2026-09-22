@@ -1,5 +1,19 @@
 # D/E 本机任务执行清单（TODO）
 
+## B5 修复轮（进行中 2026-09-22）
+
+- [x] F-a 功率补偿实现：`ConstrainedComposer(power_compensate=True)`，
+      拼接点对齐前段终点（clip≥0），条件字段记录补偿开关；
+      `compose_b5_cycles --boundary-mode power_compensate` 接入；
+      b5_hsmm.sbatch 三模式循环（none/endpoint_match/power_compensate）
+- [x] 回归测试：拼接点 |diff|<1W 断言（195 项全绿）
+- [ ] 服务器：重跑 b5_hsmm（三模式，产出 B5PC 第三组）→ 双门
+- [ ] 服务器：de_inputs 重建（8 臂，--skip-test）→ 8 条下游重训
+      （B3T/B3CVAE/B3WGAN/B3DIFF/B4/B5/B5EP/B5PC × seed 17）
+- [ ] 判定：B5PC ≤ B4(15.39) 则 HSMM 翻案；仍劣则记录负面结果
+- [ ] 多种子扩展：B3T/B3CVAE/B3WGAN/B3DIFF/B4 × seed 42/73（10 作业）；
+      B5 修复版视判定结果再补
+
 ## 服务器执行（✅ 生成阶段 5/5 完成 2026-09-22）
 
 | 路线 | quality | memorization | replication_rate |

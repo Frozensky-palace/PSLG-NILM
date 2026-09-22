@@ -39,7 +39,7 @@ python scripts/fit_hsmm_composer.py \
   --state-library-dir "$PSLG_STATE_LIBRARY" \
   --output "$RUN_DIR/hsmm_model.json"
 
-for mode in none endpoint_match; do
+for mode in none endpoint_match power_compensate; do
   tag=$(echo "$mode" | tr '_' '-')
   python scripts/compose_b5_cycles.py \
     --primitives-dir "$PSLG_PRIMITIVES_DIR" \

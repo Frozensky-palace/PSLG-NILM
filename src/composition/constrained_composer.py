@@ -29,7 +29,8 @@ class ConstrainedComposer(BaseGenerator):
     def __init__(self, hsmm: HSMMPathSampler,
                  pool_waves: list[np.ndarray], pool_labels: list[int],
                  *, sample_seconds: int = 6, boundary_mode: str = "none",
-                 use_hsmm_durations: bool = True):
+                 use_hsmm_durations: bool = True,
+                 power_compensate: bool = False):
         if len(pool_waves) != len(pool_labels):
             raise ValueError("pool waves/labels length mismatch")
         self.hsmm = hsmm
@@ -38,6 +39,10 @@ class ConstrainedComposer(BaseGenerator):
         self.pool_labels = list(pool_labels)
         self.boundary = BoundaryHandler(boundary_mode)
         self.use_hsmm_durations = bool(use_hsmm_durations)
+        # F-a fix (2026-09-22): shift each joined primitive so its start
+        # equals the previous segment's end, removing the random boundary
+        # spikes that poisoned Seq2Point training (job 4158-4164 evidence).
+        self.power_compensate = bool(power_compensate)
         self.sample_seconds = int(sample_seconds)
         self._by_state: dict[int, list[tuple[int, np.ndarray]]] = {}
         for index, wave in enumerate(self.pool_waves):
@@ -50,6 +55,7 @@ class ConstrainedComposer(BaseGenerator):
             "version": self.version,
             "boundary_mode": self.boundary.mode,
             "use_hsmm_durations": self.use_hsmm_durations,
+            "power_compensate": self.power_compensate,
         }
 
     def generate_cycle(self, synthetic_cycle_id: str, seed: int,
@@ -81,6 +87,9 @@ class ConstrainedComposer(BaseGenerator):
             if previous_end is not None:
                 boundary_costs.append(
                     abs(float(primitive[0]) - float(previous_end)))
+            if self.power_compensate and previous_end is not None:
+                offset = previous_end - float(primitive[0])
+                primitive = np.clip(primitive + offset, 0.0, None)
             parts.append(primitive)
             segments.append(StateSegmentRecord(
                 state_label=state,
@@ -104,6 +113,7 @@ class ConstrainedComposer(BaseGenerator):
             conditions={
                 "boundary_mode": self.boundary.mode,
                 "use_hsmm_durations": self.use_hsmm_durations,
+                "power_compensate": self.power_compensate,
                 "path_log_probability": float(
                     self.hsmm.log_probability(sequence)),
                 "mean_boundary_cost_w": (

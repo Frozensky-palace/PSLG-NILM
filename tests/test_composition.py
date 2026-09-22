@@ -152,6 +152,24 @@ class ConstrainedComposerTests(unittest.TestCase):
                                    boundary_mode=boundary_mode,
                                    use_hsmm_durations=use_durations)
 
+    def _composer_pc(self) -> ConstrainedComposer:
+        sequences = [[0, 1, 2], [0, 1, 2], [0, 2, 1], [0, 1]]
+        markov = MarkovChain.fit(sequences)
+        durations = StateDurationModel.fit([
+            (0, 180), (1, 300), (2, 240)])
+        hsmm = HSMMPathSampler(markov, durations, {3: 4, 2: 1})
+        rng = np.random.default_rng(8)
+        pool_waves, pool_labels = [], []
+        for state, base in ((0, 150.0), (1, 400.0), (2, 1800.0)):
+            for _ in range(4):
+                pool_waves.append(
+                    rng.normal(base, 10, 60).clip(min=0))
+                pool_labels.append(state)
+        return ConstrainedComposer(hsmm, pool_waves, pool_labels,
+                                   sample_seconds=6,
+                                   use_hsmm_durations=True,
+                                   power_compensate=True)
+
     def test_records_are_schema_valid_and_deterministic(self) -> None:
         composer = self._composer()
         outputs = []
@@ -171,6 +189,19 @@ class ConstrainedComposerTests(unittest.TestCase):
                 entry.pop("created_utc")
             outputs.append(dicts)
         self.assertEqual(outputs[0], outputs[1])
+
+    def test_power_compensate_removes_join_discontinuity(self) -> None:
+        composer = self._composer_pc()
+        power, record = composer.generate_cycle("pc0", seed=3,
+                                                rng=np.random.default_rng(3))
+        self.assertTrue(record.conditions["power_compensate"])
+        # 每个拼接点的 |diff| 应近似为 0（补偿把后段起点对齐到前段终点）
+        cursor = 0
+        for segment in record.segments[:-1]:
+            cursor += segment.actual_samples
+            join_gap = abs(float(power[cursor]) - float(power[cursor - 1]))
+            self.assertLess(join_gap, 1.0)
+        self.assertFalse((power < 0).any())
 
     def test_ablation_rungs_change_behaviour(self) -> None:
         with_dur = self._composer(use_durations=True)
