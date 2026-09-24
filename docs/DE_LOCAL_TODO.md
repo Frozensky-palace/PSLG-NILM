@@ -66,13 +66,16 @@
 预注册门槛判负并归档，见进展报告 §8.4）不进 test；B1/B2 未列出的比例
 不进 test。冻结后不可追加组，加组需新版本冻结并书面说明。
 
-- [ ] G-2 服务器无 test 访问审计（`audit_no_test_access.py`，all_clean 必须 true）
-- [ ] G-3 服务器冻结（`freeze_protocol_before_test.py`，21 个 `--run-dir`，
-      expected-group = B0 B1 B2 B3T B3WGAN B3DIFF）
-- [ ] G-4 人工签核（冻结 MD 逐行核对 21 run 与总表一致）
-- [ ] G-5 本机构建 test 输入（prepare 不带 `--skip-test`）→ 打包上传 →
-      各冻结 checkpoint `predict_nilm.py --partition test
-      --i-confirm-test-protocol-frozen` → 评测 → test 终报
+- [x] G-2 服务器无 test 访问审计（2026-09-24 all_clean=true，证据归档
+      `reports/server_g/2026-09-24/`）
+- [x] G-3 服务器冻结（2026-09-24T10:50:18Z，21 run，commit f4a737b，
+      `reports/protocol_freeze/g3_protocol_freeze_v1.md`）
+- [x] G-4 人工签核（用户 2026-09-24 回复"确认"；
+      `reports/protocol_freeze/g4_signoff_2026-09-24.md`）
+- [ ] G-5 test 解锁：test shard 上传（2,580,292 窗口全臂共用，见 g4 签核
+      md 核实记录）→ 各冻结 checkpoint `predict_nilm.py --partition test
+      --sample-source first_n --i-confirm-test-protocol-frozen` → 评测 →
+      test 终报
 
 - [x] 五个 run 目录打包回传本机 `reports/server_de/2026-09-22/`
 - [x] 共享放置表 + 路由放置 + extra-arm 窗口输入 + 路由 arm 全链
