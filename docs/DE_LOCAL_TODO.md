@@ -46,6 +46,34 @@
 
 ## 待办（下一会话）
 
+## Phase G：test 解锁（预注册，2026-09-24 用户拍板）
+
+**选组规则（先于任何 test 访问写入）**：进入 test 的是
+「无增强锚点 + 重放最优比例 + 真实重组两端 + 全部过门的生成路线」，
+即 7 组 × 3 seeds = 21 run（B2 两个比例合计 6 run，arm 标签 6 个）：
+
+| 组 | ratio | jobid (s17/s42/s73) |
+|---|---|---|
+| B0 无增强 | 0.5 | 4130 / 4121 / 4122 |
+| B1 重放 | 1.0 | 4141 / 4142 / 4143 |
+| B2-matched | 0.5 | 4126 / 4127 / 4128 |
+| B2-matched | 2.0 | 4153 / 4154 / 4155 |
+| B3-T 变换 | 0.5 | 4158 / 4166 / 4167 |
+| B3-G WGAN | 0.5 | 4160 / 4170 / 4171 |
+| B3-D 扩散 | 0.5 | 4161 / 4172 / 4173 |
+
+排除规则（同等预注册）：B3-V（未过质量门）、B4/B5/B5-EP/B5-PC（已按
+预注册门槛判负并归档，见进展报告 §8.4）不进 test；B1/B2 未列出的比例
+不进 test。冻结后不可追加组，加组需新版本冻结并书面说明。
+
+- [ ] G-2 服务器无 test 访问审计（`audit_no_test_access.py`，all_clean 必须 true）
+- [ ] G-3 服务器冻结（`freeze_protocol_before_test.py`，21 个 `--run-dir`，
+      expected-group = B0 B1 B2 B3T B3WGAN B3DIFF）
+- [ ] G-4 人工签核（冻结 MD 逐行核对 21 run 与总表一致）
+- [ ] G-5 本机构建 test 输入（prepare 不带 `--skip-test`）→ 打包上传 →
+      各冻结 checkpoint `predict_nilm.py --partition test
+      --i-confirm-test-protocol-frozen` → 评测 → test 终报
+
 - [x] 五个 run 目录打包回传本机 `reports/server_de/2026-09-22/`
 - [x] 共享放置表 + 路由放置 + extra-arm 窗口输入 + 路由 arm 全链
       （place_synthetics_on_background / prepare --extra-arm / validate_arm）
