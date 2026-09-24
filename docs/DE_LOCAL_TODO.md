@@ -72,10 +72,24 @@
       `reports/protocol_freeze/g3_protocol_freeze_v1.md`）
 - [x] G-4 人工签核（用户 2026-09-24 回复"确认"；
       `reports/protocol_freeze/g4_signoff_2026-09-24.md`）
-- [ ] G-5 test 解锁：test shard 上传（2,580,292 窗口全臂共用，见 g4 签核
-      md 核实记录）→ 各冻结 checkpoint `predict_nilm.py --partition test
-      --sample-source first_n --i-confirm-test-protocol-frozen` → 评测 →
-      test 终报
+- [x] G-5 test 解锁（2026-09-24）：test shard 上传（7/7 校验）→
+      `de_inputs_r0p5_g5test` 补丁（4436 查因，见 g4 签核 md 补记）→
+      作业重投 21/21 全量推理（2,580,292 窗口 × 21 checkpoint）→
+      **test 终报 `reports/test/2026-09-24_final_test_report.md`**：
+      B3-D 显著优于 B2@r0.5（Δ−3.46W，3/3 种子方向一致，CI 不含 0）；
+      生成臂与 B2@r2.0 未检测到显著差异（等价性无法确认，CI 宽 ±2~4W）；
+      B1@r1.0 优于 B2@r2.0（Δ−0.98W，CI 不含 0，效应量 <1W 意义待商榷）；
+      衰减排序 B0 最小（+0.15）< 生成臂（+0.4~+1.4）< B2@r0.5 最大（+2.43），
+      "合成更稳"仅相对 B2@r0.5；F1/SAE 描述性（无检验）。§4 定案：D 路线成立。
+
+## B4′：机制探究（G 后新阶段，用户 2026-09-24 定向）
+
+- [ ] B4-real 基元消融（零训练）：组合器不动，真实状态段替换生成基元
+      → 回落 B2 平台（~10.4W）则坐实"生成器模糊"元凶；
+      仍 ~19W 则组合路径是天花板，B4-WGAN/扩散不值得训
+- [ ] 视 B4-real 结果决定：训练 B4-WGAN / B4-扩散（基元级替换 CVAE）
+- [ ] 若过 validation 门槛且需进 test：新版本冻结 + 书面原因
+- [ ] g5_test 产物回传归档（predictions ≈20MB×21 + metrics + access log）
 
 - [x] 五个 run 目录打包回传本机 `reports/server_de/2026-09-22/`
 - [x] 共享放置表 + 路由放置 + extra-arm 窗口输入 + 路由 arm 全链
