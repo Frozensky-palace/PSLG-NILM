@@ -1,18 +1,21 @@
 # D/E 本机任务执行清单（TODO）
 
-## B5 修复轮（进行中 2026-09-22）
+## B5 修复轮（✅ 全部完成 2026-09-24）
 
 - [x] F-a 功率补偿实现：`ConstrainedComposer(power_compensate=True)`，
       拼接点对齐前段终点（clip≥0），条件字段记录补偿开关；
       `compose_b5_cycles --boundary-mode power_compensate` 接入；
       b5_hsmm.sbatch 三模式循环（none/endpoint_match/power_compensate）
 - [x] 回归测试：拼接点 |diff|<1W 断言（195 项全绿）
-- [ ] 服务器：重跑 b5_hsmm（三模式，产出 B5PC 第三组）→ 双门
-- [ ] 服务器：de_inputs 重建（8 臂，--skip-test）→ 8 条下游重训
-      （B3T/B3CVAE/B3WGAN/B3DIFF/B4/B5/B5EP/B5PC × seed 17）
-- [ ] 判定：B5PC ≤ B4(15.39) 则 HSMM 翻案；仍劣则记录负面结果
-- [ ] 多种子扩展：B3T/B3CVAE/B3WGAN/B3DIFF/B4 × seed 42/73（10 作业）；
-      B5 修复版视判定结果再补
+- [x] 服务器：重跑 b5_hsmm（三模式，作业 4165）→ 双门 PASS
+- [x] 服务器：de_inputs_r0p5_v2 重建（8 臂 ← de_placed_r0p5_v2 完整重放置）
+- [x] 服务器：B5PC 下游重训（作业 4178；4176 因提交顺序错误失败，进展报告问题 #17）
+- [x] 判定：B5PC 15.96 > B4 15.39 → 预注册门槛失败，如实记负面结果；
+      但干预成功（44.51→15.96，-64%）证实接缝因果；修复后 HSMM ≈ B4 打平
+      （0.57W 差距 ≪ B4 自身 ±3.74），天花板在基元模糊性 → F-b/F-c 取消
+- [x] 多种子扩展：B3T/B3CVAE/B3WGAN/B3DIFF/B4 × seed 42/73（10 作业
+      4166–4175）✅；同预算 bootstrap：B3WGAN/B3DIFF 显著优于 B2@r0.5
+      （p≈1e-5），生成三强臂与 B2@r2.0 平台打平；详见进展报告 §8.1/§8.2/§8.4
 
 ## 服务器执行（✅ 生成阶段 5/5 完成 2026-09-22）
 
@@ -46,10 +49,16 @@
 - [x] 五个 run 目录打包回传本机 `reports/server_de/2026-09-22/`
 - [x] 共享放置表 + 路由放置 + extra-arm 窗口输入 + 路由 arm 全链
       （place_synthetics_on_background / prepare --extra-arm / validate_arm）
-- [ ] 服务器：de_inputs 构建 + 五路线（含 B5 两个消融组）下游重训
-      （等 C4 队列空出；c3 sbatch 换 ARM/EXPERIMENT_DIR 即可）
-- [ ] B0/B1/B2/B3-T/V/G/D/B4/B5(±endpoint) 对照表（D/E/F 最终结论）
-- [ ] C1 记录补账（pack_c1.sh）；B2-random 输入准备（协议诊断组）
+- [x] 服务器：de_inputs 构建 + 五路线（含 B5 两个消融组）下游重训
+      （4158–4164 七臂首轮 + 4178 B5PC，见进展报告 §8.1）
+- [x] B0/B1/B2/B3-T/V/G/D/B4/B5(±endpoint/B5PC) 对照表
+      （进展报告 §8.1 三种子终版 + `~/pslg_scripts/final_compare_table.txt`）
+- [ ] C1 记录补账：审计发现旧 `pack_c1.sh` 归档混入内核镜像（vmlinuz/initrd
+      约 145MB）且 `c1_nilm_smoke_rerun` 为空 → 服务器用
+      `scripts/pack_run_records.py` 白名单重打（非阻塞 G）
+- [ ] `de_inputs_r0p5_v2` 明细（indices npy/normalization）小包回传
+      （仅归档完整性，G 不依赖）
+- [ ] B2-random 输入准备（协议诊断组，可选）
 
 > 依据：路线图附录 A。本文件是**执行追踪器**，随进度更新勾选；
 > 研究方案本身见路线图 §Phase D/E/F，验收标准见附录 A.1。

@@ -106,6 +106,11 @@ reports/**/*.png      忽略
 
 这样可以保存研究结论，又不会把约922MB的本地实验产物推入 Git。
 
+2026-09-23 补充：服务器 run 目录内的 `run_summary.md` 由
+`finalize_server_run.py` 自动生成（每 run 一份，内容为指标 JSON 与环境的复述），
+属机器可再生产物，已在 `reports/.gitignore` 白名单中显式排除。
+run 目录中**人工撰写**的勘误说明（如 seq2point_smoke 的 README）仍按 Markdown 追踪。
+
 关键 JSON/CSV 虽然不进 Git，仍必须保存。建议方法：
 
 1. 用 `build_server_transfer_manifest.py` 记录文件路径、大小和 SHA-256；

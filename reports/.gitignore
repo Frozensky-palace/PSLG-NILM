@@ -4,3 +4,6 @@
 !*/
 !*.md
 !.gitignore
+# 服务器 run 目录的自动生成产物（finalize_server_run.py 每 run 一份），
+# 属机器可再生产物，不入 Git；run 目录里人工写的勘误 README 仍被 !*.md 放行。
+run_summary.md
