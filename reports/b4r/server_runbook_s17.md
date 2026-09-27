@@ -14,10 +14,10 @@ starts 246/246、审计 0/246）。本手册为服务器侧剩余步骤，按序
 cd ~/projects/PSLG-NILM-c1
 git status --short        # 期望干净；若有本地改动，先记录报告，勿覆盖（G-5 备查过 protocol-config 差异）
 git pull --ff-only origin feature/haojun
-git rev-parse HEAD        # 必须等于 170b263（preflight 也会校验）
-sha256sum $ART/detsecpc_k345_trainonly_4107/state_library_k4/state_inventory.csv
+git rev-parse HEAD        # 必须等于 7e1cf68（preflight 也会校验，见第 5 步）
+sha256sum $HOME/pslg_artifacts/detsecpc_k345_trainonly_4107/state_library_k4/state_inventory.csv
 # 期望 dfa3e5065630cd80a5afd72854bd48f8b1a78e18e30399687f038fca44296ec0
-sha256sum $ART/detsecpc_k345_trainonly_4107/state_library_k4/state_waveforms.npz
+sha256sum $HOME/pslg_artifacts/detsecpc_k345_trainonly_4107/state_library_k4/state_waveforms.npz
 # 期望 5b81d52422dbd6e59872a040b58fe1d8234e3124dffff1712a8677e5d5f6b312
 ```
 
@@ -30,6 +30,7 @@ source slurm/project_paths.sh && cd "$PSLG_PROJECT_ROOT"
 source "$(conda info --base)/bin/activate" && conda activate pslg-nilm
 ART=$PSLG_ARTIFACT_ROOT
 RUN_DIR=$ART/b4r_s17_gen
+export ART RUN_DIR
 DONOR=$PSLG_PROJECT_ROOT/reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1
 
 python scripts/generate_primitive_cycles.py \
@@ -53,9 +54,10 @@ diversity 两项，同本地）；audit `replicated=0/246, exact_duplicate_count
 
 ```bash
 python - <<'EOF'
-import json
-b4r = json.load(open(f"{'$RUN_DIR'}/cycles/generation_summary.json", encoding="utf-8"))
-b4  = json.load(open(f"{'$ART'}/b4_s17_4133/cycles/generation_summary.json", encoding="utf-8"))
+import json, os
+run_dir = os.environ["RUN_DIR"]; art = os.environ["ART"]
+b4r = json.load(open(f"{run_dir}/cycles/generation_summary.json", encoding="utf-8"))
+b4  = json.load(open(f"{art}/b4_s17_4133/cycles/generation_summary.json", encoding="utf-8"))
 r = {x["synthetic_cycle_id"]: x for x in b4r["records"]}
 a = {x["synthetic_cycle_id"]: x for x in b4["records"]}
 assert set(r) == set(a), "cycle id sets differ"
@@ -74,6 +76,7 @@ EOF
 ## 第 2 步：钉住放置（硬门 3）
 
 ```bash
+ART=${ART:-$HOME/pslg_artifacts}; export ART; cd ~/projects/PSLG-NILM-c1
 python scripts/place_synthetics_on_background.py \
   --aligned-dir reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2 \
   --synthetic-dir B4R=$RUN_DIR/cycles \
@@ -81,9 +84,10 @@ python scripts/place_synthetics_on_background.py \
   --seed 17 --envelope-samples 2372
 
 python - <<'EOF'
-import json
-v1 = json.load(open(f"{'$ART'}/de_placed_r0p5/placement_summary.json", encoding="utf-8"))
-new = json.load(open(f"{'$ART'}/de_placed_r0p5_b4r/placement_summary.json", encoding="utf-8"))
+import json, os
+art = os.environ["ART"]
+v1 = json.load(open(f"{art}/de_placed_r0p5/placement_summary.json", encoding="utf-8"))
+new = json.load(open(f"{art}/de_placed_r0p5_b4r/placement_summary.json", encoding="utf-8"))
 b4_starts = [p["start_global_index"] for p in v1["arms"]["B4"]["placements"]]
 b4r_starts = [p["start_global_index"] for p in new["arms"]["B4R"]["placements"]]
 print(f"starts: {b4r_starts == b4_starts} ({len(b4r_starts)}/{len(b4_starts)})")
@@ -94,6 +98,7 @@ EOF
 ## 第 3 步：de_inputs v1 补丁重建 + 哈希门（硬门 4）
 
 ```bash
+ART=${ART:-$HOME/pslg_artifacts}; export ART; cd ~/projects/PSLG-NILM-c1
 python scripts/prepare_nilm_b0_b2_inputs.py \
   --aligned-dir reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2 \
   --placed-dir reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed \
@@ -145,9 +150,12 @@ normalization.json + validation_monitor_indices.npy）必须逐字节相等—�
 ## 第 5 步：下游训练（c3_seq2point，与 B4 作业 4162 同规格）
 
 ```bash
+cd ~/projects/PSLG-NILM-c1
+ART=${ART:-$HOME/pslg_artifacts}
+PSLG_PROJECT_ROOT=${PSLG_PROJECT_ROOT:-$HOME/projects/PSLG-NILM-c1}
 sbatch --export=ALL,\
 PSLG_PROJECT_ROOT=$PSLG_PROJECT_ROOT,\
-PSLG_FROZEN_COMMIT=170b263,\
+PSLG_FROZEN_COMMIT=7e1cf68,\
 PSLG_MANIFEST=$HOME/pslg_manifests/c1_nilm_b0_b2_trainval_manifest.json,\
 PSLG_EXPERIMENT_DIR=$ART/de_inputs_r0p5_b4r,\
 PSLG_ARM=B4R,PSLG_SEED=17 \
