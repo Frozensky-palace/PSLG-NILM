@@ -146,8 +146,8 @@ normalization.json + validation_monitor_indices.npy）必须逐字节相等—�
 ## 第 4 步：WARN 接受确认（下游 sbatch 前置，预注册 §4）
 
 本地两 WARN（W1 duration：与 B4 s17 逐位同构 102/246；W2 diversity：内部
-同 donor 碰撞 1 对）已记录在 `local_s17_execution_record.md`，**接受人需
-用户追认**。追认后再提交第 5 步。
+同 donor 碰撞 1 对）已记录在 `local_s17_execution_record.md`。
+**2026-09-27 用户已书面追认**（"1.追认"）——本卡点已清，可直接提交第 5 步。
 
 ## 第 5 步：下游训练（c3_seq2point，与 B4 作业 4162 同规格）
 
@@ -175,3 +175,28 @@ slurm/c3_seq2point.sbatch
 - 回传打包（照 DE 惯例）：`$RUN_DIR`（cycles + 双报告）、
   `de_placed_r0p5_b4r/placement_summary.json`、`de_inputs_r0p5_b4r/`
   （manifest + 校验输出）、s2p run 目录、slurm 日志。
+
+## 第 7 步：层 2 升种子（预注册必跑，与 B4 4174/4175 同机制）
+
+B4 的三种子 = 同一份 de_inputs、只换训练种子（4174/4175 的
+experiment_dir 均为 de_inputs_r0p5，config 可证）——B4R 完全平行：
+复用第 3 步的 `de_inputs_r0p5_b4r`，无需重新生成/放置。第 5 步三个
+作业可一次性连提（层 2 是预注册终判口径，不依赖 s17 结果）：
+
+```bash
+cd ~/projects/PSLG-NILM-c1
+ART=${ART:-$HOME/pslg_artifacts}
+REV=${REV:-$(git rev-parse HEAD)}
+for SEED in 17 42 73; do
+  sbatch --export=ALL,PSLG_PROJECT_ROOT=$PWD,\
+PSLG_FROZEN_COMMIT=$REV,\
+PSLG_MANIFEST=$HOME/pslg_manifests/c1_nilm_b0_b2_trainval_manifest.json,\
+PSLG_EXPERIMENT_DIR=$ART/de_inputs_r0p5_b4r,\
+PSLG_ARM=B4R,PSLG_SEED=$SEED \
+slurm/c3_seq2point.sbatch
+done
+```
+
+三个 run 目录形如 `s2p_B4R_r0p5_s{17,42,73}_<jobid>`，各自含
+validation_metrics.json；x̄ = 三个 val MAE 的均值，按预注册层 2 判
+（≤15.64 生成器模糊 / ≥19.03 组合天花板 / 其间混合归因，±1.5W 噪声带）。

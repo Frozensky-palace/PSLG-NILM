@@ -49,7 +49,7 @@ python scripts/place_synthetics_on_background.py \
   102/246、时长分位逐位一致（331.5/5301/10446），同 WARN 当时已被接受并
   进入下游。该 WARN 反映路径模型的长度展布，与基元来源无关，消融不应
   （也无法）改变它。
-- 接受人：待用户追认（本记录由 Claude 代笔，服务器 sbatch 提交前需用户确认）。
+- 接受人：用户（2026-09-27 会话内书面追认："1.追认"）。
 
 **W2 diversity=WARN**（identical_pairs=1，min_pairwise_distance=0）
 - 数值：`synthetic_0168` 与 `synthetic_0192` 完全相同——均为单状态 state-0

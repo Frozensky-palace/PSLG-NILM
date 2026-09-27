@@ -92,8 +92,9 @@
       --envelope-samples 钉放置；全套 203/203 OK，含 GPU 冒烟断言改环境如实）
 - [x] B4R 本地 s17 链（`reports/b4r/local_s17_execution_record.md`）：硬门
       1/2/3/5 全过——等价性 246/246（vs b4_s17_4133）、starts 246/246
-      （envelope 钉 2372 vs v1 B4 臂）、审计 0/246 复制；2 WARN 待用户
-      追认（duration 与 B4 逐位同构；diversity=内部同 donor 碰撞 1 对）
+      （envelope 钉 2372 vs v1 B4 臂）、审计 0/246 复制；2 WARN 已追认
+      （2026-09-27 用户书面确认；duration 与 B4 逐位同构、diversity=内部
+      同 donor 碰撞 1 对）
 - [ ] B4-real 基元消融（零训练）：组合器不动，真实状态段替换生成基元
       → 回落 B2 平台（~10.4W）则坐实"生成器模糊"元凶；
       仍 ~19W 则组合路径是天花板，B4-WGAN/扩散不值得训
