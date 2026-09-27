@@ -89,7 +89,9 @@
       仍 ~19W 则组合路径是天花板，B4-WGAN/扩散不值得训
 - [ ] 视 B4-real 结果决定：训练 B4-WGAN / B4-扩散（基元级替换 CVAE）
 - [ ] 若过 validation 门槛且需进 test：新版本冻结 + 书面原因
-- [ ] g5_test 产物回传归档（predictions ≈20MB×21 + metrics + access log）
+- [x] g5_test 产物回传归档（2026-09-27，`reports/server_g/2026-09-24/
+      g5_test_20260924.tar.gz` sha256 `c46b9b6f…753b`；21/21 指标与
+      终报逐位复核一致，详见终报 §6）
 
 - [x] 五个 run 目录打包回传本机 `reports/server_de/2026-09-22/`
 - [x] 共享放置表 + 路由放置 + extra-arm 窗口输入 + 路由 arm 全链

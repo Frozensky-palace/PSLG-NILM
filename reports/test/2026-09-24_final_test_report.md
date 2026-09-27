@@ -113,8 +113,13 @@
 
 ## 6. 产物与证据
 
-- 服务器：`~/pslg_artifacts/g5_test/<run_id>/`（test_predictions.npz ≈20MB
-  ×21、test_metrics.json、test_access_log.json）——回传归档后补记哈希；
+- 服务器：`~/pslg_artifacts/g5_test/<run_id>/`（test_predictions.npz、
+  test_metrics.json、test_access_log.json）；
+- **回传归档（2026-09-27）**：`reports/server_g/2026-09-24/g5_test_20260924.tar.gz`
+  （SHA-256 `c46b9b6f31d6b6e50e98c9b136519b9a8b18b1852993099ad8640167b286753b`）。
+  复核：21/21 run 的 mae_w/f1/sae 与本报告 §1 逐位一致；samples 均为
+  2,580,292、阈值均 20 W；run 目录 jobid 与预注册表逐一相符；
+  runs.tsv 21 行与目录一一对应；access log 与 checkpoint/arm 一致；
 - 本机：`reports/test/final_test_stats.json`（全部统计的机读版）、
   `reports/test/gen_fig7_test.py`、`figures/fig7_val_vs_test.png`；
 - 协议链文件见 `reports/protocol_freeze/`（预注册、G-2/G-3 证据、G-4 签核、
