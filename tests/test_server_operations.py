@@ -241,7 +241,11 @@ class GpuFrameworkSmokeTests(unittest.TestCase):
             self.assertTrue(report["all_passed"])
             self.assertFalse(report["require_gpu"])
             self.assertEqual(report["results"][0]["framework"], "torch")
-            self.assertFalse(report["results"][0]["gpu_detected"])
+            # gpu_detected must report the actual environment; the dev box
+            # is not guaranteed CPU-only (local CUDA torch reports True).
+            import torch
+            self.assertEqual(report["results"][0]["gpu_detected"],
+                             torch.cuda.is_available())
 
 
 class PreflightWritableTests(unittest.TestCase):

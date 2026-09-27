@@ -26,7 +26,11 @@ MAX_PATH_STATES = 12
 
 def load_state_segments(state_library_dir: Path
                         ) -> tuple[list[np.ndarray], list[int], dict]:
-    """Return (segment waveforms, state labels, inventory) from a library."""
+    """Return (segment waveforms, state labels, inventory) from a library.
+
+    The inventory dict also carries per-segment provenance (state_block_ids,
+    cycle_ids) so donor-mode composition can record real-donor traceability.
+    """
     state_library_dir = Path(state_library_dir)
     rows = list(csv.DictReader(
         open(state_library_dir / "state_inventory.csv", encoding="utf-8")))
@@ -35,12 +39,18 @@ def load_state_segments(state_library_dir: Path
         offsets = data["offsets"]
     waves: list[np.ndarray] = []
     labels: list[int] = []
+    block_ids: list[str] = []
+    cycle_ids: list[str] = []
     for row in rows:
         start = int(row["waveform_offset_start"])
         end = int(row["waveform_offset_end"])
         waves.append(power[start:end].astype(np.float64))
         labels.append(int(row["state_label"]))
-    return waves, labels, {"rows": len(rows)}
+        block_ids.append(row["state_block_id"])
+        cycle_ids.append(row["cycle_id"])
+    return waves, labels, {"rows": len(rows),
+                           "state_block_ids": block_ids,
+                           "cycle_ids": cycle_ids}
 
 
 def fit_path_model(inventory_rows: list[dict]) -> dict:
@@ -131,13 +141,20 @@ class PrimitiveComposer(BaseGenerator):
     name = "b4_primitive_compose"
     version = "1"
 
-    def __init__(self, model, bucketizer: LengthBucketizer,
+    def __init__(self, model, bucketizer: LengthBucketizer | None,
                  donor_waves: list[np.ndarray], donor_labels: list[int],
-                 path_model: dict, n_states: int, normalizer: dict,
+                 path_model: dict, n_states: int, normalizer: dict | None,
                  sample_seconds: int = 6, device: str = "cpu",
-                 power_scale: float = 1.0):
+                 power_scale: float = 1.0, primitive_source: str = "model",
+                 donor_block_ids: list[str] | None = None,
+                 donor_cycle_ids: list[str] | None = None):
         import torch
 
+        if primitive_source not in ("model", "donor"):
+            raise ValueError(
+                f"primitive_source must be 'model' or 'donor', "
+                f"got {primitive_source!r}")
+        self.primitive_source = primitive_source
         self.model = model
         self.bucketizer = bucketizer
         self.donor_waves = donor_waves
@@ -149,19 +166,27 @@ class PrimitiveComposer(BaseGenerator):
         self.device = device
         self.power_scale = float(power_scale)
         self._torch = torch
-        model.to(device)
-        model.eval()
+        if model is not None:
+            model.to(device)
+            model.eval()
+        elif primitive_source == "model":
+            raise ValueError("model-mode composition requires a trained model")
+        self.donor_block_ids = list(donor_block_ids or [])
+        self.donor_cycle_ids = list(donor_cycle_ids or [])
         self._donors_by_state: dict[int, list[int]] = {}
         for index, label in enumerate(donor_labels):
             self._donors_by_state.setdefault(label, []).append(index)
 
     def config(self) -> dict:
-        return {
+        config = {
             "name": self.name,
             "version": self.version,
             "n_states": self.n_states,
-            "buckets": self.bucketizer.to_dict(),
+            "primitive_source": self.primitive_source,
         }
+        if self.bucketizer is not None:
+            config["buckets"] = self.bucketizer.to_dict()
+        return config
 
     def _decode_primitive(self, state_label: int, donor: np.ndarray,
                           rng_seed: int) -> np.ndarray:
@@ -204,10 +229,26 @@ class PrimitiveComposer(BaseGenerator):
                     f"{synthetic_cycle_id}: no donor for state {state_label}")
             donor_index = int(rng.choice(donors))
             donor = self.donor_waves[donor_index]
-            primitive = self._decode_primitive(
-                state_label, donor,
-                rng_seed=seed * 1_000_003 + hash(synthetic_cycle_id) % 1_000
-                + order)
+            if self.primitive_source == "donor":
+                # B4-real ablation: the real donor waveform IS the primitive
+                # (already raw watts; no decode, no clip, no power_scale).
+                # Skipping _decode_primitive does not touch ``rng``, so the
+                # sampled paths / donor picks / segment lengths stay
+                # bit-identical to model-mode runs under the same seed.
+                primitive = np.asarray(donor, dtype=np.float64)
+                donor_block_id = (
+                    self.donor_block_ids[donor_index]
+                    if self.donor_block_ids else None)
+                donor_cycle_id = (
+                    self.donor_cycle_ids[donor_index]
+                    if self.donor_cycle_ids else None)
+            else:
+                primitive = self._decode_primitive(
+                    state_label, donor,
+                    rng_seed=seed * 1_000_003 + hash(synthetic_cycle_id) % 1_000
+                    + order)
+                donor_block_id = None
+                donor_cycle_id = None
             energy = float(primitive.sum() * self.sample_seconds / 3600.0)
             segments.append(StateSegmentRecord(
                 state_label=state_label,
@@ -218,18 +259,27 @@ class PrimitiveComposer(BaseGenerator):
                 actual_samples=len(primitive),
                 mean_power_w=float(primitive.mean()),
                 energy_wh=energy,
+                donor_state_block_id=donor_block_id,
+                donor_cycle_id=donor_cycle_id,
             ))
             waveform_parts.append(primitive)
         power = np.concatenate(waveform_parts)
+        if self.primitive_source == "donor":
+            route = "B4R"
+            conditions = {"n_states": n_states,
+                          "primitive_source": "donor"}
+        else:
+            route = "B4"
+            conditions = {"n_states": n_states,
+                          "bucket_boundaries": self.bucketizer.to_dict()}
         record = SyntheticCycleRecord(
             synthetic_cycle_id=synthetic_cycle_id,
-            route="B4",
+            route=route,
             seed=seed,
             generator_name=self.name,
             generator_version=self.version,
             checkpoint_sha256=None,
-            conditions={"n_states": n_states,
-                        "bucket_boundaries": self.bucketizer.to_dict()},
+            conditions=conditions,
             state_path=path,
             segments=segments,
             boundary_treatment="none",

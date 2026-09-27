@@ -109,5 +109,103 @@ class SharedPlacementScheduleTests(unittest.TestCase):
                     schedule_main()
 
 
+class PlacementEnvelopePinTests(unittest.TestCase):
+    """Pinning the envelope must reproduce the shared slot schedule."""
+
+    def _aligned_with_mains(self, root: Path, rows: int = 4000) -> Path:
+        aligned = root / "aligned_partitions_v2"
+        (aligned / "train").mkdir(parents=True)
+        rng = np.random.default_rng(3)
+        shards = []
+        start_unix = 1_363_876_806
+        for shard_index in range(2):
+            appliance = np.zeros(rows, dtype=np.float32)
+            for block_start in (400, 1600, 2800):
+                appliance[block_start:block_start + 15] = rng.normal(
+                    500, 50, 15).clip(min=0)
+            timestamps = (start_unix + np.arange(rows) * 6).astype(np.int64)
+            relative = f"train/shard_{shard_index:03d}.npz"
+            np.savez_compressed(aligned / relative, timestamp=timestamps,
+                                mains_w=appliance + 50.0,
+                                appliance_w=appliance)
+            shards.append({"path": relative})
+            start_unix += rows * 6
+        manifest = {"partitions": {"train": {"shards": shards}}}
+        (aligned / "aligned_partition_manifest.json").write_text(
+            json.dumps(manifest), encoding="utf-8")
+        return aligned
+
+    def _write_synthetic(self, root: Path, name: str,
+                         lengths: list[int]) -> Path:
+        directory = root / name
+        (directory / "cycles").mkdir(parents=True)
+        records = []
+        for index, length in enumerate(lengths):
+            cycle_id = f"synthetic_{index:04d}"
+            np.savez_compressed(
+                directory / "cycles" / f"{cycle_id}.npz",
+                appliance_w=np.full(length, 300.0, dtype=np.float32))
+            records.append({"synthetic_cycle_id": cycle_id})
+        (directory / "generation_summary.json").write_text(
+            json.dumps({"records": records}), encoding="utf-8")
+        return directory
+
+    def _place(self, place_main, aligned: Path, routes: list[tuple[str, Path]],
+               output: Path, envelope: int | None = None) -> None:
+        argv = ["place_synthetics_on_background.py",
+                "--aligned-dir", str(aligned),
+                "--output-dir", str(output),
+                "--seed", "17", "--guard-seconds", "30"]
+        for label, path in routes:
+            argv += ["--synthetic-dir", f"{label}={path}"]
+        if envelope is not None:
+            argv += ["--envelope-samples", str(envelope)]
+        with patch.object(sys, "argv", argv):
+            place_main()
+
+    def test_pinned_envelope_reproduces_shared_slots(self) -> None:
+        from scripts.place_synthetics_on_background import (
+            main as place_main,
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            aligned = self._aligned_with_mains(root)
+            short = self._write_synthetic(root, "short", [80, 60, 90])
+            long = self._write_synthetic(root, "long", [150, 70, 85])
+            # Reference: short placed together with long (computed envelope).
+            self._place(place_main, aligned, [("SHORT", short),
+                                              ("LONG", long)],
+                        root / "together")
+            # Test: short placed alone with the envelope pinned to 150.
+            self._place(place_main, aligned, [("SHORT", short)],
+                        root / "pinned", envelope=150)
+            together = json.loads(
+                (root / "together" / "placement_summary.json")
+                .read_text(encoding="utf-8"))
+            pinned = json.loads(
+                (root / "pinned" / "placement_summary.json")
+                .read_text(encoding="utf-8"))
+            self.assertEqual(
+                [p["start_global_index"]
+                 for p in together["arms"]["SHORT"]["placements"]],
+                [p["start_global_index"]
+                 for p in pinned["arms"]["SHORT"]["placements"]])
+            self.assertEqual(pinned["envelope_samples"], 150)
+            self.assertTrue(pinned["envelope_pinned"])
+            self.assertFalse(together["envelope_pinned"])
+
+    def test_pinned_envelope_below_longest_cycle_fails(self) -> None:
+        from scripts.place_synthetics_on_background import (
+            main as place_main,
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            aligned = self._aligned_with_mains(root)
+            long = self._write_synthetic(root, "long", [150, 70, 85])
+            with self.assertRaises(SystemExit):
+                self._place(place_main, aligned, [("LONG", long)],
+                            root / "bad", envelope=100)
+
+
 if __name__ == "__main__":
     unittest.main()

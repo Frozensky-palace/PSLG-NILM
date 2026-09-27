@@ -84,9 +84,21 @@
 
 ## B4′：机制探究（G 后新阶段，用户 2026-09-24 定向）
 
+- [x] B4-real 预注册 v1（`reports/b4r/b4r_protocol_prereg_v1.md`，2026-09-27；
+      13-agent 对抗审查 7 项发现已并入——服务器端 v1 补丁化 de_inputs、
+      层 2 三种子终判 15.64/19.03、1.5W 噪声边际、单状态复刻预声明
+      （s17 期望=0）、作废式硬门、不重跑条款扩展）
+- [x] B4R 代码 + 单测（primitive_source 分支 / --primitive-source real /
+      --envelope-samples 钉放置；全套 203/203 OK，含 GPU 冒烟断言改环境如实）
+- [x] B4R 本地 s17 链（`reports/b4r/local_s17_execution_record.md`）：硬门
+      1/2/3/5 全过——等价性 246/246（vs b4_s17_4133）、starts 246/246
+      （envelope 钉 2372 vs v1 B4 臂）、审计 0/246 复制；2 WARN 待用户
+      追认（duration 与 B4 逐位同构；diversity=内部同 donor 碰撞 1 对）
 - [ ] B4-real 基元消融（零训练）：组合器不动，真实状态段替换生成基元
       → 回落 B2 平台（~10.4W）则坐实"生成器模糊"元凶；
       仍 ~19W 则组合路径是天花板，B4-WGAN/扩散不值得训
+      **（剩余＝服务器侧：代码同步、v1 补丁 de_inputs_r0p5_b4r + 哈希门、
+      s17 下游训练 + val MAE、按预注册层 1 判读；灰区/确认均升 s42/s73）**
 - [ ] 视 B4-real 结果决定：训练 B4-WGAN / B4-扩散（基元级替换 CVAE）
 - [ ] 若过 validation 门槛且需进 test：新版本冻结 + 书面原因
 - [x] g5_test 产物回传归档（2026-09-27，`reports/server_g/2026-09-24/

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import csv
+import json
 import sys
 import tempfile
 import unittest
@@ -170,6 +171,131 @@ class PrimitivePipelineTests(unittest.TestCase):
                     entry.pop("created_utc")  # wall-clock, not determinism
                 outputs.append(dicts)
             self.assertEqual(outputs[0], outputs[1])
+
+
+class B4RealDonorModeTests(unittest.TestCase):
+    """B4-real ablation: donor mode swaps primitive waveforms only."""
+
+    def _build(self, tmp: Path
+               ) -> tuple[PrimitiveComposer, PrimitiveComposer, list, list]:
+        library = _write_state_library(Path(tmp))
+        waves, labels, meta = load_state_segments(library)
+        rows = list(csv.DictReader(open(
+            library / "state_inventory.csv", encoding="utf-8")))
+        path_model = fit_path_model(rows)
+        conditions, bucketizer, normalizer = (
+            build_segment_conditions(waves, labels, 3))
+        model = ConditionalWaveformCVAE(
+            bucketizer.bucket_length(bucketizer.n_buckets - 1),
+            condition_dim=conditions.shape[1], latent_dim=8, width=16)
+        train_cvae(model, waves, conditions, bucketizer,
+                   epochs=1, batch_size=8, seed=1)
+        real = PrimitiveComposer(
+            None, None, waves, labels, path_model, 3, None,
+            primitive_source="donor",
+            donor_block_ids=meta["state_block_ids"],
+            donor_cycle_ids=meta["cycle_ids"])
+        generated = PrimitiveComposer(
+            model, bucketizer, waves, labels, path_model, 3, normalizer)
+        return real, generated, waves, rows
+
+    def test_donor_mode_outputs_real_donors_with_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            real, _, waves, rows = self._build(Path(tmp))
+            block_wave = {row["state_block_id"]: wave
+                          for row, wave in zip(rows, waves)}
+            output = Path(tmp) / "b4r"
+            records = real.generate_dataset(output, count=4, seed=21)
+            for record in records:
+                self.assertEqual(record.route, "B4R")
+                self.assertEqual(record.validate(), [])
+                expected = np.concatenate([
+                    block_wave[segment.donor_state_block_id]
+                    for segment in record.segments]).astype(np.float32)
+                with np.load(output / "cycles"
+                             / f"{record.synthetic_cycle_id}.npz") as data:
+                    np.testing.assert_array_equal(data["appliance_w"],
+                                                  expected)
+                for segment in record.segments:
+                    self.assertIsNotNone(segment.donor_cycle_id)
+
+    def test_same_seed_keeps_paths_and_lengths_identical(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            real, generated, _, _ = self._build(Path(tmp))
+            real_records = real.generate_dataset(
+                Path(tmp) / "real", count=5, seed=21)
+            gen_records = generated.generate_dataset(
+                Path(tmp) / "gen", count=5, seed=21)
+            for real_record, gen_record in zip(real_records, gen_records):
+                self.assertEqual(real_record.state_path,
+                                 gen_record.state_path)
+                self.assertEqual(
+                    [s.target_samples for s in real_record.segments],
+                    [s.target_samples for s in gen_record.segments])
+                # The ablation's point: waveform content must differ.
+                self.assertNotEqual(real_record.waveform_sha256,
+                                    gen_record.waveform_sha256)
+
+    def test_donor_mode_is_deterministic(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            real, _, _, _ = self._build(Path(tmp))
+            outputs = []
+            for run in (1, 2):
+                records = real.generate_dataset(
+                    Path(tmp) / f"out_{run}", count=3, seed=21)
+                dicts = [record.to_dict() for record in records]
+                for entry in dicts:
+                    entry.pop("created_utc")
+                outputs.append(dicts)
+            self.assertEqual(outputs[0], outputs[1])
+
+    def test_constructor_guards(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            real, _, waves, rows = self._build(Path(tmp))
+            path_model = fit_path_model(rows)
+            labels = [0] * len(waves)
+            with self.assertRaises(ValueError):
+                PrimitiveComposer(None, None, waves, labels,
+                                  path_model, 3, None,
+                                  primitive_source="model")
+            with self.assertRaises(ValueError):
+                PrimitiveComposer(None, None, waves, labels,
+                                  path_model, 3, None,
+                                  primitive_source="bogus")
+            config = real.config()
+            self.assertEqual(config["primitive_source"], "donor")
+            self.assertNotIn("buckets", config)
+
+
+class PrimitiveRealCliTests(unittest.TestCase):
+    def test_real_mode_runs_without_checkpoint(self) -> None:
+        from scripts.generate_primitive_cycles import main as compose_main
+        with tempfile.TemporaryDirectory() as tmp:
+            library = _write_state_library(Path(tmp))
+            argv = ["generate_primitive_cycles.py",
+                    "--primitive-source", "real",
+                    "--state-library-dir", str(library),
+                    "--output-dir", str(Path(tmp) / "out"),
+                    "--count", "3", "--seed", "21"]
+            with patch.object(sys, "argv", argv):
+                compose_main()
+            summary = json.loads((Path(tmp) / "out" / "generation_summary.json")
+                                 .read_text(encoding="utf-8"))
+            self.assertEqual(len(summary["records"]), 3)
+            self.assertTrue(all(record["route"] == "B4R"
+                                for record in summary["records"]))
+
+    def test_cvae_mode_requires_checkpoint(self) -> None:
+        from scripts.generate_primitive_cycles import main as compose_main
+        with tempfile.TemporaryDirectory() as tmp:
+            library = _write_state_library(Path(tmp))
+            argv = ["generate_primitive_cycles.py",
+                    "--state-library-dir", str(library),
+                    "--output-dir", str(Path(tmp) / "out"),
+                    "--count", "3", "--seed", "21"]
+            with patch.object(sys, "argv", argv):
+                with self.assertRaises(SystemExit):
+                    compose_main()
 
 
 if __name__ == "__main__":

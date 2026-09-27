@@ -5,6 +5,11 @@ primitive) plus the same frozen state library, fits the empirical path
 model from train transitions and composes cycles whose segments come from
 the decoded primitives. Output is a standard synthetic dataset that the
 batch-0 quality and memorization gates can consume directly.
+
+--primitive-source real (B4-real ablation) skips the checkpoint entirely:
+the composer keeps its path sampling and donor selection unchanged and uses
+the selected real donor waveforms as the primitives, isolating the effect
+of swapping generated primitives for real ones.
 """
 from __future__ import annotations
 
@@ -47,7 +52,13 @@ def load_checkpoint(checkpoint_dir: Path, device: str
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--checkpoint-dir", required=True)
+    ap.add_argument("--checkpoint-dir",
+                    help="primitive-CVAE checkpoint (required for --primitive-source cvae)")
+    ap.add_argument("--primitive-source", default="cvae",
+                    choices=("cvae", "real"),
+                    help="cvae: decode primitives with the checkpoint model; "
+                         "real: use the selected real donor waveforms "
+                         "directly (B4-real ablation, zero training)")
     ap.add_argument("--state-library-dir", required=True,
                     help="the same frozen state library used in training")
     ap.add_argument("--output-dir", required=True)
@@ -57,25 +68,37 @@ def main() -> None:
     ap.add_argument("--device", default="cpu", choices=("cpu", "cuda"))
     args = ap.parse_args()
 
-    checkpoint_dir = Path(args.checkpoint_dir)
-    config = json.loads((checkpoint_dir / "config.json")
-                        .read_text(encoding="utf-8"))
-    if config.get("route") != "primitive":
-        raise SystemExit("checkpoint is not a primitive-CVAE checkpoint")
+    if args.primitive_source == "cvae" and not args.checkpoint_dir:
+        raise SystemExit("--checkpoint-dir is required for "
+                         "--primitive-source cvae")
 
-    model, bucketizer, normalizer, n_states, power_scale = load_checkpoint(
-        checkpoint_dir, args.device)
-    donor_waves, donor_labels, _ = load_state_segments(
-        Path(args.state_library_dir))
     rows = list(csv.DictReader(open(
         Path(args.state_library_dir) / "state_inventory.csv",
         encoding="utf-8")))
     path_model = fit_path_model(rows)
+    donor_waves, donor_labels, donor_meta = load_state_segments(
+        Path(args.state_library_dir))
 
-    composer = PrimitiveComposer(
-        model, bucketizer, donor_waves, donor_labels, path_model,
-        n_states, normalizer, sample_seconds=args.sample_seconds,
-        device=args.device, power_scale=power_scale)
+    if args.primitive_source == "real":
+        n_states = max(donor_labels) + 1
+        composer = PrimitiveComposer(
+            None, None, donor_waves, donor_labels, path_model,
+            n_states, None, sample_seconds=args.sample_seconds,
+            primitive_source="donor",
+            donor_block_ids=donor_meta["state_block_ids"],
+            donor_cycle_ids=donor_meta["cycle_ids"])
+    else:
+        checkpoint_dir = Path(args.checkpoint_dir)
+        config = json.loads((checkpoint_dir / "config.json")
+                            .read_text(encoding="utf-8"))
+        if config.get("route") != "primitive":
+            raise SystemExit("checkpoint is not a primitive-CVAE checkpoint")
+        model, bucketizer, normalizer, n_states, power_scale = load_checkpoint(
+            checkpoint_dir, args.device)
+        composer = PrimitiveComposer(
+            model, bucketizer, donor_waves, donor_labels, path_model,
+            n_states, normalizer, sample_seconds=args.sample_seconds,
+            device=args.device, power_scale=power_scale)
     records = composer.generate_dataset(
         Path(args.output_dir), count=args.count, seed=args.seed,
         sample_seconds=args.sample_seconds)

@@ -85,6 +85,11 @@ def main() -> None:
     ap.add_argument("--sample-seconds", type=int, default=6)
     ap.add_argument("--idle-threshold-w", type=float, default=20.0)
     ap.add_argument("--guard-seconds", type=int, default=300)
+    ap.add_argument("--envelope-samples", type=int, default=None,
+                    help="pin the envelope instead of deriving it from the "
+                         "longest cycle; pinning to a prior placement's "
+                         "envelope reproduces its slot schedule exactly "
+                         "(same background/seed/count/guard)")
     args = ap.parse_args()
 
     aligned_dir = Path(args.aligned_dir)
@@ -98,8 +103,16 @@ def main() -> None:
     count = counts.pop()
     if count == 0:
         raise SystemExit("synthetic datasets are empty")
-    envelope = max(max(len(w) for w in waves)
-                   for waves in route_waves.values())
+    longest = max(max(len(w) for w in waves)
+                  for waves in route_waves.values())
+    if args.envelope_samples is not None:
+        envelope = int(args.envelope_samples)
+        if envelope < longest:
+            raise SystemExit(
+                f"--envelope-samples {envelope} is smaller than the longest "
+                f"cycle ({longest}); the schedule would truncate cycles")
+    else:
+        envelope = longest
 
     timestamps, mains, appliance, shard_names = load_background(aligned_dir)
     runs = idle_runs(timestamps, appliance,
@@ -186,6 +199,7 @@ def main() -> None:
         "seed": args.seed,
         "shared_event_slots": True,
         "envelope_samples": int(envelope),
+        "envelope_pinned": args.envelope_samples is not None,
         "events": count,
         "event_overlap_rows": overlap,
         "idle_threshold_w": args.idle_threshold_w,
