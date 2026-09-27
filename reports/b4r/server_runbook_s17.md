@@ -14,7 +14,9 @@ starts 246/246、审计 0/246）。本手册为服务器侧剩余步骤，按序
 cd ~/projects/PSLG-NILM-c1
 git status --short        # 期望干净；若有本地改动，先记录报告，勿覆盖（G-5 备查过 protocol-config 差异）
 git pull --ff-only origin feature/haojun
-git rev-parse HEAD        # 必须等于 7e1cf68（preflight 也会校验，见第 5 步）
+git merge-base --is-ancestor a35fe30 HEAD && echo "OK: 含 runbook 修正提交"
+# 上一行必须输出 OK；再记下当前提交号，第 5 步 PSLG_FROZEN_COMMIT 用同一值
+REV=$(git rev-parse HEAD) && echo "REV=$REV"
 sha256sum $HOME/pslg_artifacts/detsecpc_k345_trainonly_4107/state_library_k4/state_inventory.csv
 # 期望 dfa3e5065630cd80a5afd72854bd48f8b1a78e18e30399687f038fca44296ec0
 sha256sum $HOME/pslg_artifacts/detsecpc_k345_trainonly_4107/state_library_k4/state_waveforms.npz
@@ -153,9 +155,10 @@ normalization.json + validation_monitor_indices.npy）必须逐字节相等—�
 cd ~/projects/PSLG-NILM-c1
 ART=${ART:-$HOME/pslg_artifacts}
 PSLG_PROJECT_ROOT=${PSLG_PROJECT_ROOT:-$HOME/projects/PSLG-NILM-c1}
+REV=${REV:-$(git rev-parse HEAD)}   # 须与第 0 步记下的值一致，且彼时工作树干净
 sbatch --export=ALL,\
 PSLG_PROJECT_ROOT=$PSLG_PROJECT_ROOT,\
-PSLG_FROZEN_COMMIT=7e1cf68,\
+PSLG_FROZEN_COMMIT=$REV,\
 PSLG_MANIFEST=$HOME/pslg_manifests/c1_nilm_b0_b2_trainval_manifest.json,\
 PSLG_EXPERIMENT_DIR=$ART/de_inputs_r0p5_b4r,\
 PSLG_ARM=B4R,PSLG_SEED=17 \
