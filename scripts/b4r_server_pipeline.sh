@@ -126,13 +126,13 @@ python scripts/prepare_nilm_b0_b2_inputs.py \
   --aligned-dir reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2 \
   --placed-dir reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/k4_feat_duration_ratio_0p67_1p5/placed \
   --output-dir "$INPUTS" \
-  --extra-arm B3T="$ART/de_placed_r0p5/B3T" \
-  --extra-arm B3CVAE="$ART/de_placed_r0p5/B3CVAE" \
-  --extra-arm B3WGAN="$ART/de_placed_r0p5/B3WGAN" \
-  --extra-arm B3DIFF="$ART/de_placed_r0p5/B3DIFF" \
-  --extra-arm B4="$ART/de_placed_r0p5/B4" \
-  --extra-arm B5="$ART/de_placed_r0p5/B5" \
-  --extra-arm B5EP="$ART/de_placed_r0p5/B5EP" \
+  --extra-arm B3T="$ART/de_placed_r0p5" \
+  --extra-arm B3CVAE="$ART/de_placed_r0p5" \
+  --extra-arm B3WGAN="$ART/de_placed_r0p5" \
+  --extra-arm B3DIFF="$ART/de_placed_r0p5" \
+  --extra-arm B4="$ART/de_placed_r0p5" \
+  --extra-arm B5="$ART/de_placed_r0p5" \
+  --extra-arm B5EP="$ART/de_placed_r0p5" \
   --extra-arm B4R="$PLACED" \
   --skip-test
 python - <<'PYEOF'
