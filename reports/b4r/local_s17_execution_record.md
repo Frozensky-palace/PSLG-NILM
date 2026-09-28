@@ -159,7 +159,15 @@ python scripts/place_synthetics_on_background.py \
   （11.84±1.61）0.74W；距 B2@r2.0 平台（10.38±0.08）0.72W（自身
   sd 内，描述性）。层 1 初筛同方向但距界 0.996W<1.5W 带噪声带限定，
   与层 2 无冲突。结论已回填预注册 §8。
-- 打包清单已发用户（b4r_results_20260928.tar.gz：cycles+双报告+
-  placement summary+de_inputs manifest+哈希清单+三个完整 run 目录+
-  两个死作业空目录 5345/5348+全部作业日志），回传本机
-  reports/server_b4r/ 后校验归档。
+- **归档收尾（2026-09-28）**：tar 回传本机 `reports/server_b4r/2026-09-28/`
+  （sha256 `88b6fe7a…a054`，与服务器侧一致），解包复核 **0 FAIL**：
+  三份 validation_metrics.json 与判读所用数值逐位一致（git_commit 均
+  c60b580，config arm=B4R、batch 128/200 步/30 epoch/patience 5/val 20k
+  同规格）；生成摘要 vs 本地基线 门键 246/246、0 不匹配；
+  quality/memorization 非路径叶全同（quality 仅 1 处路径差＝本地/服务器
+  状态库路径，memorization 完全一致，replicated=0/exact=0）；放置
+  starts 246/246 与本地一致；manifest B4R 池在册（active 88,548 /
+  inactive 1,220,860）、窗口数 train 1,309,408 / validation 2,178,332、
+  B0 active train 60,022。死作业证据（5345/5348 空目录＋5345–5351 全部
+  日志）随包归档。**B4R 项目全链闭合**（预注册 → 硬门 1–4 双侧 →
+  三种子 → 层 2 终判 → 归档）。
