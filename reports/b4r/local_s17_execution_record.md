@@ -75,3 +75,20 @@ python scripts/place_synthetics_on_background.py \
 - `reports/b4r/local_s17/b4r_gen/`（246 周期 + generation_summary.json）
 - `reports/b4r/local_s17/quality_report.json` / `memorization_report.json`
 - `reports/b4r/local_s17/de_placed_b4r/`（B4R 臂放置 shards + summary）
+
+## 服务器执行补记（2026-09-28）
+
+- 服务器 S0–S2 全过（两次运行复现）：库哈希 OK；双门机判
+  `WARN=['diversity','duration_distribution'], replicated=0/246, exact=0`；
+  **等价断言 246/246（服务器侧 vs `$ART/b4_s17_4133` 归档，硬门 2 双侧闭合）**；
+  starts 246/246。
+- S3 首次失败，查因：助手脚本 `--extra-arm` 误指按臂子目录
+  （`de_placed_r0p5/B3T/`）；归档证实 v1 构建是把合并目录
+  `de_placed_r0p5` 传七次（shard 路径自带 `LABEL/` 前缀，与 v1 manifest
+  绝对路径吻合）。失败点在 prepare 的 extra-arm 校验（L118），先于
+  output_dir.mkdir（L170）→ **无半成品，冻结源未动**。属命令规格修正，
+  非再生成，不触发新协议版本。
+- 修正提交 0c86245 因服务器到 GitHub 网络中断（GnuTLS -110 / 拉取挂起）
+  未能拉取；以仓外脚本（sed 派生，仅改 extra-arm 指向与 ROOT 定位）执行，
+  repo 保持 579ad5e 干净，下游 preflight 冻结于 579ad5e。网络恢复后
+  补拉即可（服务器侧无本地提交，无分叉风险）。
