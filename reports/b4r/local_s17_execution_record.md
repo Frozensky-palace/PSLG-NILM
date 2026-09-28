@@ -92,3 +92,9 @@ python scripts/place_synthetics_on_background.py \
   未能拉取；以仓外脚本（sed 派生，仅改 extra-arm 指向与 ROOT 定位）执行，
   repo 保持 579ad5e 干净，下游 preflight 冻结于 579ad5e。网络恢复后
   补拉即可（服务器侧无本地提交，无分叉风险）。
+- **网络随即恢复，pull 至 c60b580 后全链重跑通过**：S3 以合并目录方式
+  重建 `de_inputs_r0p5_b4r` 成功——哈希门 23 个同名文件逐字节相等、
+  manifest 十臂子集校验通过、B4R 唯一新增臂；prepare 窗口数
+  （train 1,309,408 / validation 2,178,332 / B0 active 60,022）与 v1
+  manifest 完全一致。**硬门 1–4 全部闭合（本地+服务器双侧）**。
+  下游三个 sbatch（SEED=17/42/73，冻结 c60b580）待提交。
