@@ -35,7 +35,7 @@ echo "== S0a repo 校验 =="
 # 锚 = B4WD 实现提交（解码分派 + 段级训练函数 + 脚本层尺度修复 + 管线克隆；
 # 预注册 §3 代码锚，实现提交合入时回填）。占位符不是合法哈希 → git 报错
 # 即 exit 1，fail-closed，不会静默放行。
-B4WD_IMPL_COMMIT="__B4WD_IMPL_COMMIT__"
+B4WD_IMPL_COMMIT="bfa3df9d6967996865ede753bf630c454c94766f"
 git merge-base --is-ancestor "$B4WD_IMPL_COMMIT" HEAD || { echo "FAIL: 缺 B4WD 实现提交 $B4WD_IMPL_COMMIT，先 git pull --ff-only origin feature/haojun"; exit 1; }
 if [ -n "$(git status --porcelain)" ]; then
   echo "WARN: 工作树不干净（不影响运行，但须记录在案）"
