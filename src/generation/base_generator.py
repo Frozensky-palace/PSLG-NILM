@@ -49,6 +49,11 @@ class BaseGenerator(ABC):
             if (power < 0).any():
                 raise RuntimeError(
                     f"{synthetic_cycle_id}: negative power is not allowed")
+            if not np.isfinite(power).all():
+                # NaN/Inf slips past every comparison gate (NaN < 0 and
+                # NaN > cap are both False); it must stop here.
+                raise RuntimeError(
+                    f"{synthetic_cycle_id}: non-finite power values")
             record.waveform_sha256 = sha256_of_bytes(power.tobytes())
             record.created_utc = utc_now_string()
             record.sample_seconds = sample_seconds

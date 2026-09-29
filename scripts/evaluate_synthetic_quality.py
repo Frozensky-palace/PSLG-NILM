@@ -28,13 +28,18 @@ def main() -> None:
     ap.add_argument("--sample-seconds", type=int, default=6)
     ap.add_argument("--max-real-cycles", type=int, default=None,
                     help="optional cap on real reference size for speed")
+    ap.add_argument("--diversity-max-cycles", type=int, default=None,
+                    help="override diversity_index's default 200-cycle cap "
+                         "(B4WD: pass >= count so the collapse gate covers "
+                         "all cycles; default None keeps archived behavior)")
     ap.add_argument("--output", required=True, help="JSON report path")
     args = ap.parse_args()
 
     report = evaluate_synthetic_dataset(
         Path(args.synthetic_dir), Path(args.real_library_dir),
         sample_seconds=args.sample_seconds,
-        max_real_cycles=args.max_real_cycles)
+        max_real_cycles=args.max_real_cycles,
+        diversity_max_cycles=args.diversity_max_cycles)
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, indent=2, ensure_ascii=False),

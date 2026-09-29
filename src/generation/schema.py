@@ -10,7 +10,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
-GENERATION_ROUTES = ("B3", "B4", "B4R", "B5")
+GENERATION_ROUTES = ("B3", "B4", "B4R", "B4WGAN", "B4DIFF", "B5")
 BOUNDARY_TREATMENTS = ("none", "linear_crossfade", "endpoint_offset",
                        "generated_transition")
 

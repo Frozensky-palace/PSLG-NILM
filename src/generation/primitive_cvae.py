@@ -5,6 +5,12 @@ B3-V is conditioned on the state label and the segment's normalized stats;
 composition follows the empirical train path model (first-state counts,
 transition counts, per-cycle state counts) — deliberately *basic*, so that
 B5's constraints have something measurable to improve upon.
+
+B4WD (B4′ second item): the model backend is swappable per decode —
+"cvae" (default, bit-identical to B4), "wgan" (B4WGAN) or "diffusion"
+(B4DIFF). The path model, donor picks and numpy rng sequence are untouched;
+the new backends consume torch rng only, so same-seed runs keep identical
+state paths and segment lengths across backends.
 """
 from __future__ import annotations
 
@@ -147,14 +153,29 @@ class PrimitiveComposer(BaseGenerator):
                  sample_seconds: int = 6, device: str = "cpu",
                  power_scale: float = 1.0, primitive_source: str = "model",
                  donor_block_ids: list[str] | None = None,
-                 donor_cycle_ids: list[str] | None = None):
+                 donor_cycle_ids: list[str] | None = None,
+                 model_backend: str = "cvae",
+                 power_scales: dict[int, float] | None = None,
+                 peak_caps: dict[int, float] | None = None,
+                 diffusion=None):
         import torch
 
         if primitive_source not in ("model", "donor"):
             raise ValueError(
                 f"primitive_source must be 'model' or 'donor', "
                 f"got {primitive_source!r}")
+        if model_backend not in ("cvae", "wgan", "diffusion"):
+            raise ValueError(
+                f"model_backend must be 'cvae', 'wgan' or 'diffusion', "
+                f"got {model_backend!r}")
+        if primitive_source == "donor" and model_backend != "cvae":
+            raise ValueError(
+                "model_backend only applies to model-mode composition")
+        if (model_backend == "diffusion" and diffusion is None):
+            raise ValueError(
+                "diffusion backend requires a GaussianDiffusion instance")
         self.primitive_source = primitive_source
+        self.model_backend = model_backend
         self.model = model
         self.bucketizer = bucketizer
         self.donor_waves = donor_waves
@@ -165,6 +186,15 @@ class PrimitiveComposer(BaseGenerator):
         self.sample_seconds = int(sample_seconds)
         self.device = device
         self.power_scale = float(power_scale)
+        self.power_scales = ({int(state): float(scale)
+                              for state, scale in power_scales.items()}
+                             if power_scales is not None else None)
+        self.peak_caps = ({int(state): float(cap)
+                           for state, cap in peak_caps.items()}
+                          if peak_caps is not None else None)
+        self.diffusion = diffusion
+        self.wave_length = (bucketizer.bucket_length(bucketizer.n_buckets - 1)
+                            if bucketizer is not None else None)
         self._torch = torch
         if model is not None:
             model.to(device)
@@ -183,9 +213,14 @@ class PrimitiveComposer(BaseGenerator):
             "version": self.version,
             "n_states": self.n_states,
             "primitive_source": self.primitive_source,
+            "model_backend": self.model_backend,
         }
         if self.bucketizer is not None:
             config["buckets"] = self.bucketizer.to_dict()
+        if self.power_scales is not None:
+            config["power_scales"] = dict(self.power_scales)
+        if self.peak_caps is not None:
+            config["peak_caps"] = dict(self.peak_caps)
         return config
 
     def _decode_primitive(self, state_label: int, donor: np.ndarray,
@@ -196,14 +231,31 @@ class PrimitiveComposer(BaseGenerator):
             len(donor), donor, state_label, self.n_states,
             self.normalizer, self.sample_seconds)).unsqueeze(0).to(
                 self.device)
-        bucket_length = self.bucketizer.bucket_length(
-            self.bucketizer.encode(len(donor)))
-        latent = torch.randn(1, self.model.latent_dim, device=self.device)
         with torch.no_grad():
-            decoded = self.model.decode(latent, condition).cpu().numpy()
+            if self.model_backend == "wgan":
+                latent = torch.randn(1, self.model.latent_dim,
+                                     device=self.device)
+                decoded = self.model(latent, condition).cpu().numpy()
+            elif self.model_backend == "diffusion":
+                decoded = self.diffusion.sample(
+                    self.model, (1, 1, self.wave_length), condition,
+                    self.device).cpu().numpy()
+            else:
+                latent = torch.randn(1, self.model.latent_dim,
+                                     device=self.device)
+                decoded = self.model.decode(latent, condition).cpu().numpy()
         trimmed = np.asarray(decoded[0, 0, :len(donor)],
-                             dtype=np.float64).clip(min=0.0) * self.power_scale
-        del bucket_length
+                             dtype=np.float64).clip(min=0.0)
+        # B4WGAN keeps the CVAE semantics (one global q99 peak scale);
+        # B4DIFF scales per state (preregistered architecture adaptation).
+        if self.power_scales is not None:
+            trimmed = trimmed * self.power_scales[state_label]
+        else:
+            trimmed = trimmed * self.power_scale
+        if self.peak_caps is not None:
+            # Preregistered B4DIFF post-processing: clip at the donor peak
+            # max of this state (segment-level d83f200 method-level cap).
+            trimmed = np.minimum(trimmed, self.peak_caps[state_label])
         return trimmed
 
     def generate_cycle(self, synthetic_cycle_id: str, seed: int,
@@ -222,6 +274,7 @@ class PrimitiveComposer(BaseGenerator):
 
         waveform_parts: list[np.ndarray] = []
         segments: list[StateSegmentRecord] = []
+        rng_seeds: list[int] = []
         for order, state_label in enumerate(path):
             donors = self._donors_by_state.get(state_label)
             if not donors:
@@ -243,10 +296,11 @@ class PrimitiveComposer(BaseGenerator):
                     self.donor_cycle_ids[donor_index]
                     if self.donor_cycle_ids else None)
             else:
+                rng_seed = (seed * 1_000_003
+                            + hash(synthetic_cycle_id) % 1_000 + order)
+                rng_seeds.append(int(rng_seed))
                 primitive = self._decode_primitive(
-                    state_label, donor,
-                    rng_seed=seed * 1_000_003 + hash(synthetic_cycle_id) % 1_000
-                    + order)
+                    state_label, donor, rng_seed=rng_seed)
                 donor_block_id = None
                 donor_cycle_id = None
             energy = float(primitive.sum() * self.sample_seconds / 3600.0)
@@ -269,8 +323,14 @@ class PrimitiveComposer(BaseGenerator):
             conditions = {"n_states": n_states,
                           "primitive_source": "donor"}
         else:
-            route = "B4"
+            route = {"cvae": "B4", "wgan": "B4WGAN",
+                     "diffusion": "B4DIFF"}[self.model_backend]
+            # rng_seeds persist per segment so bit-level regeneration is
+            # hash-gate checkable without trusting the environment's
+            # str-hash salt (B4WD prereg §2 PYTHONHASHSEED clause).
             conditions = {"n_states": n_states,
+                          "model_backend": self.model_backend,
+                          "rng_seeds": rng_seeds,
                           "bucket_boundaries": self.bucketizer.to_dict()}
         record = SyntheticCycleRecord(
             synthetic_cycle_id=synthetic_cycle_id,

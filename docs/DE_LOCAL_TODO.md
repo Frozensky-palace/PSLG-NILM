@@ -103,8 +103,28 @@
       平台 0.72W）。硬门 1–4 本地+服务器双侧闭合；结论回填 prereg §8；
       产物归档 reports/server_b4r/2026-09-28/（sha256 88b6fe7a…a054，
       本机复核 0 FAIL）——**B4R 全链闭合**
-- [ ] **B4-WGAN / B4-扩散训练**（层 2 终判触发的预注册后续动作；
-      需新预注册 + 服务器 GPU——h103/h102 报修复后方可排产）
+- [x] **B4-WGAN / B4-扩散（B4WD）预注册冻结 + 实现 + 审查完成**
+      （2026-09-29）：预注册 `reports/b4wd/b4wd_protocol_prereg_v1.md`
+      冻结（§3 代码锚占位 `⟦实现合入时回填⟧`，实现提交后回填）；
+      全套代码落地——解码分派（`PrimitiveComposer` cvae/wgan/diffusion
+      三后端，numpy rng 序列不动）+ 段级 masked 训练（WGAN 输入侧
+      mask、扩散 masked noise-MSE）+ CLI/管线（`--primitive-source`、
+      `slurm/b4wd_wgan.sbatch`/`b4wd_diffusion.sbatch` 分臂时限 1/2 天、
+      `scripts/b4wd_server_pipeline.sh` B4R 按臂克隆）+ 15 项单测
+      （tests/test_primitive_backends.py，全量 218/218）；本地 CPU 冒烟
+      通过（真实 k4 库双臂 3 epoch × count 20：等价断言 vs b4_s17_4133
+      逐位 40/40、rng_seeds 机检 40/40、三臂哈希两两不等、坍缩门
+      identical=0 且 min_pairwise 0.287/0.909、记忆化 0/20、B4DIFF §4
+      证据落盘 pinned_share 0.232/trigger 1.0；执行记录
+      `reports/b4wd/local_smoke_execution_record.md`）。过程中修四个
+      根因级缺陷：训练脚本缺构建前 `torch.manual_seed`（--seed 管不到
+      权重初始化，同种子跨进程漂移）、`generate_dataset` 缺非有限值
+      守卫（NaN 绕过全部比较门）、B4WGAN lr 静默 1e-3 违反冻结 §3
+      （改路由默认 1e-4 + config 落盘）、§4 贴上限证据未实现
+      （peak_cap_report.json + 管线机检）——后两项为 13-agent 对抗
+      审查 CONFIRMED（8 声明→5 确认→去重 3 缺陷，3 驳回记录在案）。
+      **待：里程碑提交 C1 → 回填 C2 → 服务器 GPU（h103/h102 报修
+      复后）**
 - [ ] 若过 validation 门槛且需进 test：新版本冻结 + 书面原因
 - [x] g5_test 产物回传归档（2026-09-27，`reports/server_g/2026-09-24/
       g5_test_20260924.tar.gz` sha256 `c46b9b6f…753b`；21/21 指标与

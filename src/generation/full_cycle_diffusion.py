@@ -109,6 +109,18 @@ class GaussianDiffusion:
         return wave
 
 
+def masked_noise_mse(predicted: torch.Tensor, noise: torch.Tensor,
+                     mask: torch.Tensor) -> torch.Tensor:
+    """Noise MSE averaged on valid samples only (B4WD segment-level).
+
+    The elbo_loss valid-mask idiom (full_cycle_cvae.py): ``mask`` is the
+    (batch, length) pad mask, ``predicted``/``noise`` are (batch, 1, length).
+    """
+    valid = mask.unsqueeze(1)
+    return ((predicted - noise) ** 2 * valid).sum() \
+        / valid.sum().clamp(min=1)
+
+
 def train_diffusion(denoiser: DiffusionDenoiser,
                     diffusion: GaussianDiffusion,
                     waves: list[np.ndarray], conditions: np.ndarray,
@@ -140,6 +152,62 @@ def train_diffusion(denoiser: DiffusionDenoiser,
             optimizer.zero_grad()
             predicted = denoiser(noisy, timesteps.to(device), cnd)
             loss = torch.nn.functional.mse_loss(predicted, noise)
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(denoiser.parameters(), 5.0)
+            optimizer.step()
+            totals += float(loss.detach())
+            batches += 1
+        history.append({"epoch": epoch, "noise_mse": totals
+                        / max(batches, 1)})
+    return history
+
+
+def train_primitive_diffusion(denoiser: DiffusionDenoiser,
+                              diffusion: GaussianDiffusion,
+                              waves: list[np.ndarray],
+                              conditions: np.ndarray,
+                              bucketizer: LengthBucketizer, *, epochs: int,
+                              batch_size: int = 32, learning_rate: float = 1e-3,
+                              seed: int = 0, device: str = "cpu"
+                              ) -> list[dict]:
+    """Segment-level masked noise-MSE training (B4WD prereg §2).
+
+    ``train_diffusion`` (full cycles) discards the pad mask and averages the
+    noise MSE over the whole padded tensor; here the mask from
+    ``pad_and_mask`` is kept and the loss (``masked_noise_mse``) is averaged
+    on valid samples only, so short segments are not dominated by their
+    zero padding. Waves must already be divided by the per-state power
+    scale chosen by the caller.
+    """
+    torch.manual_seed(seed)
+    denoiser.to(device)
+    optimizer = torch.optim.Adam(denoiser.parameters(), lr=learning_rate)
+    bucket_length = bucketizer.bucket_length(
+        bucketizer.encode(max(len(w) for w in waves)))
+    padded, mask = pad_and_mask(waves, bucket_length)
+    cond = torch.from_numpy(np.stack(conditions).astype(np.float32))
+    n = len(waves)
+    generator = torch.Generator().manual_seed(seed)
+    history: list[dict] = []
+    for epoch in range(1, epochs + 1):
+        order = torch.randperm(n, generator=generator)
+        totals, batches = 0.0, 0
+        for start in range(0, n, batch_size):
+            picked = order[start:start + batch_size]
+            msk = mask[picked].to(device)
+            # pad_and_mask already zeroes padding on the clean wave, so the
+            # noisy wave's pad region is pure noise — consistent with the
+            # full-noise initial state at sample time. The preregistered
+            # mask mechanism is the loss below, not the input.
+            wave = padded[picked].to(device)
+            cnd = cond[picked].to(device)
+            timesteps = torch.randint(
+                0, len(diffusion.alphas_cumprod), (len(wave),),
+                generator=generator)
+            noisy, noise = diffusion.add_noise(wave, timesteps.to(device))
+            optimizer.zero_grad()
+            predicted = denoiser(noisy, timesteps.to(device), cnd)
+            loss = masked_noise_mse(predicted, noise, msk)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(denoiser.parameters(), 5.0)
             optimizer.step()

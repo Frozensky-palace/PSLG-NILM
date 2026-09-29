@@ -144,9 +144,15 @@ def boundary_checks(powers: list[np.ndarray], sample_seconds: int,
 
 def evaluate_synthetic_dataset(synthetic_dir: Path, real_library_dir: Path,
                                sample_seconds: int = 6,
-                               max_real_cycles: int | None = None
+                               max_real_cycles: int | None = None,
+                               diversity_max_cycles: int | None = None
                                ) -> dict:
-    """Full quality gate for one generator output directory."""
+    """Full quality gate for one generator output directory.
+
+    ``diversity_max_cycles`` overrides diversity_index's default 200-cycle
+    cap (B4WD prereg §4: the collapse gate must cover all 246 cycles);
+    None keeps the archived-behavior default.
+    """
     synth, summary = load_synthetic_cycles(synthetic_dir)
     real = load_real_reference(real_library_dir, max_real_cycles)
     if not synth:
@@ -179,7 +185,9 @@ def evaluate_synthetic_dataset(synthetic_dir: Path, real_library_dir: Path,
                    "synthetic": _quantiles(synth_peaks)},
     }
 
-    diversity = diversity_index(synth)
+    diversity = diversity_index(
+        synth, max_cycles=(diversity_max_cycles if diversity_max_cycles
+                           is not None else 200))
     boundary = boundary_checks(synth, sample_seconds)
 
     flags = {
