@@ -29,16 +29,8 @@ def cycle_owners(timestamps, intervals):
     return owners
 
 
-def coarsen_arrays(arrays, *, source_seconds=6, factor=2, intervals=()):
-    """Keep complete epoch-anchored bins within a shard/continuous segment.
-
-    factor=1 produces the fresh native-rate control. factor=2 averages two
-    consecutive powers and timestamps the output at the left edge. Incomplete
-    bins are dropped and accounted for, not interpolated. On/off transitions
-    remain continuous; cycle ownership is recorded, never averaged as a label.
-    """
-    if factor not in (1, 2) or source_seconds <= 0:
-        raise ValueError("factor must be 1 or 2; source_seconds must be positive")
+def validate_source_arrays(arrays, *, source_seconds=6):
+    """Validate the entire physical source before any boundary row is moved."""
     if not REQUIRED.issubset(arrays):
         raise ValueError(f"missing fields: {sorted(REQUIRED.difference(arrays))}")
     if set(arrays).difference(REQUIRED):
@@ -56,6 +48,21 @@ def coarsen_arrays(arrays, *, source_seconds=6, factor=2, intervals=()):
             raise ValueError(f"{name}: expected aligned finite 1-D values")
     if not np.issubdtype(arrays["segment_id"].dtype, np.integer):
         raise ValueError("segment_id must be integer; labels must not be averaged")
+
+
+def coarsen_arrays(arrays, *, source_seconds=6, factor=2, intervals=()):
+    """Keep complete epoch-anchored bins within a shard/continuous segment.
+
+    factor=1 produces the fresh native-rate control. factor=2 averages two
+    consecutive powers and timestamps the output at the left edge. Incomplete
+    bins are dropped and accounted for, not interpolated. On/off transitions
+    remain continuous; cycle ownership is recorded, never averaged as a label.
+    """
+    if factor not in (1, 2) or source_seconds <= 0:
+        raise ValueError("factor must be 1 or 2; source_seconds must be positive")
+    validate_source_arrays(arrays, source_seconds=source_seconds)
+    ts = np.asarray(arrays["timestamp"])
+    n = len(ts)
     owners = cycle_owners(ts, intervals)
     step = factor * source_seconds
     if factor == 1:

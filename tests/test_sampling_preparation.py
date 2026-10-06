@@ -6,6 +6,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+import numpy as np
 import pandas as pd
 
 from scripts.downsample_aligned_pairs import sha256
@@ -43,6 +44,43 @@ def prep_fixture(root, short_cycle=False):
 
 
 class SamplingPreparationTests(unittest.TestCase):
+    def test_preparation_passes_continuous_shard_policy_and_restores_cycle(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            config = prep_fixture(root)
+            spec = config["preparation"]
+            spec["pair_across_continuous_storage_shards"] = True
+            source = Path(spec["source_aligned_dir"])
+            manifest_path = source / "aligned_partition_manifest.json"
+            manifest = json.loads(manifest_path.read_text())
+            manifest["protocol"] = "aligned_research_partitions_v1"
+            with np.load(source / "train/raw.npz") as data:
+                arrays = {name: data[name] for name in data.files}
+            shards = []
+            for index, interval in enumerate((slice(0, 101), slice(101, None))):
+                relative = f"train/split_{index}.npz"
+                np.savez(source / relative, **{name: values[interval] for name, values in arrays.items()})
+                shards.append({"path": relative, "sha256": sha256(source / relative)})
+            manifest["partitions"]["train"]["shards"] = shards
+            manifest_path.write_text(json.dumps(manifest))
+            spec["expected_hashes"]["aligned_manifest"] = sha256(manifest_path)
+            anchor = Path(spec["anchor_dataset_manifest"])
+            anchor.write_text(json.dumps({"sample_seconds": 6, "source_hashes": {
+                "aligned_manifest": sha256(manifest_path)}}))
+            spec["expected_hashes"]["anchor_dataset_manifest"] = sha256(anchor)
+            output = root / "run"
+            prepare(config, output, require_slurm=False)
+            summary = json.loads((output / "preparation_summary.json").read_text())
+            train = summary["rates"]["12s"]["train"]
+            self.assertEqual((train["input_rows"], train["output_rows"], train["discarded_input_rows"]), (200, 100, 0))
+            self.assertEqual(train["eligible_cycles"], 1)
+            self.assertEqual(train["cross_shard_pair_count"], 1)
+            self.assertEqual(summary["rates"]["6s"]["train"]["cross_shard_pair_count"], 0)
+            self.assertEqual(summary["eligibility_changes"]["train"]["lost_eligible_cycle_ids"], [])
+            audit = json.loads((output / "12s/aligned/downsampling_audit.json").read_text())
+            self.assertTrue(audit["pair_across_continuous_storage_shards"])
+            self.assertTrue(json.loads((output / "source_verification_after.json").read_text())["passed"])
+
     def test_full_data_stage_and_small_diagnostic_archive(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

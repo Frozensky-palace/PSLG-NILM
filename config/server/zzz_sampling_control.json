@@ -22,6 +22,7 @@
   "historical_test_already_examined": true,
   "status": "historical_metadata_matched_ready_for_data_preparation",
   "preparation": {
+    "pair_across_continuous_storage_shards": true,
     "source_aligned_dir": "/home/scnu2024024563/projects/PSLG-NILM-c1/reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2",
     "source_inventory_path": "/home/scnu2024024563/projects/PSLG-NILM-c1/reports/core_validation/ukdale_b1_washing_machine/cycle_inventory_with_split.csv",
     "anchor_dataset_manifest": "/home/scnu2024024563/pslg_artifacts/de_inputs_r0p5_v2/dataset_manifest.json",

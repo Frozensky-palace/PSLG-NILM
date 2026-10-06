@@ -122,6 +122,7 @@ def build_summary(output):
                 key: sum(s[key] for s in shards)
                 for key in ("input_rows", "output_rows", "discarded_input_rows", "bins_crossing_cycle_boundary")}
             totals[part].update(eligible_cycles=int(rows.analysis_eligible.sum()), energy=energy)
+            totals[part]["cross_shard_pair_count"] = sum(s.get("cross_shard_pair_count", 0) for s in shards)
             library = pd.read_csv(base / f"{part}_library/real_cycle_library.csv")
             selected = library[["cycle_id", "samples", "duration_grid_seconds", "appliance_energy_wh",
                                 "max_appliance_power_w"]]
@@ -216,8 +217,11 @@ def prepare(config, output_dir, *, require_slurm=True, expected_commit=None):
         for factor, label in ((1, "6s"), (2, "12s")):
             base = output / label
             aligned = base / "aligned"
+            arguments = ["--aligned-dir", source, "--output-dir", aligned, "--factor", factor]
+            if factor == 2 and config["preparation"].get("pair_across_continuous_storage_shards", False):
+                arguments.append("--pair-across-shards")
             step(f"{label}_aligned", "downsample_aligned_pairs.py",
-                 ["--aligned-dir", source, "--output-dir", aligned, "--factor", factor], source_inputs, aligned)
+                 arguments, source_inputs, aligned)
             for part in PARTITIONS:
                 library = base / f"{part}_library"
                 step(f"{label}_{part}_library", "build_real_cycle_library.py",
