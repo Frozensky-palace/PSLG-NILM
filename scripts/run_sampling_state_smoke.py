@@ -44,7 +44,7 @@ def activated_command(config, python, script, arguments):
             str(ROOT / "scripts" / script), *map(str, arguments)]
 
 
-def verify_prepared(config, report_path):
+def verify_prepared(config, report_path, *, selection_cycles=None):
     source = Path(config["prepared_dir"]).resolve()
     report = {"passed": False, "metadata": [], "train_files": [],
               "validation_arrays_read": False, "test_arrays_read": False}
@@ -109,10 +109,10 @@ def verify_prepared(config, report_path):
             ordered_ids.append(list(mapping.cycle_id))
         if ordered_ids[0] != ordered_ids[1]:
             raise ValueError("paired rates must have identical ordered cycle IDs")
-        n_smoke = int(config["smoke_cycles"])
-        if not 5 <= n_smoke <= len(ordered_ids[0]) or int(config["smoke_epochs"]) < 1:
-            raise ValueError("smoke needs at least 5 available cycles and positive epochs")
-        report.update(passed=True, selected_cycle_ids=ordered_ids[0][:n_smoke],
+        n_selected = int(config["smoke_cycles"] if selection_cycles is None else selection_cycles)
+        if not 5 <= n_selected <= len(ordered_ids[0]) or int(config["smoke_epochs"]) < 1:
+            raise ValueError("selection needs at least 5 available cycles and positive epochs")
+        report.update(passed=True, selected_cycle_ids=ordered_ids[0][:n_selected],
                       verified_train_files=len(report["train_files"]))
     except BaseException as error:
         report["error"] = str(error)
@@ -134,12 +134,13 @@ def rate_config(base, source, label, output):
     return config
 
 
-def validate_state_outputs(directory, cycle_ids, seconds):
+def validate_state_outputs(directory, cycle_ids, seconds, *,
+                           expected_status="smoke", mapping_path=None):
     """Fail on dropped/truncated/overlapping blocks, including all missing cycles."""
     discovery = read_json(directory / "discovery_summary.json")
-    if discovery["status"] != "smoke" or not discovery["train_only"] or discovery["test_accessed"]:
-        raise ValueError("state result must remain train-only smoke")
-    mapping = pd.read_csv(directory / "segments_smoke_subset/segment_source_map.csv")
+    if discovery["status"] != expected_status or not discovery["train_only"] or discovery["test_accessed"]:
+        raise ValueError(f"state result must remain train-only {expected_status}")
+    mapping = pd.read_csv(mapping_path or directory / "segments_smoke_subset/segment_source_map.csv")
     if list(mapping.sort_values("csv_idx").cycle_id) != cycle_ids:
         raise ValueError("state smoke used different cycles")
     checks = {}

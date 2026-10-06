@@ -1,0 +1,23 @@
+{
+  "protocol": "paired_sampling_generation_v1",
+  "input_config": "config/server/zzz_sampling_state_smoke.json",
+  "state_epochs": 50,
+  "state_k": 4,
+  "generation_seed": 17,
+  "generation_count": 246,
+  "batch_size": 32,
+  "latent_dim": 16,
+  "width": 32,
+  "n_buckets": 4,
+  "n_critic": 5,
+  "diffusion_steps": 500,
+  "arms": [
+    {"arm": "B3T", "route": "transform", "epochs": 0, "learning_rate": null},
+    {"arm": "B3CVAE", "route": "cvae", "epochs": 200, "learning_rate": 0.001},
+    {"arm": "B3WGAN", "route": "wgan", "epochs": 150, "learning_rate": 0.001},
+    {"arm": "B3DIFF", "route": "diffusion", "epochs": 300, "learning_rate": 0.001},
+    {"arm": "B4", "route": "primitive", "epochs": 200, "learning_rate": 0.001},
+    {"arm": "B4WGAN", "route": "primitive-wgan", "epochs": 150, "learning_rate": 0.0001},
+    {"arm": "B4DIFF", "route": "primitive-diffusion", "epochs": 300, "learning_rate": 0.001}
+  ]
+}

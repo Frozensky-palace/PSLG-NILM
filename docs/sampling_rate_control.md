@@ -1,6 +1,6 @@
 # 原采样率与两点均值降频对照
 
-本实验只检验降频对原有生成增强和 NILM 效果的影响，不替换论文主线，也不将降频包装成新的生成模型。原始数据、原 6 秒结果及师弟分支保持不变；12 秒数据和结果放入新的目录。
+本实验比较师弟已有的不同生成模型在原始 6 秒与两点均值降频后的 12 秒数据上的生成质量，并继续用原 NILM 指标评价增强效果。切分聚类只是基元生成路线的前置输入，不是本轮终点。不替换论文主线，也不将降频包装成新的生成模型。原始数据、历史 6 秒结果及师弟分支保持不变；本轮两种采样率均在同一代码版本上另存重跑。
 
 ## 代码基线和现有工作
 
@@ -179,7 +179,7 @@ PSLG_SAMPLING_COMMIT="$(git rev-parse HEAD)" \
 
 ## 配对状态发现链路测试
 
-下一作业 `slurm/sampling_state_smoke.sbatch` 申请 RTX3090 分区的 h104-slurm-a 节点、1 张 GPU、4 个 CPU、32 GB 内存，2 小时为上限。h104 是历史通过检查的节点，当前可用性仍由本次框架检查判定。复用现有环境，不安装包，不覆盖 12098 输入。具体流程如下：
+`slurm/sampling_state_smoke.sbatch` 申请 RTX3090 分区的 h104-slurm-a 节点、1 张 GPU、4 个 CPU、32 GB 内存，2 小时为上限。h104 在历史检查和本次 12100 中均通过，后续作业仍逐次检查框架可用性。复用现有环境，不安装包，不覆盖 12098 输入。具体流程如下：
 
 1. 固定已验收运行的 8 份元数据 SHA-256，复核两组 train 周期 NPZ、CSV 及清单的 1,980 个文件，确认周期 ID 和顺序相同。只读取 train 数据，validation/test 数组不进入此阶段。
 2. Slurm 脚本加载 `miniconda3/25.5.1-0`、`cuda-toolkit/12.1.1`，激活 `pslg-nilm` 启动编排器。每个子进程通过 `scripts/run_in_sampling_env.sh` 完整激活目标环境：TensorFlow 用 `pslg-detsec`，PyTorch 用 `pslg-nilm`。记录实际 Python 路径、Conda 前缀、模块、GPU 和提交号，分别运行两框架 GPU 前向与反向检查，任一失败即停止。保留 Slurm 的 `CUDA_VISIBLE_DEVICES`，不手动改卡号。
@@ -209,6 +209,98 @@ PSLG_SAMPLING_COMMIT="$(git rev-parse HEAD)" \
 旧启动脚本虽调用了正确的 `pslg-detsec/bin/python`，但未完整激活环境，子进程仍继承 base 的 `CONDA_PREFIX`，且没有加载任何 module。这是相对原 C1/C2 启动流程的遗漏，不能仅凭它断言“不激活就是 cuInit 故障的唯一原因”。修正版同时恢复原模块/激活流程并指定历史验证通过的 h104，作为恢复运行措施，不用于单独归因某一变量。若 h104 新作业仍失败，保留诊断并进一步区分节点和运行库问题。
 
 12099 的失败产物原样保留。新作业继续使用已验收的 12098 数据与相同小规模配置；运行记录中的 `environment` 明确表示父启动进程，真正的框架环境以子进程 `environment_tensorflow.json`、`environment_torch.json` 为准。环境初始化若在 Python 编排器启动前失败，诊断包可能尚未生成，此时回传 Slurm `.out` 和 `.err`。
+
+## 作业 12100 配对状态链路验收通过
+
+回传 `sampling_state_smoke_12100_diagnostics.tar.gz` 确认 `zzz@428f474857df807cd2bccc1fdbf9ccb79c7b2fe1` 在 h104-slurm-a 的 RTX 3090 上完成全部 6 个步骤。编排器于 2026 年 10 月 6 日北京时间 16:57:43 至 17:02:08 运行，共 264.57 秒，不含排队和 Slurm 启动。主清单为 `completed`，结果为 `paired_smoke_passed_not_formal_result`。诊断包 SHA-256 为 `69ea3eeb4213ed4d94da2c669ee6a9cafa2c94f8fb063b2e4006ea7a10de294d`。
+
+TensorFlow 2.18.1 和 PyTorch 2.5.1+cu121 均通过 GPU 前向与反向检查。两个框架的实际解释器、`CONDA_PREFIX` 分别对应 `pslg-detsec` 和 `pslg-nilm`，模块为 `miniconda3/25.5.1-0` 与 `cuda-toolkit/12.1.1`。两组 DETSEC-PC 训练日志也确认创建了 RTX 3090 设备。重复注册 cuFFT/cuDNN/cuBLAS 和 Conda requests 依赖警告仍存在，但本次未阻断执行；12099 的 CUDA 初始化故障没有在本次 h104 运行中复现。更换节点与恢复激活同时发生，不能由成功结果单独确定原故障原因。
+
+| 本次检查或输出 | 6 秒 | 12 秒 |
+| --- | --- | --- |
+| 相同训练周期数 | 8 | 8 |
+| DETSEC-PC 实际 epoch | 2 | 2 |
+| PrimGLR 原始分段数 | 47 | 17 |
+| k=3 合并后状态块 | 24 | 17 |
+| k=4 合并后状态块 | 31 | 17 |
+| k=5 合并后状态块 | 35 | 17 |
+| 状态发现子命令耗时 秒 | 56.11 | 23.59 |
+| 全部候选 k 的周期覆盖检查 | 通过 | 通过 |
+| 第 2 轮训练 loss | 2.655331 | 2.437819 |
+| 第 2 轮内部 val loss | 1.982577 | 2.102782 |
+
+两轮训练历史均为有限数值。这里的 `val_loss` 是训练周期内部的分段留出，不是独立的 164 条验证周期评估，也不能把两种采样率的 loss 直接当作 NILM 效果对比。TensorFlow GPU 检查自身耗时 167.79 秒，是此次总耗时的大头；以上单次小规模耗时不能外推正式训练耗时或降频加速比。
+
+运行前后 1,980 个训练文件的服务器校验记录完全一致。诊断包中的两组周期 ID 和顺序相同；本地另复核 24 项归档元数据哈希比对，以及 6 份状态库存量表的逐周期首尾、连续覆盖、样本数、秒数和有限统计值，均通过。没有读取 validation/test 数组，没有训练生成器或 NILM。波形和模型张量不在诊断包中，原始产物保留在服务器。
+
+### 切分尺度与小样本限制
+
+12 秒组的 8 个周期中，7 个周期仅有 1 个内部切点，另 1 个有 2 个切点，共 17 段。k=3/4/5 都保留这 17 段并不表示聚类没有运行：三种 k 的标签分配不同，但没有继续合并相邻段；k=5 中有 3 个状态各只有 1 个块，不能据此选 k 或直接冻结生成器状态库。
+
+代码核对显示，`src/steps/time_segmentation.py` 当前调用无配置的 `PrimGLRModel()`，因此 YAML 的 `time_segmentation.window_size=30` 并不是 PrimGLR 的实际窗口。`models/time_segmentation/prim_glr.py` 使用默认 `W=50`、`min_gap=25`，实际窗口为 `min(50, max(3, n//10))`。本次 6 秒组 W 均为 50 点，即 300 秒；12 秒组为 47–50 点，即 564–600 秒。候选切点的最小间隔从 150 秒变为 300 秒；切分内部的状态数还依赖候选段数量，它与后续全局 KMeans 的 k=3/4/5 不是同一参数。
+
+这些代码事实说明，分段数变化不仅可能来自两点平均，也受到继承的点数参数所对应的物理时间尺度变化影响；各因素的贡献尚未分离。本次继续遵循“相同离散模型配置”的既定对照，不修改算法、不悄悄把 12 秒参数减半。若后续研究需要分离采样平滑与时间尺度效应，应另设等物理时间参数对照，并先打通 PrimGLR 参数传递，不能只改目前未使用的 YAML 窗口字段。
+
+### 下一阶段范围
+
+沿用 12098 的相同 493 条训练周期，将两组状态发现扩展为原配置的最多 50 个 epoch（保留原 early stopping），继续记录 k=3/4/5、精确覆盖、稀有状态、状态时长/功率/能量和全部运行来源。全量状态库验收后再进入原生成路线与 NILM，最终比较 MAE、RMSE、SAE、逐点 F1 及共同 12 秒网格指标。12100 只证明小规模链路和 GPU 可用，不能提前认定降频改善或损害下游精度。
+
+## 多生成模型配对对照
+
+2026 年 10 月 6 日用户明确本轮目标是沿用师弟流程比较不同模型的降频生成效果，指标保持原口径。首批固定 `generation_seed=17`、每组 246 条合成周期（493 条真实训练周期的 floor(0.5 倍)），共 7 条路线 × 2 种采样率 = 14 个独立生成作业。不按某一模型的先导结果挑选或删去其他模型；执行失败和质量不合格都留在汇总中。
+
+| 路线 | 原入口 | 训练轮数 | 6 秒和 12 秒均运行 |
+| --- | --- | --- | --- |
+| B3T 整周期变换基线 | transform | 无神经训练 | 是 |
+| B3CVAE 整周期 CVAE | cvae | 200 | 是 |
+| B3WGAN 整周期 WGAN-GP | wgan | 150 | 是 |
+| B3DIFF 整周期 Diffusion | diffusion | 300 | 是 |
+| B4 基元 CVAE 后基础拼接 | primitive | 200 | 是 |
+| B4WGAN 基元 WGAN-GP 后基础拼接 | primitive-wgan | 150 | 是 |
+| B4DIFF 基元 Diffusion 后基础拼接 | primitive-diffusion | 300 | 是 |
+
+训练入口沿用 `scripts/train_full_cycle_generator.py`，生成沿用 `scripts/generate_full_cycles.py` 与 `scripts/generate_primitive_cycles.py`。模型实现、条件构造、状态路径采样、拼接方式、扩散裁剪和质量指标代码不改。超参数来自 `docs/C1_TO_G_SERVER_MANUAL.md` 的 D/E 命令与 `reports/b4wd/b4wd_protocol_prereg_v1.md`：batch 32、latent 16、width 32、bucket 数 4、WGAN n_critic=5、扩散 500 步；学习率基元 WGAN 为 1e-4，其余神经路线为 1e-3；使用末轮生成器 checkpoint。相同 epoch 并不代表不同路线或不同分段数下的优化器更新次数相等，不能称为等 FLOPs 比较。
+
+前置状态发现使用 12098 的全部 493 条训练周期、最多 50 轮及原早停，仍输出 k=3/4/5 供结构审查；进入生成器的 k 固定为师弟使用的 4，不看本轮 12 秒结果另挑 k。此处接受状态库用于固定协议复跑，不等于认定每个状态已具备稳定的物理语义。两种采样率分别重建状态库，同一采样率的三种基元模型共用该库。汇总时核对 B4/B4WGAN/B4DIFF 的同种子状态路径、目标段长和解码种子逐条相同；不跨采样率硬对齐状态编号。
+
+### 相同指标及比较口径
+
+质量评价继续调用 `scripts/evaluate_synthetic_quality.py`：负功率、超上限峰值、时长/能量/峰值分位数、分布 WARN、多样性与重复形状对、边界首尾功率及斜率。近复制继续调用 `scripts/audit_generation_memorization.py`：最近邻距离、1% 分位基线阈值、复制率和精确复制数。12 秒训练、生成、质量检查全部显式传 `--sample-seconds 12`，不沿用默认 6 秒计算时长或能量。
+
+保留两份质量报告，避免把旧采样范围和新增全量比较混写：
+
+- `quality_report.json` 沿用原路线口径：B3/B4 的多样性最多前 200 条，B4WGAN/B4DIFF 覆盖全部 246 条。
+- `quality_all_cycles_report.json` 用同一个指标函数，在所有路线统一覆盖 246 条，供本轮横向比较。它是相同指标的完整样本口径，不替换历史报告。
+- `memorization_report.json` 保留原审计。神经路线复制率上限 0.01，变换基线仍为 1.0，精确复制仍不允许。该 JSON 的 `passed` 只涵盖精确复制，新编排器同时检查原 CLI 的复制率上限与退出码，不把超限结果误记为通过。
+- B4WGAN/B4DIFF 另外保留原协议的全量坍缩检查和预期 WARN 集合要求；Diffusion 的 `peak_cap_report.json` 继续留档。不同路线的定义性阈值差异不改，不按结果放宽。
+
+指标公式相同不意味着两个采样率的所有原生值可以直接互比：原边界斜率为 W/sample，5 点窗口的物理时间随采样间隔变化；真实参考分布与复制距离阈值在对应采样率的同一训练周期集合上重算。历史数字只作参考，本轮采用同版本新跑的 6 秒与 12 秒配对结果。不把不同生成模型的训练 loss 直接当作共同效果指标。
+
+下游仍沿用 Seq2Point 与原 MAE、RMSE、SAE、Precision、Recall、F1（20 W 逐点开关阈值），保留同一采样率内的共享背景放置与增强预算，并加报共同 12 秒网格结果；B0/B1/B2 等下游参照也须同版本配套。下游训练种子 17/42/73 与本批生成器的训练/生成种子 17 分开记录。当前新入口只到生成和质量审计，不自动运行 NILM 或读取测试集，不能用生成门通过代替最终下游结论。
+
+### 提交和返回结果
+
+配置为 `config/server/zzz_sampling_generation.json`；入口 `scripts/run_sampling_generation.py` 分为 `states` 和 `generator` 两阶段，调用既有模型脚本并记录输入输出 SHA-256、完整参数、环境、时间、训练历史及各项结果。运行前后复核全部训练输入，状态库交接文件必须匹配提交、配置、周期集合和每个文件的指纹。旧作业目录不复用；正式作业不使用 12100 的 8 周期状态库。
+
+更新到本次发布的干净提交后，在服务器项目目录运行：
+
+```bash
+PSLG_SAMPLING_COMMIT="$(git rev-parse HEAD)" bash scripts/submit_sampling_generation.sh
+```
+
+它提交一个两采样率全量状态作业，以及一个 14 子任务生成数组，均使用已验证启动方式与 h104 的 RTX 3090。数组并发上限为 1，不在一张卡上同时训练多个模型。状态作业终止后数组才启动；若状态阶段失败，子任务在状态库交接检查处停止，GPU 框架检查和生成训练均不执行，并留下失败诊断。一个生成子任务失败不阻断其他路线。状态作业 4 小时、生成子任务 2 天均为时间上限，不是耗时预估。整个批次排队和运行期间不要切换、拉取或修改同一仓库。
+
+状态产物在 `pslg_artifacts/sampling_states_<STATE_JOB>`，生成产物在 `pslg_artifacts/sampling_generation_<ARRAY_JOB>_<INDEX>`。索引 0–6 为表中顺序的 6 秒组，7–13 为同顺序的 12 秒组。大波形与 checkpoint 留在服务器；每个 Python 作业成功或失败时打包小型诊断，并自动复制到项目 `log` 目录，不再需要手动从外层目录复制。Slurm 启动失败或进程被杀死时可能没有包，仍保留项目 `log` 中的 `.out/.err`。
+
+数组结束后，使用提交脚本打印的两个实际作业号汇总：
+
+```bash
+conda run --no-capture-output -n pslg-nilm \
+  python scripts/collect_sampling_generation.py \
+  --state-job <STATE_JOB> --array-job <ARRAY_JOB>
+```
+
+返回项目 `log/sampling_generation_<ARRAY_JOB>_diagnostics.tar.gz` 一个文件即可，内含总表 JSON 和已有的各作业诊断。未完成或缺失的路线仍列在总表中，不按缺失样本计算总体优势；若提前收集，后续收集需用新的 `--project-log` 目录，不能覆盖第一次快照。`status=completed` 只表示执行完成，科学结果另看 `result`：`quality_rejected` 是已记录的负面结果，`gates_passed_pending_review` 也不代表 NILM 已经改善。
 
 ## 执行阶段和全程留档
 
@@ -242,16 +334,16 @@ python scripts/compare_sampling_predictions.py \
 
 ## 当前完成边界
 
-已接入固定师弟代码、实现配对降频和审计、周期库接口验证、带时间戳的预测记录、共同网格比较、服务器路径配置和记录式命令入口。12098 真实数据准备与存储边界修正已验收通过；12099 在 h103 的 TensorFlow GPU 检查阶段失败，修正版待 h104 新作业验证。正式切分/聚类、生成器重训和 NILM 效果实验尚未完成；不存在可汇报的 12 秒模型效果数值。
+已接入固定师弟代码、实现配对降频和审计、周期库接口验证、带时间戳的预测记录、共同网格比较、服务器路径配置和记录式命令入口。12098 真实数据准备与存储边界修正已验收通过；12099 在 h103 的 TensorFlow GPU 检查阶段失败，12100 已在 h104 通过两个框架 GPU 检查及 8 周期、2 轮的配对状态链路验收。全量状态前置与 14 组生成对照的提交、记录、评价及汇总入口现已实现，尚待服务器执行。493 周期正式切分/聚类、生成器重训和 NILM 效果实验尚未完成；不存在可汇报的 12 秒生成比较或下游效果数值。
 
-2026-10-06 当前版本地验证：以下 118 项测试通过，另已执行 Python 语法编译、`bash -n` 和 `git diff --check`。其中包括完整准备流程的跨文件恢复测试和 13 项边界测试，覆盖 29 种文件切法、单行/空文件、来源行号唯一性、输入/能量总账、坏哈希、真实缺口和分区隔离。状态链路及启动检查共 16 项，另纳入原有 5 项状态发现辅助测试。其余测试覆盖周期库/CSV 接口、预测中心定位、B1/B2 适配、数据划分、调度和质量指标。测试数据为小型构造样本；本地缺少 PyTorch/TensorFlow，没有验证神经网络训练或 GPU 可用性。
+2026-10-06 当前版本地验证：以下 134 项测试通过，另已执行 Python 语法编译、逐脚本 `bash -n` 和 `git diff --check`。其中包括完整准备流程的跨文件恢复测试和 13 项边界测试，覆盖 29 种文件切法、单行/空文件、来源行号唯一性、输入/能量总账、坏哈希、真实缺口和分区隔离。状态链路及启动检查共 16 项，另纳入原有 5 项状态发现辅助测试。本轮新增 16 项生成编排测试，覆盖 14 组矩阵、继承预算、采样单位、全量状态交接、生成波形完整性、原近复制率上限、负面结果留存、不覆盖诊断包与不完整矩阵汇总。其余测试覆盖周期库/CSV 接口、预测中心定位、B1/B2 适配、数据划分、调度和质量指标。测试数据为小型构造样本；本地缺少 PyTorch/TensorFlow，新训练子进程使用模拟结果，没有在本地验证神经网络训练或 GPU 可用性。
 
 ```bash
-python -m unittest tests.test_sampling_state_smoke tests.test_state_discovery \
+python -m unittest tests.test_sampling_generation tests.test_sampling_state_smoke tests.test_state_discovery \
   tests.test_sampling_shard_boundaries tests.test_sampling_preparation \
   tests.test_sampling_source_trace tests.test_sampling_rate_control tests.test_sampling_server_tools \
   tests.test_server_setup_inventory tests.test_research_data \
   tests.test_shared_placement tests.test_synthetic_quality
 ```
 
-状态链路本地测试覆盖输入变更/越界拒绝、两组周期顺序、采样单位配置、显式初始化种子、缺周期/重叠/截断拒绝、代码漂移、失败包和完整编排。新增 4 项启动测试验证两个子环境分别激活、GPU 分配变量保留、参数安全传递、激活失败停止与 Slurm 节点/模块配置；测试使用模拟 Conda 函数和本地 Python，不证明服务器激活成功。GPU 与训练子进程的编排测试也使用模拟结果，真实结果须以新作业回传为准。
+状态链路本地测试覆盖输入变更/越界拒绝、两组周期顺序、采样单位配置、显式初始化种子、缺周期/重叠/截断拒绝、代码漂移、失败包和完整编排。既有 4 项启动测试验证两个子环境分别激活、GPU 分配变量保留、参数安全传递、激活失败停止与 Slurm 节点/模块配置；测试使用模拟 Conda 函数和本地 Python，不证明服务器激活成功。GPU 与训练子进程的编排测试也使用模拟结果；真实激活、GPU 和小规模状态训练结果见上述 12100 验收，多生成模型的真实训练与比较仍以新服务器作业回传为准。
