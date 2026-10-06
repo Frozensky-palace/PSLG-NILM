@@ -134,6 +134,27 @@ class ShardedWindowDataset:
             self._cached_data = None
             self._cached_path = None
 
+    def center_metadata(self, indices):
+        """Return temporal identifiers so different sample rates can be paired."""
+        indices = np.asarray(indices)
+        if indices.size and not np.issubdtype(indices.dtype, np.integer):
+            raise ValueError("window indices must be integers")
+        indices = indices.astype(np.int64)
+        if indices.ndim != 1 or np.any(indices < 0) or np.any(indices >= len(self)):
+            raise ValueError("window indices are out of range")
+        rows = np.searchsorted(self.cumulative, indices, side="right")
+        previous = np.where(rows > 0, self.cumulative[np.maximum(rows - 1, 0)], 0)
+        centers = (self.ranges.first_center.to_numpy(dtype=np.int64)[rows]
+                   + (indices - previous) * self.ranges.stride.to_numpy(dtype=np.int64)[rows])
+        shards = self.ranges.shard_index.to_numpy(dtype=np.int64)[rows]
+        timestamps = np.empty(len(indices), dtype=np.int64)
+        for shard in np.unique(shards):
+            mask = shards == shard
+            path, _, _ = self._source(int(shard))
+            with np.load(path, allow_pickle=False) as data:
+                timestamps[mask] = data["timestamp"][centers[mask]]
+        return {"timestamp": timestamps, "shard_index": shards, "center_row": centers}
+
     def denormalize_target(self, value):
         cfg = self.normalization["appliance_w"]
         return np.asarray(value) * cfg["std"] + cfg["mean"]

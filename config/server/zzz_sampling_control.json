@@ -1,0 +1,30 @@
+{
+  "experiment": "sampling_rate_control_only",
+  "project_root": "/home/scnu2024024563/NILM-zzz/PSLG-NILM-zzz",
+  "data_root": "/home/scnu2024024563/dataset",
+  "building": 1,
+  "appliance": "washing_machine",
+  "nilm_environment": "pslg-nilm",
+  "state_environment": "pslg-detsec",
+  "source_branch": "feature/haojun",
+  "source_commit": "ef0ebbf96933cfaf8bd11292d03c28471efd9aa7",
+  "baseline_sample_seconds": 6,
+  "downsample_factor": 2,
+  "reduction": "pair_mean",
+  "timestamp_convention": "epoch_bin_left_edge",
+  "preserve_original_data": true,
+  "preserve_original_split": true,
+  "model_window_policy": "fixed_sample_count",
+  "nilm_window_samples": 599,
+  "baseline_window_seconds": 3594,
+  "control_window_seconds": 7188,
+  "change_model_algorithms": false,
+  "historical_test_already_examined": true,
+  "status": "awaiting_server_channel_and_input_inventory",
+  "discovery_roots": [
+    "/home/scnu2024024563/NILM-zzz/PSLG-NILM-zzz",
+    "/home/scnu2024024563/NILM/PSLG-NILM",
+    "/home/scnu2024024563/pslg_data",
+    "/home/scnu2024024563/pslg_artifacts"
+  ]
+}

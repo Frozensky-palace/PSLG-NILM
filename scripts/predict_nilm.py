@@ -83,7 +83,7 @@ def main() -> None:
     if device.type == "cuda" and not torch.cuda.is_available():
         raise SystemExit("CUDA was requested but is not available")
     model = Seq2PointCNN(dataset.window_length).to(device)
-    load_checkpoint(Path(args.checkpoint), model=model, map_location=device)
+    payload = load_checkpoint(Path(args.checkpoint), model=model, map_location=device)
     _, predictions, targets = evaluate_validation_mae(
         dataset, indices, model, app_norm)
     y_true = targets * app_norm["std"] + app_norm["mean"]
@@ -99,6 +99,9 @@ def main() -> None:
         arm=np.asarray(args.arm),
         partition=np.asarray(args.partition),
         checkpoint=np.asarray(str(args.checkpoint)),
+        sample_seconds=np.asarray(dataset.manifest["sample_seconds"]),
+        seed=np.asarray(payload.get("config", {}).get("seed", -1)),
+        **dataset.center_metadata(indices),
     )
     print(f"[predict] wrote {count:,} windows -> {output}")
     dataset.close()
