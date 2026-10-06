@@ -77,6 +77,25 @@ tar -czf log/sampling_control_setup.tar.gz -C log sampling_control_setup
 
 若找到原 aligned 数据和周期划分，应优先复用并验证哈希。如果只有原始 DAT，则先按原协议构建一次 6 秒对齐数据，再从同一份数据派生 12 秒；不能把重新划分的数据与历史表直接作单变量比较。
 
+## 2026 年 10 月 6 日服务器清单结论
+
+回传的 `sampling_control_setup.tar.gz` 确认服务器为 `zzz@761b1c3`，已跟踪文件无改动。设备元数据确认：洗衣机为 `house_1/channel_5.dat` 的有功功率；`meter54` 对应 `house_1/mains.dat`，其四列为时间戳、有功功率、视在功率、电压。`channel_54.dat` 不存在并不表示总表缺失。`channel_1.dat` 为视在功率，且元数据标为 disabled，不能用它代替原有功总表。
+
+两套环境均已有包版本记录：`pslg-nilm` 为 Python 3.12.14、PyTorch 2.5.1+cu121；`pslg-detsec` 为 Python 3.12.14、TensorFlow 2.18.1。Slurm 返回 RTX3090 和 A6000 分区可用。登录节点无 `nvidia-smi` 路径不能用于判定计算节点 GPU 不可用；框架导入和 GPU 前后向仍须在分配到的计算节点上验证。
+
+在 `pslg_artifacts` 找到六份历史下游 `dataset_manifest.json`：`de_inputs_r0p5`、`de_inputs_r0p5_v2`、`de_inputs_r0p5_g5test`、`de_inputs_r0p5_b4r`、`de_inputs_r0p5_b4wgan`、`de_inputs_r0p5_b4diff`。第一次清单只记录路径，且搜索范围漏掉师弟操作手册中的 `~/projects/`，因此不能据此认定原对齐数据已丢失。
+
+现改用来源追溯：读取这些清单、归一化和窗口范围，以及可定位的对齐清单/周期划分，检查 B0 实际文件位置和元数据哈希。不读取 NPZ 波形、不修改旧清单、不自动选择多个同名数据副本，也不重建划分。
+
+```bash
+conda run --no-capture-output -n pslg-nilm python scripts/inspect_sampling_sources.py
+tar -czf log/sampling_source_trace.tar.gz -C log sampling_source_trace
+```
+
+回传 `log/sampling_source_trace.tar.gz`。若找到与历史记录哈希一致的原 6 秒对齐清单，仍须在正式计算作业中校验波形 SHA-256 后才进行两点降频；元数据哈希一致不等于波形验证通过。来源缺失或歧义将保留在报告中，不自动换通道或重划训练集。
+
+来源追溯新增 6 项本地测试，验证旧仓库定位、哈希匹配与不匹配、路径歧义、路径越界/符号链接、读取大小限制，以及不会打开波形数组。连同下述原 69 项测试，本轮共 75 项通过；服务器真实数据仍待运行。
+
 ## 执行阶段和全程留档
 
 | 阶段 | 内容 | 需要留档 |
@@ -119,4 +138,4 @@ python -m unittest tests.test_sampling_rate_control tests.test_sampling_server_t
   tests.test_shared_placement tests.test_synthetic_quality
 ```
 
-下一道必要检查是服务器的真实总表/支路通道及原 aligned/split 产物位置。通道未知时不猜测，不将空报告标为完成实验。
+真实总表/支路通道已由回传元数据确认。当前必要检查为原 aligned/split 产物的路径和哈希，随后才能配置服务器正式降频作业；不得把清单检查记作完成训练实验。
