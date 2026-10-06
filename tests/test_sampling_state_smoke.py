@@ -2,6 +2,7 @@ import copy
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
 import tarfile
 import tempfile
@@ -14,7 +15,7 @@ import yaml
 
 from scripts.downsample_aligned_pairs import sha256, write_json
 from scripts.run_sampling_state_smoke import (
-    METADATA_NAMES, ROOT, package_diagnostics, rate_config, run,
+    METADATA_NAMES, ROOT, activated_command, package_diagnostics, rate_config, run,
     validate_state_outputs, verify_prepared,
 )
 from scripts.train_state_discovery import seed_tensorflow_runtime
@@ -54,6 +55,7 @@ def fixture(root):
                 {"path": str(p), "sha256": sha256(p)} for p in sorted(folder.rglob("*")) if p.is_file()]})
     return {"prepared_dir": str(source), "preparation_commit": "accepted", "expected_train_cycles": 8,
             "smoke_cycles": 8, "smoke_epochs": 2, "runtime_seed": 42,
+            "conda_init_script": str(root / "conda.sh"),
             "base_config": "config/experiments/core_wm_state_discovery_detsec_pc.yaml",
             "python": {"torch": sys.executable, "tensorflow": sys.executable},
             "expected_metadata_hashes": {name: sha256(source / name) for name in METADATA_NAMES}}
@@ -74,6 +76,70 @@ def repin(config, relative):
 
 
 class SamplingStateSmokeTests(unittest.TestCase):
+    def test_child_command_uses_activation_wrapper_without_shell_interpolation(self):
+        config = {"conda_init_script": "/opt/conda/etc/profile.d/conda.sh"}
+        command = activated_command(config, "/envs/detsec/bin/python", "gpu_framework_smoke.py", ["--output", "a file.json"])
+        self.assertEqual(command[:5], ["bash", str(ROOT / "scripts/run_in_sampling_env.sh"),
+                                      config["conda_init_script"], "/envs/detsec/bin/python", "-u"])
+        self.assertEqual(command[-2:], ["--output", "a file.json"])
+
+    def test_wrapper_activates_each_child_and_preserves_gpu_allocation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            init = root / "conda.sh"
+            init.write_text('conda() {\n'
+                            '  [[ "$1" == activate ]] || return 7\n'
+                            '  export CONDA_PREFIX="$2"\n'
+                            '  export ACTIVATION_HOOK_RAN=yes\n'
+                            '}\n')
+            env = {**os.environ, "SLURM_JOB_ID": "test", "CONDA_PREFIX": "/base",
+                   "CUDA_VISIBLE_DEVICES": "GPU-assigned-by-slurm"}
+            payload = "literal ; not-a-shell-command"
+            for label in ("detsec env", "nilm env"):
+                prefix = root / label
+                (prefix / "bin").mkdir(parents=True)
+                python = prefix / "bin/python"
+                python.symlink_to(sys.executable)
+                code = ('import json,os,sys; print(json.dumps({'
+                        '"prefix":os.environ["CONDA_PREFIX"], '
+                        '"hook":os.environ["ACTIVATION_HOOK_RAN"], '
+                        '"gpu":os.environ["CUDA_VISIBLE_DEVICES"], "arg":sys.argv[1]}))')
+                result = subprocess.run(["bash", str(ROOT / "scripts/run_in_sampling_env.sh"),
+                                         str(init), str(python), "-c", code, payload],
+                                        env=env, capture_output=True, text=True, check=True)
+                actual = json.loads(result.stdout.splitlines()[-1])
+                self.assertEqual(actual, {"prefix": str(prefix), "hook": "yes",
+                                          "gpu": env["CUDA_VISIBLE_DEVICES"], "arg": payload})
+
+    def test_wrapper_rejects_activation_failure_wrong_prefix_and_login_launch(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "env/bin").mkdir(parents=True)
+            python = root / "env/bin/python"
+            python.symlink_to(sys.executable)
+            init = root / "conda.sh"
+            command = ["bash", str(ROOT / "scripts/run_in_sampling_env.sh"), str(init),
+                       str(python), "-c", "print('PYTHON_STARTED')"]
+            for body, exitcode in (("conda() { return 23; }\n", 23),
+                                   ('conda() { export CONDA_PREFIX=/wrong; }\n', 2)):
+                init.write_text(body)
+                result = subprocess.run(command, env={**os.environ, "SLURM_JOB_ID": "test"},
+                                        capture_output=True, text=True)
+                self.assertEqual(result.returncode, exitcode)
+                self.assertNotIn("PYTHON_STARTED", result.stdout)
+            env = {k: v for k, v in os.environ.items() if k != "SLURM_JOB_ID"}
+            result = subprocess.run(command, env=env, capture_output=True, text=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("Slurm allocation", result.stderr)
+
+    def test_slurm_restores_modules_activation_and_pins_previously_verified_node(self):
+        script = (ROOT / "slurm/sampling_state_smoke.sbatch").read_text()
+        self.assertIn("#SBATCH --nodelist=h104-slurm-a", script)
+        self.assertIn("module load miniconda3/25.5.1-0", script)
+        self.assertIn("module load cuda-toolkit/12.1.1", script)
+        self.assertLess(script.index("conda activate pslg-nilm"), script.index("python -u scripts/run_sampling_state_smoke.py"))
+        self.assertNotIn("export CUDA_VISIBLE_DEVICES=", script)
+
     def test_accepted_data_checks_all_train_files_without_validation_or_test(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -172,7 +238,9 @@ class SamplingStateSmokeTests(unittest.TestCase):
                 calls.append(command)
                 record_dir.mkdir(parents=True)
                 (record_dir / "execution.log").write_text("mock successful child")
-                if "train_state_discovery.py" not in command[1]:
+                self.assertEqual(command[:1], ["bash"])
+                self.assertEqual(command[2], config["conda_init_script"])
+                if not any(arg.endswith("/train_state_discovery.py") for arg in command):
                     write_json(outputs[0], {"all_passed": True})
                     return 0
                 self.assertEqual(command[command.index("--smoke-cycles") + 1], "8")

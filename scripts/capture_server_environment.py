@@ -46,6 +46,7 @@ def capture(repo_root: Path) -> dict:
             packages[name] = None
     record = {
         "python": sys.version,
+        "python_executable": sys.executable,
         "platform": platform.platform(),
         "packages": packages,
         "safe_environment": {key: os.environ[key] for key in SAFE_ENV_KEYS

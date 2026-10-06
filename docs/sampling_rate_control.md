@@ -179,10 +179,10 @@ PSLG_SAMPLING_COMMIT="$(git rev-parse HEAD)" \
 
 ## 配对状态发现链路测试
 
-下一作业 `slurm/sampling_state_smoke.sbatch` 申请 RTX3090 分区 1 张 GPU、4 个 CPU、32 GB 内存，2 小时为上限。复用现有环境，不安装包，不覆盖 12098 输入。具体流程如下：
+下一作业 `slurm/sampling_state_smoke.sbatch` 申请 RTX3090 分区的 h104-slurm-a 节点、1 张 GPU、4 个 CPU、32 GB 内存，2 小时为上限。h104 是历史通过检查的节点，当前可用性仍由本次框架检查判定。复用现有环境，不安装包，不覆盖 12098 输入。具体流程如下：
 
 1. 固定已验收运行的 8 份元数据 SHA-256，复核两组 train 周期 NPZ、CSV 及清单的 1,980 个文件，确认周期 ID 和顺序相同。只读取 train 数据，validation/test 数组不进入此阶段。
-2. 在各自环境中记录包版本、GPU 信息和提交号，分别运行 TensorFlow、PyTorch GPU 前向与反向检查，任一失败即停止。
+2. Slurm 脚本加载 `miniconda3/25.5.1-0`、`cuda-toolkit/12.1.1`，激活 `pslg-nilm` 启动编排器。每个子进程通过 `scripts/run_in_sampling_env.sh` 完整激活目标环境：TensorFlow 用 `pslg-detsec`，PyTorch 用 `pslg-nilm`。记录实际 Python 路径、Conda 前缀、模块、GPU 和提交号，分别运行两框架 GPU 前向与反向检查，任一失败即停止。保留 Slurm 的 `CUDA_VISIBLE_DEVICES`，不手动改卡号。
 3. 取 CSV 顺序中的前 8 个相同训练周期，各跑 2 个 epoch 的 PrimGLR → DETSEC-PC → KMeans k=3/4/5 → 状态合并与状态库导出。只检查接口，不选 k、不冻结状态库、不进入生成器或 Seq2Point 训练。
 4. 逐周期核对状态块从首点到末点连续覆盖、无重叠、无遗漏，并检查时长使用正确采样间隔。原入口会吞掉的 PrimGLR 后端异常、截断造成的覆盖失败均使本作业失败，不记为成功。
 5. 再校验源文件，保存两组配置、所选周期、状态统计、状态路径、训练历史、耗时、命令、输入输出哈希和失败日志。大张量与波形留在服务器；成功或 Python 异常均尝试打包小型诊断文件。
@@ -199,6 +199,16 @@ PSLG_SAMPLING_COMMIT="$(git rev-parse HEAD)" \
 ```
 
 排队或运行时不要修改该仓库。返回 `/home/scnu2024024563/pslg_artifacts/sampling_state_smoke_<JOBID>/diagnostics.tar.gz`；若 Slurm 启动失败、进程被强制终止而无包，返回 `log/sampling-state-smoke-<JOBID>.out` 和 `.err`。链路通过后才扩展到全部 493 个训练周期和正式 epoch，生成/NILM 先导的 seed 17 属于更下游阶段；8 周期、2 轮结果不得用于论文效果比较。
+
+## 作业 12099 的 GPU 初始化失败与启动修正
+
+2026 年 10 月 6 日，12099 在 `ace4af6` 上运行约 19.35 秒后失败。诊断包显示 Slurm 已在 h103-slurm-a 分配 `gres/gpu=1`，`CUDA_VISIBLE_DEVICES=0`，`nvidia-smi` 能列出 RTX 3090。但 TensorFlow 2.18.1 的 `cuInit` 返回 `CUDA_ERROR_UNKNOWN`，GPU 检查失败，尚未运行 PyTorch 检查或任何 6 秒/12 秒状态训练。cuFFT/cuDNN/cuBLAS 的重复注册信息不能单独当作本次失败原因；直接阻断点是 CUDA 初始化失败。
+
+这一现象与 [9 月 21 日节点报告](../reports/server_c1/2026-09-21/cluster_node_health_report_2026-09-21.md) 中 h103 的记录一致：调度与 `nvidia-smi` 正常，但两个框架无法初始化 CUDA；当时相同环境在 h104 通过。该证据支持优先避开 h103，不能据此确定内核模块或硬件的具体故障。没有重装包、修改驱动、重置 GPU 或更改集群节点状态。
+
+旧启动脚本虽调用了正确的 `pslg-detsec/bin/python`，但未完整激活环境，子进程仍继承 base 的 `CONDA_PREFIX`，且没有加载任何 module。这是相对原 C1/C2 启动流程的遗漏，不能仅凭它断言“不激活就是 cuInit 故障的唯一原因”。修正版同时恢复原模块/激活流程并指定历史验证通过的 h104，作为恢复运行措施，不用于单独归因某一变量。若 h104 新作业仍失败，保留诊断并进一步区分节点和运行库问题。
+
+12099 的失败产物原样保留。新作业继续使用已验收的 12098 数据与相同小规模配置；运行记录中的 `environment` 明确表示父启动进程，真正的框架环境以子进程 `environment_tensorflow.json`、`environment_torch.json` 为准。环境初始化若在 Python 编排器启动前失败，诊断包可能尚未生成，此时回传 Slurm `.out` 和 `.err`。
 
 ## 执行阶段和全程留档
 
@@ -232,9 +242,9 @@ python scripts/compare_sampling_predictions.py \
 
 ## 当前完成边界
 
-已接入固定师弟代码、实现配对降频和审计、周期库接口验证、带时间戳的预测记录、共同网格比较、服务器路径配置和记录式命令入口。12098 真实数据准备与存储边界修正已验收通过，下一步为配对状态发现链路测试。正式切分/聚类、生成器重训和 NILM 效果实验尚未完成；不存在可汇报的 12 秒模型效果数值。
+已接入固定师弟代码、实现配对降频和审计、周期库接口验证、带时间戳的预测记录、共同网格比较、服务器路径配置和记录式命令入口。12098 真实数据准备与存储边界修正已验收通过；12099 在 h103 的 TensorFlow GPU 检查阶段失败，修正版待 h104 新作业验证。正式切分/聚类、生成器重训和 NILM 效果实验尚未完成；不存在可汇报的 12 秒模型效果数值。
 
-2026-10-06 当前版本地验证：以下 114 项测试通过，另已执行 Python 语法编译、`bash -n` 和 `git diff --check`。其中包括完整准备流程的跨文件恢复测试和 13 项边界测试，覆盖 29 种文件切法、单行/空文件、来源行号唯一性、输入/能量总账、坏哈希、真实缺口和分区隔离。本轮增加 12 项状态链路测试，并纳入原有 5 项状态发现辅助测试。其余测试覆盖周期库/CSV 接口、预测中心定位、B1/B2 适配、数据划分、调度和质量指标。测试数据为小型构造样本；本地缺少 PyTorch/TensorFlow，没有验证神经网络训练或 GPU 可用性。
+2026-10-06 当前版本地验证：以下 118 项测试通过，另已执行 Python 语法编译、`bash -n` 和 `git diff --check`。其中包括完整准备流程的跨文件恢复测试和 13 项边界测试，覆盖 29 种文件切法、单行/空文件、来源行号唯一性、输入/能量总账、坏哈希、真实缺口和分区隔离。状态链路及启动检查共 16 项，另纳入原有 5 项状态发现辅助测试。其余测试覆盖周期库/CSV 接口、预测中心定位、B1/B2 适配、数据划分、调度和质量指标。测试数据为小型构造样本；本地缺少 PyTorch/TensorFlow，没有验证神经网络训练或 GPU 可用性。
 
 ```bash
 python -m unittest tests.test_sampling_state_smoke tests.test_state_discovery \
@@ -244,4 +254,4 @@ python -m unittest tests.test_sampling_state_smoke tests.test_state_discovery \
   tests.test_shared_placement tests.test_synthetic_quality
 ```
 
-状态链路本地测试覆盖输入变更/越界拒绝、两组周期顺序、采样单位配置、显式初始化种子、缺周期/重叠/截断拒绝、代码漂移、失败包和完整编排。GPU 与训练子进程的编排测试使用模拟结果，不证明 TensorFlow 或 PyTorch 已在服务器运行成功；真实结果须以新作业回传为准。
+状态链路本地测试覆盖输入变更/越界拒绝、两组周期顺序、采样单位配置、显式初始化种子、缺周期/重叠/截断拒绝、代码漂移、失败包和完整编排。新增 4 项启动测试验证两个子环境分别激活、GPU 分配变量保留、参数安全传递、激活失败停止与 Slurm 节点/模块配置；测试使用模拟 Conda 函数和本地 Python，不证明服务器激活成功。GPU 与训练子进程的编排测试也使用模拟结果，真实结果须以新作业回传为准。

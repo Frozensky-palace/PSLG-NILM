@@ -37,6 +37,13 @@ def read_json(path):
     return json.loads(Path(path).read_text())
 
 
+def activated_command(config, python, script, arguments):
+    """Activate in the child shell; using an env Python alone misses hooks."""
+    return ["bash", str(ROOT / "scripts/run_in_sampling_env.sh"),
+            config["conda_init_script"], str(python), "-u",
+            str(ROOT / "scripts" / script), *map(str, arguments)]
+
+
 def verify_prepared(config, report_path):
     source = Path(config["prepared_dir"]).resolve()
     report = {"passed": False, "metadata": [], "train_files": [],
@@ -195,6 +202,7 @@ def run(config, output_dir, *, expected_commit=None, require_slurm=True):
     output.mkdir(parents=True, exist_ok=False)
     started = time.monotonic()
     report = {"status": "running", "phase": "paired_state_smoke_not_formal_experiment",
+              "child_launch_protocol": "conda_activate_then_env_python",
               "started_utc": utc_now_string(), "steps_completed": [], "test_accessed": False,
               "validation_arrays_accessed": False, "generator_training_performed": False,
               "nilm_training_performed": False, "workflow_dirs": {k: str(v) for k, v in workflow_dirs.items()}}
@@ -207,7 +215,7 @@ def run(config, output_dir, *, expected_commit=None, require_slurm=True):
 
         def step(name, python, script, arguments, inputs, outputs):
             check_frozen_code(expected_commit)
-            code = run_recorded([python, str(ROOT / "scripts" / script), *map(str, arguments)],
+            code = run_recorded(activated_command(config, python, script, arguments),
                                 output / "records" / name, inputs=inputs, outputs=outputs)
             check_frozen_code(expected_commit)
             if code != 0:

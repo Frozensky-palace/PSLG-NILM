@@ -69,7 +69,9 @@ def run_recorded(command, record_dir, inputs=(), outputs=(), require_slurm=False
     env.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
     info = {"status": "running", "command": actual, "cwd": str(Path.cwd()),
             "started_utc": datetime.now(timezone.utc).isoformat(),
-            "environment": inspect_setup(root, []), "inputs": fingerprints(inputs),
+            "environment": inspect_setup(root, []),
+            "environment_scope": "launcher process before child activation; inspect child environment artifacts for framework environment",
+            "inputs": fingerprints(inputs),
             "forced_child_environment": {"PYTHONHASHSEED": "0"},
             "declared_outputs": list(map(str, outputs))}
     manifest = record / "run_manifest.json"

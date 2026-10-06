@@ -6,6 +6,7 @@
   "smoke_cycles": 8,
   "smoke_epochs": 2,
   "runtime_seed": 42,
+  "conda_init_script": "/home/apps/miniconda3/25.5.1-0/etc/profile.d/conda.sh",
   "base_config": "config/experiments/core_wm_state_discovery_detsec_pc.yaml",
   "python": {
     "tensorflow": "/home/scnu2024024563/.conda/envs/pslg-detsec/bin/python",
