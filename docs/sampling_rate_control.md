@@ -94,7 +94,47 @@ tar -czf log/sampling_source_trace.tar.gz -C log sampling_source_trace
 
 回传 `log/sampling_source_trace.tar.gz`。若找到与历史记录哈希一致的原 6 秒对齐清单，仍须在正式计算作业中校验波形 SHA-256 后才进行两点降频；元数据哈希一致不等于波形验证通过。来源缺失或歧义将保留在报告中，不自动换通道或重划训练集。
 
-来源追溯新增 6 项本地测试，验证旧仓库定位、哈希匹配与不匹配、路径歧义、路径越界/符号链接、读取大小限制，以及不会打开波形数组。连同下述原 69 项测试，本轮共 75 项通过；服务器真实数据仍待运行。
+来源追溯新增 6 项本地测试，验证旧仓库定位、哈希匹配与不匹配、路径歧义、路径越界/符号链接、读取大小限制，以及不会打开波形数组。连同下述原 69 项测试，来源追溯阶段共 75 项通过。
+
+## 来源追溯结果与数据准备作业
+
+第二次回传 `sampling_source_trace.tar.gz` 定位到原数据：
+
+```text
+/home/scnu2024024563/projects/PSLG-NILM-c1/reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2
+```
+
+其对齐清单 SHA-256 为 `158dbb3333539c695225b64627a0786e23a0ac3d9f79235339c3618ceba77ce4`，与发现的九份历史下游清单记录一致。原周期划分 CSV 的实际哈希也与对齐清单引用一致；清单中的 Windows 路径是历史来源记录，不必修改原文件。配置已固定服务器实际路径和对齐清单、coverage、inventory、`de_inputs_r0p5_v2` 清单四份哈希。
+
+| 原 6 秒分区 | 分片数 | 有效连续数据点 | analysis eligible 周期 |
+| --- | --- | --- | --- |
+| train | 19 | 7,896,997 | 493 |
+| validation | 5 | 2,187,295 | 164 |
+
+以上是原清单记录，不是新降频结果。文件已定位，但波形内容的 SHA-256 校验由正式作业执行。
+
+`slurm/sampling_control_prepare.sbatch` 复用 `pslg-nilm`，申请 RTX3090 分区的 4 个 CPU 和 16 GB 内存，不申请 GPU。2 小时是作业时间上限，不是耗时承诺。运行顺序如下：
+
+1. 校验冻结元数据、原周期 ID/边界/划分和 24 个 train/validation 波形分片的 SHA-256。
+2. 在新运行目录另存 factor1 的 6 秒参照及 factor2 的 12 秒数据；不读取测试集数组，不修改源文件。
+3. 两组分别建立 train/validation 周期库；只有 train 周期导出状态发现用 CSV。
+4. 输出逐周期能量/时长/峰值/边缘位移、短周期最小长度、eligible 增减 ID、逐分片丢弃点数与能量。
+5. 再校验源文件哈希，生成不含大波形的 `diagnostics.tar.gz`。异常尝试也保留记录和已有诊断，不覆盖、不删除后重跑。
+
+提交前先更新到本次发布的提交，再执行：
+
+```bash
+cd /home/scnu2024024563/NILM-zzz/PSLG-NILM-zzz
+mkdir -p log
+PSLG_SAMPLING_COMMIT="$(git rev-parse HEAD)" \
+  sbatch --export=ALL slurm/sampling_control_prepare.sbatch
+```
+
+排队和运行期间不要切换分支、拉取或修改该仓库；作业会在每步前后检查提交和已跟踪文件。输出在 `/home/scnu2024024563/pslg_artifacts/sampling_control_data_<JOBID>/`；完成后回传该目录的 `diagnostics.tar.gz`。Slurm 启动失败或强制超时时可能来不及生成包，此时回传仓库 `log/sampling-control-data-<JOBID>.out` 和 `.err`。
+
+数据阶段完成不代表生成器训练完成或效果改善。若 12 秒周期库少了某些周期，先审查 `cycle_comparison.csv` 和 `eligibility_changes`，不得直接宣称两组训练周期集合完全相同；若全部周期失效则作业停止。GPU 框架检查、切分/聚类、生成器和 Seq2Point 的真实重训属于后续阶段。
+
+数据作业另新增 8 项本地测试：完整小样本流水线、波形/元数据变更拒绝、登录节点保护、运行前后代码冻结、失败包和短周期退出报告。与前述测试合计 83 项通过；Slurm 脚本通过 `bash -n` 检查。尚未在服务器运行此作业。
 
 ## 执行阶段和全程留档
 
@@ -138,4 +178,4 @@ python -m unittest tests.test_sampling_rate_control tests.test_sampling_server_t
   tests.test_shared_placement tests.test_synthetic_quality
 ```
 
-真实总表/支路通道已由回传元数据确认。当前必要检查为原 aligned/split 产物的路径和哈希，随后才能配置服务器正式降频作业；不得把清单检查记作完成训练实验。
+真实总表/支路通道及原 aligned/split 元数据已确认，正式数据准备作业已配置。当前等待服务器完成波形校验、6 秒/12 秒派生及周期库审计；不得把清单检查或数据准备记作完成模型训练实验。

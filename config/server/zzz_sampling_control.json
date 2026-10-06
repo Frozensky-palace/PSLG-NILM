@@ -20,7 +20,22 @@
   "control_window_seconds": 7188,
   "change_model_algorithms": false,
   "historical_test_already_examined": true,
-  "status": "channels_verified_awaiting_historical_source_trace",
+  "status": "historical_metadata_matched_ready_for_data_preparation",
+  "preparation": {
+    "source_aligned_dir": "/home/scnu2024024563/projects/PSLG-NILM-c1/reports/core_validation/ukdale_b1_washing_machine/aligned_partitions_v2",
+    "source_inventory_path": "/home/scnu2024024563/projects/PSLG-NILM-c1/reports/core_validation/ukdale_b1_washing_machine/cycle_inventory_with_split.csv",
+    "anchor_dataset_manifest": "/home/scnu2024024563/pslg_artifacts/de_inputs_r0p5_v2/dataset_manifest.json",
+    "expected_hashes": {
+      "aligned_manifest": "158dbb3333539c695225b64627a0786e23a0ac3d9f79235339c3618ceba77ce4",
+      "coverage": "ae2102ca50d6a2d172494e1070011f3f707894d12af93fe2267e737c6108f931",
+      "inventory": "96ee5bf7d2adedcca41be3234c7cbd1149103cd0a280d9734bd9b54a15ba0781",
+      "anchor_dataset_manifest": "a4f796a59e7e21590763b37064935ebf58c57dfbd703dcf0f7d5a397805b45e7"
+    },
+    "expected_eligible_cycles": {"train": 493, "validation": 164},
+    "source_trace_report": "setup-20261006T074107Z-hkbluvhy.json",
+    "partitions": ["train", "validation"],
+    "output_root": "/home/scnu2024024563/pslg_artifacts"
+  },
   "channel_evidence": {
     "received_date": "2026-10-06",
     "source_report": "setup-20261006T072419Z-i41bkvcz.json",
