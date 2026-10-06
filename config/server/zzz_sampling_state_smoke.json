@@ -1,0 +1,24 @@
+{
+  "phase": "paired_sampling_state_smoke_not_formal_experiment",
+  "prepared_dir": "/home/scnu2024024563/pslg_artifacts/sampling_control_data_12098",
+  "preparation_commit": "5add0e1ac5a843cbfc59f05bbe47d19e076c1ee6",
+  "expected_train_cycles": 493,
+  "smoke_cycles": 8,
+  "smoke_epochs": 2,
+  "runtime_seed": 42,
+  "base_config": "config/experiments/core_wm_state_discovery_detsec_pc.yaml",
+  "python": {
+    "tensorflow": "/home/scnu2024024563/.conda/envs/pslg-detsec/bin/python",
+    "torch": "/home/scnu2024024563/.conda/envs/pslg-nilm/bin/python"
+  },
+  "expected_metadata_hashes": {
+    "run_manifest.json": "a2e1860d4065cc69b126c75956630a0777c2749c09dbc7493274e98112b6b4d4",
+    "preparation_summary.json": "42d9c98c45170a6c83dfc8ecd03b0ed56728f43f66709447e2869c8abe4ee97e",
+    "source_verification.json": "8b3b4203981ede7cb16029b98d16f3919cd01aab535f2d5d865ce2c194d7dbdb",
+    "source_verification_after.json": "8b3b4203981ede7cb16029b98d16f3919cd01aab535f2d5d865ce2c194d7dbdb",
+    "records/6s_train_library/run_manifest.json": "525bfb1393aabd5871701b9f04f60d846b6ae4939ae1bce3635de66f45eb2c7d",
+    "records/6s_train_segments/run_manifest.json": "7cc67c3b541279dc3798eba89799adfbd337a927431361b3bd2870378d931df4",
+    "records/12s_train_library/run_manifest.json": "ee02fb96f31e957ba2fbb4b349603727040017cd70c54c5acb54fa619f93ba4e",
+    "records/12s_train_segments/run_manifest.json": "e8175f6193d535ada7a8ac70af8a1fa18a04d9d43d34e2221cb50bdf9555ea6e"
+  }
+}

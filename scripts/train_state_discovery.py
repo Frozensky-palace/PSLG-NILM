@@ -62,6 +62,16 @@ from src.generation.provenance import (  # noqa: E402
 SEGMENT_MAP_NAME = "segment_source_map.csv"
 
 
+def seed_tensorflow_runtime(seed: int) -> None:
+    """Explicit opt-in; leave historical unseeded runs unchanged by default."""
+    import tensorflow as tf
+
+    # Keras seeds Python, NumPy and TensorFlow together. The inherited
+    # DETSEC-PC internal split/batch random_state=0 remains unchanged.
+    tf.keras.utils.set_random_seed(seed)
+    print(f"[state-discovery] runtime seed={seed}", flush=True)
+
+
 def load_segment_map(segments_dir: Path, map_path: Path | None) -> tuple[pd.DataFrame, Path]:
     """Load the segment source map and enforce the train-only guarantee."""
     resolved = Path(map_path) if map_path else Path(segments_dir) / SEGMENT_MAP_NAME
@@ -122,14 +132,14 @@ def main() -> None:
                     help="override config/state_discovery segment_method")
     ap.add_argument("--seed", type=int, default=None,
                     help="override the KMeans random_state from the config")
+    ap.add_argument("--runtime-seed", type=int, default=None,
+                    help="explicitly seed Python/NumPy/TensorFlow initialization; independent of KMeans seed")
     ap.add_argument("--epochs-override", type=int, default=None,
                     help="override feature_extract.epochs (smoke runs)")
     ap.add_argument("--smoke-cycles", type=int, default=0,
                     help="use only the first N train cycles (0 = formal run)")
     ap.add_argument("--deterministic-tf", action="store_true",
-                    help="enable TF op determinism; two runs with the same "
-                         "seed then produce identical features (slower, and "
-                         "unsupported ops raise)")
+                    help="request TF op determinism (also set --runtime-seed for initialization; unsupported ops raise)")
     ap.add_argument("--cycle-library-dir", default=None,
                     help="override config/state_discovery cycle_library_dir")
     args = ap.parse_args()
@@ -155,6 +165,12 @@ def main() -> None:
     if output_root.exists():
         raise SystemExit(
             f"refusing to overwrite an existing output directory: {output_root}")
+    if args.runtime_seed is not None:
+        seed_tensorflow_runtime(args.runtime_seed)
+        cfg.setdefault("state_discovery", {})["runtime_seed"] = args.runtime_seed
+        # The historical feature-cache key does not include runtime RNG state.
+        # A seeded run must actually train instead of reusing unseeded features.
+        cfg.setdefault("feature_extract", {})["cache"] = False
     if args.deterministic_tf:
         _enable_tf_determinism()
 
@@ -236,6 +252,7 @@ def main() -> None:
         "run_id": args.run_id,
         "git_commit": head_commit,
         "seed": seed,
+        "runtime_seed": args.runtime_seed,
         "feature_model": feature_model,
         "segment_method": segment_method,
         "cluster_method": cluster_method,

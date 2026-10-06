@@ -160,6 +160,46 @@ PSLG_SAMPLING_COMMIT="$(git rev-parse HEAD)" \
 
 初版连续数据的保留样本能量误差为零，但丢弃源点仍损失少量能量：训练支路丢弃 0.950833 Wh、验证支路丢弃 0 Wh。周期库的边缘收缩是另一项损失：共同可用的 491 条训练周期能量差合计为 −62.228333 Wh，164 条验证周期为 −20.767361 Wh。不能把连续保留样本守恒表述为每个周期能量完全不变；修正版须重新报告这些统计。
 
+## 作业 12098 数据验收通过
+
+回传 `sampling_control_12098_diagnostics.tar.gz` 确认 `zzz@5add0e1ac5a843cbfc59f05bbe47d19e076c1ee6` 在 2026 年 10 月 6 日完成全部 8 个数据步骤，用时 157.85 秒。24 个原始 train/validation 分片的前后校验通过且两份校验记录完全一致；未读取 test 数组，未训练生成模型或 NILM。后续输入固定为 `/home/scnu2024024563/pslg_artifacts/sampling_control_data_12098`，不再重做降频或重划周期。
+
+| 验收项 | 6 秒 | 12 秒 |
+| --- | --- | --- |
+| 训练周期 | 493 | 493 |
+| 验证周期 | 164 | 164 |
+| 训练连续数据点 | 7,896,997 | 3,948,443 |
+| 验证连续数据点 | 2,187,295 | 1,093,641 |
+| 训练周期 CSV 总采样点 | 429,335 | 214,417 |
+| 训练支路丢弃源点能量 Wh | 0 | 0.028333 |
+
+两组可用周期 ID 集合完全相同、无增减。12 秒训练数据恢复 17 个跨存储文件 bin，弃点由 145 降至 111；验证数据仍丢弃 13 个源点，其支路丢弃能量为零。跨文件两点的时间差、网格相位、原文件行号和两侧哈希审计一致。1387982382 到 1387982544 的 162 秒真实缺口保留；两组清单中的缺口均为上一分片网格终点 1387982388 到下一分片起点 1387982544。
+
+连续保留样本的能量误差记录为零，但两组完整周期库仍有边缘收缩：493 条训练周期能量差合计 −62.505 Wh，164 条验证周期为 −20.767361 Wh。该差值须与连续数据弃点损失分开报告。以上是数据正确性验收，不是降频提升模型效果的证据。
+
+## 配对状态发现链路测试
+
+下一作业 `slurm/sampling_state_smoke.sbatch` 申请 RTX3090 分区 1 张 GPU、4 个 CPU、32 GB 内存，2 小时为上限。复用现有环境，不安装包，不覆盖 12098 输入。具体流程如下：
+
+1. 固定已验收运行的 8 份元数据 SHA-256，复核两组 train 周期 NPZ、CSV 及清单的 1,980 个文件，确认周期 ID 和顺序相同。只读取 train 数据，validation/test 数组不进入此阶段。
+2. 在各自环境中记录包版本、GPU 信息和提交号，分别运行 TensorFlow、PyTorch GPU 前向与反向检查，任一失败即停止。
+3. 取 CSV 顺序中的前 8 个相同训练周期，各跑 2 个 epoch 的 PrimGLR → DETSEC-PC → KMeans k=3/4/5 → 状态合并与状态库导出。只检查接口，不选 k、不冻结状态库、不进入生成器或 Seq2Point 训练。
+4. 逐周期核对状态块从首点到末点连续覆盖、无重叠、无遗漏，并检查时长使用正确采样间隔。原入口会吞掉的 PrimGLR 后端异常、截断造成的覆盖失败均使本作业失败，不记为成功。
+5. 再校验源文件，保存两组配置、所选周期、状态统计、状态路径、训练历史、耗时、命令、输入输出哈希和失败日志。大张量与波形留在服务器；成功或 Python 异常均尝试打包小型诊断文件。
+
+保持原分段/特征/聚类/合并算法及离散点数配置，状态合并 `fs` 分别为 `1/6` 和 `1/12`；`min_block_seconds=90` 不变。KMeans seed 沿用 42；两组另显式固定 Python/NumPy/TensorFlow 初始化 seed=42。继承的 DETSEC-PC 内部分段留出与 batch 随机种子仍为 0，并非同一个 KMeans 参数。原历史入口未固定 TensorFlow 初始化，故此次不能声称逐位复现历史特征。禁用旧特征缓存，避免未固定种子的旧特征替代新训练。两组状态编号各自有效，不直接把同号状态当作同一物理状态。
+
+入口为 `scripts/run_sampling_state_smoke.py`，配置为 `config/server/zzz_sampling_state_smoke.json`。提交前更新到本次发布的干净提交，然后执行：
+
+```bash
+cd /home/scnu2024024563/NILM-zzz/PSLG-NILM-zzz
+mkdir -p log
+PSLG_SAMPLING_COMMIT="$(git rev-parse HEAD)" \
+  sbatch --export=ALL slurm/sampling_state_smoke.sbatch
+```
+
+排队或运行时不要修改该仓库。返回 `/home/scnu2024024563/pslg_artifacts/sampling_state_smoke_<JOBID>/diagnostics.tar.gz`；若 Slurm 启动失败、进程被强制终止而无包，返回 `log/sampling-state-smoke-<JOBID>.out` 和 `.err`。链路通过后才扩展到全部 493 个训练周期和正式 epoch，生成/NILM 先导的 seed 17 属于更下游阶段；8 周期、2 轮结果不得用于论文效果比较。
+
 ## 执行阶段和全程留档
 
 | 阶段 | 内容 | 需要留档 |
@@ -192,15 +232,16 @@ python scripts/compare_sampling_predictions.py \
 
 ## 当前完成边界
 
-已接入固定师弟代码、实现配对降频和审计、周期库接口验证、带时间戳的预测记录、共同网格比较、服务器路径配置和记录式命令入口。真实数据准备初版已完成，存储边界修正需要另起作业验收。切分/聚类、生成器重训和 NILM 效果实验尚未运行；不存在可汇报的 12 秒模型效果数值。
+已接入固定师弟代码、实现配对降频和审计、周期库接口验证、带时间戳的预测记录、共同网格比较、服务器路径配置和记录式命令入口。12098 真实数据准备与存储边界修正已验收通过，下一步为配对状态发现链路测试。正式切分/聚类、生成器重训和 NILM 效果实验尚未完成；不存在可汇报的 12 秒模型效果数值。
 
-2026-10-06 修正版本地验证：以下 97 项测试通过，另已执行 Python 语法编译、`bash -n` 和 `git diff --check`。其中新增完整准备流程的跨文件恢复测试和 13 项边界测试，覆盖 29 种文件切法、单行/空文件、来源行号唯一性、输入/能量总账、坏哈希、真实缺口和分区隔离。原有测试覆盖周期库/CSV 接口、预测中心定位、B1/B2 适配、数据划分、调度和质量指标。测试数据为小型构造样本；本地缺少 PyTorch/TensorFlow，没有验证神经网络训练或 GPU 可用性。
+2026-10-06 当前版本地验证：以下 114 项测试通过，另已执行 Python 语法编译、`bash -n` 和 `git diff --check`。其中包括完整准备流程的跨文件恢复测试和 13 项边界测试，覆盖 29 种文件切法、单行/空文件、来源行号唯一性、输入/能量总账、坏哈希、真实缺口和分区隔离。本轮增加 12 项状态链路测试，并纳入原有 5 项状态发现辅助测试。其余测试覆盖周期库/CSV 接口、预测中心定位、B1/B2 适配、数据划分、调度和质量指标。测试数据为小型构造样本；本地缺少 PyTorch/TensorFlow，没有验证神经网络训练或 GPU 可用性。
 
 ```bash
-python -m unittest tests.test_sampling_shard_boundaries tests.test_sampling_preparation \
+python -m unittest tests.test_sampling_state_smoke tests.test_state_discovery \
+  tests.test_sampling_shard_boundaries tests.test_sampling_preparation \
   tests.test_sampling_source_trace tests.test_sampling_rate_control tests.test_sampling_server_tools \
   tests.test_server_setup_inventory tests.test_research_data \
   tests.test_shared_placement tests.test_synthetic_quality
 ```
 
-下一步以新作业核对修正后的周期集合、跨文件配对、真实缺口、能量统计与源文件前后哈希。通过后再进入原切分/表示/聚类与 seed 17 先导训练，最后扩展生成与 NILM 对照；数据准备不计作完成模型训练实验。
+状态链路本地测试覆盖输入变更/越界拒绝、两组周期顺序、采样单位配置、显式初始化种子、缺周期/重叠/截断拒绝、代码漂移、失败包和完整编排。GPU 与训练子进程的编排测试使用模拟结果，不证明 TensorFlow 或 PyTorch 已在服务器运行成功；真实结果须以新作业回传为准。
