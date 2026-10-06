@@ -1,0 +1,9 @@
+# reports/ 是本地实验产物目录。默认忽略所有内容，但允许目录继续向下匹配，
+# 并只让人工整理的 Markdown 结论与本规则本身进入 Git。
+*
+!*/
+!*.md
+!.gitignore
+# 服务器 run 目录的自动生成产物（finalize_server_run.py 每 run 一份），
+# 属机器可再生产物，不入 Git；run 目录里人工写的勘误 README 仍被 !*.md 放行。
+run_summary.md

@@ -1,4 +1,12 @@
 #!/bin/bash
+# ============================================================================
+# LEGACY / DO-NOT-USE for C1+ formal jobs (guide §4.6).
+# This preamble targets the OLD project conda env "PSLG-NILM" and the old
+# module alias cuda-toolkit/12.1. It is kept only because the legacy
+# run_*.sh wrappers source it. Formal C1/C2/C3 jobs must NOT source this
+# file; they use environment_detsec_server.yml / environment_nilm_server.yml
+# and their own module handling in the sbatch templates.
+# ============================================================================
 # Common environment preamble for all PSLG-NILM-ADVANCED slurm jobs.
 # Sourced by the run_*.sh scripts — do not submit this file directly.
 

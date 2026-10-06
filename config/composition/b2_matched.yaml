@@ -1,0 +1,19 @@
+# Frozen B2 composition policy (Phase A outcome, see
+# docs/state_and_b2_policy_freeze_v1.md). Any change requires a new version
+# and a new directory; never overwrite frozen baseline outputs.
+protocol: b2_composition_v2
+policy: matched
+match_features: duration          # duration-only: mean/endpoint terms disabled
+matched_top_k: 5
+length_ratio_min: 0.67            # target_samples / donor_samples
+length_ratio_max: 1.5
+length_ratio_fallback: unconstrained_cross_cycle_pool
+boundary_policy: none             # smoothing hurts downstream MAE (A4)
+seed: 17
+synthetic_ratio: 0.5
+sample_seconds: 6
+frozen_evidence:
+  b2_mae_w: 22.007
+  b2_f1: 0.5163
+  b1_mae_w: 21.277
+  source_report: reports/core_validation/ukdale_b1_washing_machine/b2_policy_ablation_seed17_r0p5/report.md

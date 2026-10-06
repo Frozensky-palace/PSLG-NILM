@@ -1,0 +1,9 @@
+# Replace CHANGE_ME only in a server-local copy before --submit.
+template: ../../slurm/c2_detsec_pc.sbatch
+common:
+  PSLG_PROJECT_ROOT: /home/CHANGE_ME/projects/PSLG-NILM-c1
+  PSLG_FROZEN_COMMIT: CHANGE_ME
+  PSLG_MANIFEST: /home/CHANGE_ME/pslg_manifests/c1_state_discovery_trainonly_manifest.json
+  PSLG_RUN_ROOT: /home/CHANGE_ME/pslg_artifacts
+jobs:
+  - {}

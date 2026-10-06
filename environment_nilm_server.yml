@@ -1,0 +1,35 @@
+# pslg-nilm: C3 Seq2Point and generator environment with CUDA PyTorch
+# (guide §4.5). STATUS: 服务器已验证（2026-09-21，h104-slurm-a RTX3090，驱动
+# 580.65.06）：torch 2.5.1+cu121 CUDA 可用并通过前向/反向冒烟。偏离记录：
+# pip 曾解析到 2.14.0+cu130 且 CUDA 初始化失败，已钉 torch==2.5.1；
+# h103-slurm-a 节点 CUDA 初始化故障（同驱动同环境 False），作业用
+# sbatch --extra='-w h104-slurm-a' 避开。
+# Create on the server (module versions per live `module avail`):
+#   conda env create -f environment_nilm_server.yml
+#   conda activate pslg-nilm
+#   python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+# If the conda pip section rejects the --index-url option on your conda
+# version, create the env without the torch line and install manually:
+#   pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cu121
+# torch==2.5.1 is the LAST cu121 build; pinning is required because with
+# torch>=2.4 pip silently resolves a newer cu130 build from PyPI
+# (observed 2026-09-21: 2.14.0+cu130 failed CUDA init on driver 580.65.06).
+# cu121 matches the module cuda-toolkit/12.1.1 recorded in the lab guide;
+# re-check against `nvidia-smi` on the allocated node and record any change.
+name: pslg-nilm
+channels:
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - numpy<2
+      - pandas>=2.2
+      - scipy>=1.11
+      - scikit-learn>=1.5
+      - matplotlib>=3.9
+      - pyyaml>=6.0
+      - PyWavelets>=1.6
+      - --index-url=https://download.pytorch.org/whl/cu121
+      - --extra-index-url=https://pypi.org/simple
+      - torch==2.5.1

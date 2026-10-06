@@ -1,0 +1,24 @@
+# STATUS: 初版参考（本机 CPU 验证用），不是正式服务器 GPU 环境。
+# 正式服务器环境已拆分为：
+#   environment_detsec_server.yml  → pslg-detsec（TensorFlow GPU，C2）
+#   environment_nilm_server.yml    → pslg-nilm（PyTorch CUDA，C3 及生成器）
+# 本文件保留为单环境 CPU 参考与本地版本基线记录（guide §4.5）。
+#
+# Local CPU versions verified during Phase B:
+#   numpy 1.26.4, pandas 2.2.2, scikit-learn 1.7.2, matplotlib 3.11.1,
+#   torch 2.14.0+cpu, tensorflow-cpu 2.18.1 (detsec_pc smoke passed).
+name: pslg-nilm
+channels:
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - numpy<2            # repo requirement: do not upgrade without full retest
+      - pandas>=2.2
+      - scipy>=1.11
+      - scikit-learn>=1.5
+      - matplotlib>=3.9
+      - torch>=2.4         # CPU build locally; server uses the CUDA env above
+      - tensorflow-cpu>=2.18,<2.19  # 2.19+ pulls numpy>=2; keep numpy<2 stack
+      - pyyaml>=6.0

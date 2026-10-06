@@ -57,6 +57,7 @@ class FeatureExtractStep(Step):
         "detsec_pc": ["models/feature_extract/detsec_pc.py"],
         "autoencoder": ["models/feature_extract/autoencoder.py"],
         "dtw": ["models/feature_extract/dtw.py"],
+        "physical_stats": ["models/feature_extract/physical_stats.py"],
     }
     _SHARED_SOURCE = ["models/base_model.py"]
 
@@ -168,6 +169,8 @@ class FeatureExtractStep(Step):
             from models.feature_extract.autoencoder import autoencoder as fn
         elif name == "dtw":
             from models.feature_extract.dtw import dtw_feature_extract as fn
+        elif name == "physical_stats":
+            from models.feature_extract.physical_stats import physical_stats as fn
         else:
             raise ValueError(f"[feature_extract] unknown model: {name}")
 

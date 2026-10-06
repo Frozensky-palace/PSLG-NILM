@@ -130,6 +130,13 @@ class TestPam(ChdirCase):
 
 
 class TestDatasetSplit(ChdirCase):
+    def test_load_series_accepts_canonical_csv(self):
+        pd.DataFrame({"timestamp": [1, 2], "power": [10, 20]}).to_csv(
+            "series.csv", index=False)
+        got = DatasetSplitStep._load_series_2col("series.csv", "series")
+        np.testing.assert_array_equal(
+            got, np.array([[1.0, 10.0], [2.0, 20.0]]))
+
     def test_knockout_and_masks(self):
         wf = Workflow("rsplit", "fridge", CFG)
         wf.add(StubUpstream())

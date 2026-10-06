@@ -1,0 +1,20 @@
+# B3 full-cycle conditional VAE plan (Phase D). Status: planned; the model
+# code (src/generation/full_cycle_cvae.py) does not exist yet and must not be
+# assumed by any pipeline.
+protocol: b3_full_cycle_cvae_v1
+status: planned_not_implemented
+route: B3
+model:
+  family: cvae
+  condition_on: [duration_bucket, energy_bucket, peak_power_bucket]
+  variable_length: bucket_pad_mask_resample
+training:
+  train_cycles_only: 493
+  selection: validation
+  budget_must_match: config/generation/primitive_cvae.yaml
+quality_checks:
+  non_negative_power: true
+  energy_duration_distributions: true
+  nearest_train_neighbor_distance: true
+  memorization_and_duplicate_audit: true
+  background_identity_check: true

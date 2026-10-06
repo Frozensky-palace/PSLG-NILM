@@ -1,0 +1,67 @@
+run:
+  appliance: washing_machine
+
+paths:
+  raw_series: input/ukdale_b1_wm_week_branch.npy
+  cache_dir: .cache
+
+extract_active_data:
+  method: simple
+  threshold: 10
+  t_drop: 150
+  t_min_work: 180
+  context_seconds: 90
+  fs: 0.1666667
+  resample_fs: 0.1666667
+
+time_segmentation:
+  window_size: 10
+  n_regimes: 3
+  excl_factor: 2
+  clasp_n_jobs: 1
+  clasp_n_segments: learn
+  max_seg_len: 1536
+
+feature_extract:
+  latent_dim: 16
+  epochs: 1
+  batch_size: 8
+  learning_rate: 0.0001
+  patience: 1
+  attention_size: 32
+  cache: true
+
+time_clustering:
+  normalization_method: zscore
+  col_index: 2
+  metric: euclidean
+  method_specific:
+    kmeans: {n_init: 10, max_iter: 300, random_state: 42}
+
+temporal_state_merge:
+  merge_mode: same_label_plus_similar
+  enable_similar_merge: true
+  similar_feature_tol: 2.0
+  min_block_seconds: 90
+  fs: 0.1666667
+
+few_shot_cluster_extract:
+  n_percent: 50
+  adj_threshold: 0.6
+  center_margin: 0.1
+  center_support_threshold: 0.6
+  export_format: csv
+
+dataset_split:
+  mains_series: input/ukdale_b1_wm_week_mains.npy
+  few_train_ratio: 0.5
+  non_few_train_ratio: 0.8
+  random_seed: 42
+  timestamp_tolerance_seconds: 0.0
+  clip_negative_mains_to_zero: true
+
+visualization:
+  language: zh
+  visualize_noise: true
+  cluster_stack_count: 50
+  max_per_chart: 20

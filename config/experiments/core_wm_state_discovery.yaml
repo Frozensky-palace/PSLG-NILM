@@ -1,0 +1,43 @@
+run:
+  appliance: washing_machine
+
+paths:
+  segments_dir: reports/core_validation/ukdale_b1_washing_machine/real_cycle_library_train_v1/segments
+  cache_dir: .cache
+
+time_segmentation:
+  window_size: 30
+  n_regimes: 2
+  excl_factor: 4
+  clasp_n_jobs: 1
+  clasp_n_segments: learn
+  max_seg_len: 1536
+
+feature_extract:
+  latent_dim: 16
+  embed_dim: 32
+  lambda_phy: 0.1
+  nonneg_channels: [0, 1, 2, 3]
+  norm_mode: minmax
+  embed_proj: relu
+  tf_ratio: 0.0
+  tf_schedule: linear
+  epochs: 50
+  batch_size: 8
+  learning_rate: 0.0001
+  patience: 10
+  cache: true
+
+time_clustering:
+  normalization_method: zscore
+  col_index: 2
+  metric: euclidean
+  method_specific:
+    kmeans: {n_init: 30, max_iter: 300, random_state: 42}
+
+temporal_state_merge:
+  merge_mode: same_label_plus_similar
+  enable_similar_merge: true
+  similar_feature_tol: 2.0
+  min_block_seconds: 90
+  fs: 0.1666667
